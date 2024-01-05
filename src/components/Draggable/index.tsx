@@ -1,20 +1,19 @@
 import { useState } from 'react'
 import { Row, Col, Button } from 'antd'
 import { DndContext, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core'
-import type { DragEndEvent } from '@dnd-kit/core/dist/types/index'
+import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core/dist/types/index'
 import {
   SortableContext,
   arrayMove,
   horizontalListSortingStrategy,
   useSortable
 } from '@dnd-kit/sortable'
-import { useNavigate } from 'react-router-dom'
 
-type DraggableTagProps = { id: number; text: string; url?: string }
+export type DraggableProps = { items: DraggableItemProps[], element:JSX.Element }
+export type DraggableItemProps = { id: UniqueIdentifier, element:JSX.Element } & Record<string, any>
 
-const DraggableTag = (props: DraggableTagProps) => {
-  const navigate = useNavigate()
-  const { id, text, url } = props
+const DraggableItem = (props: DraggableItemProps) => {
+  const { id, element } = props
   const { listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
 
   let style = { cursor: 'move', transition: 'unset' }
@@ -24,25 +23,20 @@ const DraggableTag = (props: DraggableTagProps) => {
       transition: isDragging ? 'unset' : transition
     }))
 
-  return (
-    <Col
-      onClick={() => navigate(url as string)}
-      span={6}
-      style={style}
-      ref={setNodeRef}
-      {...listeners}
-    >
-      <Button block>{text}</Button>
-    </Col>
+  return ({context}
+    // <element style={style}  ref={setNodeRef} {...listeners}/>
+    //   style={style}
+    //   ref={setNodeRef}
+    //   {...listeners}
+    // >
+    //   <Button block>{text}</Button>
+    // </Col>
   )
 }
 
-export default () => {
-  const [items, setItems] = useState<DraggableTagProps[]>([
-    { id: 1, text: 'Tag 1' },
-    { id: 2, text: 'Tag 2' },
-    { id: 3, text: 'Tag 2' }
-  ])
+export default (props: DraggableProps) => {
+  const { items: init, element } = props
+  const [items, setItems] = useState<DraggableItemProps[]>(init)
 
   const sensors = useSensors(useSensor(PointerSensor))
 
@@ -60,15 +54,13 @@ export default () => {
     }
   }
 
-  const context = items.map((item) => <DraggableTag {...item} key={item.id} />)
+    const context = items.map((item) => <DraggableItem {...item} element={element} key={item.id} />)
 
   return (
-    <Row gutter={[16, 16]}>
-      <DndContext sensors={sensors} onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
-        <SortableContext items={items} strategy={horizontalListSortingStrategy}>
-          {context}
-        </SortableContext>
-      </DndContext>
-    </Row>
+    <DndContext sensors={sensors} onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
+      <SortableContext items={items} strategy={horizontalListSortingStrategy}>
+        {context}
+      </SortableContext>
+    </DndContext>
   )
 }

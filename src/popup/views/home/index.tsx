@@ -17,5 +17,5 @@ export default () => {
     }
   ]
 
-  return <Tabs defaultActiveKey="mate" items={items} centered />
+  return <Tabs defaultActiveKey="mate" items={items} centered size='large' />
 }
