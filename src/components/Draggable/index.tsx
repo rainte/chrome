@@ -1,20 +1,28 @@
 import { useState } from 'react'
-import { Row, Col, Button } from 'antd'
 import { DndContext, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core'
-import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core/dist/types/index'
 import {
   SortableContext,
   arrayMove,
   horizontalListSortingStrategy,
   useSortable
 } from '@dnd-kit/sortable'
+import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core/dist/types/index'
 
-export type DraggableProps = { items: DraggableItemProps[], element:JSX.Element }
-export type DraggableItemProps = { id: UniqueIdentifier, element:JSX.Element } & Record<string, any>
+export type DraggableElementProps<T = Record<string, any>> = (
+  props: T & Record<string, any>
+) => JSX.Element
+export type DraggableItemProps<T = Record<string, any>> = {
+  attrs: {id:UniqueIdentifier} & T
+  Element?: DraggableElementProps
+}
+export type DraggableProps = {
+  items: DraggableItemProps<any>[]
+  Element: DraggableElementProps
+}
 
-const DraggableItem = (props: DraggableItemProps) => {
-  const { id, element } = props
-  const { listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
+const DraggableItem = <T,>(props: DraggableItemProps<T>) => {
+  const { attrs, Element, } = props
+  const { listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id:attrs.id })
 
   let style = { cursor: 'move', transition: 'unset' }
   transform &&
@@ -23,20 +31,14 @@ const DraggableItem = (props: DraggableItemProps) => {
       transition: isDragging ? 'unset' : transition
     }))
 
-  return ({context}
-    // <element style={style}  ref={setNodeRef} {...listeners}/>
-    //   style={style}
-    //   ref={setNodeRef}
-    //   {...listeners}
-    // >
-    //   <Button block>{text}</Button>
-    // </Col>
-  )
+  if (Element != undefined) {
+    return <Element {...attrs} style={style} ref={setNodeRef} {...listeners}  />
+  }
 }
 
-export default (props: DraggableProps) => {
-  const { items: init, element } = props
-  const [items, setItems] = useState<DraggableItemProps[]>(init)
+export default <T,>(props: DraggableProps) => {
+  const { items: init, Element } = props
+  const [items, setItems] = useState<DraggableItemProps<T>[]>(init)
 
   const sensors = useSensors(useSensor(PointerSensor))
 
@@ -54,7 +56,9 @@ export default (props: DraggableProps) => {
     }
   }
 
-    const context = items.map((item) => <DraggableItem {...item} element={element} key={item.id} />)
+  const context = items.map((item) => (
+    <DraggableItem<T>  attrs={item} Element={Element} key={item.id} />
+  ))
 
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
