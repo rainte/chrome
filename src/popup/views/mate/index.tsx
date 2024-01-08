@@ -1,7 +1,6 @@
-import { useState } from 'react'
 import { Row, Col, Button } from 'antd'
 import { useNavigate } from 'react-router-dom'
-import Draggable, { DraggableItemProps, DraggableElementProps } from '@/components/Draggable'
+import Dragg, { DraggItemProps, useSortable, draggStyle } from '@/components/Dragg'
 
 type Item = {
   id: number
@@ -9,27 +8,35 @@ type Item = {
   url?: string
 }
 
-const Element: DraggableElementProps<Item> = (props) => {
-  const { text, url } = props
+const Element = (props: Item) => {
+  const { id, text, url } = props
   const navigate = useNavigate()
+  const { listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
+  const style = draggStyle(transform, isDragging, transition)
 
   return (
-    <Col onClick={() => navigate(url as string)} span={6}>
+    <Col
+      span={6}
+      onClick={() => navigate(url as string)}
+      style={style}
+      ref={setNodeRef}
+      {...listeners}
+    >
       <Button block>{text}</Button>
     </Col>
   )
 }
 
 export default () => {
-  const items: DraggableItemProps<Item>[] = [
+  const items: DraggItemProps[] = [
     { id: 1, text: 'Tag 1' },
     { id: 2, text: 'Tag 2' },
-    { id: 3, text: 'Tag 2' }
+    { id: 3, text: 'Tag 3' }
   ]
 
   return (
     <Row gutter={[16, 16]}>
-      <Draggable<Item> items={items} Element={Element} />
+      <Dragg items={items} Element={Element} />
     </Row>
   )
 }

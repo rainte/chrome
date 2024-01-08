@@ -1,23 +1,24 @@
-import { Tabs } from 'antd'
-import type { TabsProps } from 'antd'
+import { List, Typography } from 'antd'
 
-const onChange = (key: string) => {
-  console.log(key)
-}
-
-const items: TabsProps['items'] = [
-  {
-    key: 'component',
-    label: '组件',
-    children: 'Content of Tab Pane 1'
-  },
-  {
-    key: 'setting',
-    label: '设置',
-    children: 'Content of Tab Pane 1'
-  }
+const data = [
+  'Racing car sprays burning fuel into crowd.',
+  'Japanese princess to wed commoner.',
+  'Australian walks 100km after outback crash.',
+  'Man charged over missing wedding girl.',
+  'Los Angeles battles huge wildfires.'
 ]
 
-export default () => (
-  <Tabs defaultActiveKey="component" items={items} onChange={onChange} centered />
-)
+export default () => {
+  return (
+    <List
+      header="重启插件 更多设置"
+      bordered
+      dataSource={data}
+      renderItem={(item) => (
+        <List.Item>
+          <Typography.Text mark>[ITEM]</Typography.Text> {item}
+        </List.Item>
+      )}
+    />
+  )
+}

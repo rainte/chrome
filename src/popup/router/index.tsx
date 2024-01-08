@@ -1,6 +1,5 @@
 import { lazy } from 'react'
 import { createBrowserRouter, Navigate } from 'react-router-dom'
-
 export default createBrowserRouter([
   { path: '/home', Component: lazy(() => import('@/popup/views/home')) },
   {

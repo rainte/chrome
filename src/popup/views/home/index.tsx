@@ -1,5 +1,4 @@
-import { Tabs } from 'antd'
-import type { TabsProps } from 'antd'
+import { Tabs, TabsProps } from 'antd'
 import Mate from '@/popup/views/mate'
 import Setting from '@/popup/views/setting'
 
@@ -17,5 +16,5 @@ export default () => {
     }
   ]
 
-  return <Tabs defaultActiveKey="mate" items={items} centered size='large' />
+  return <Tabs defaultActiveKey="mate" items={items} centered size="large" />
 }

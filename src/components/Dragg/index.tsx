@@ -1,46 +1,31 @@
 import { useState } from 'react'
 import { DndContext, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core'
-import {
-  SortableContext,
-  arrayMove,
-  horizontalListSortingStrategy,
-  useSortable
-} from '@dnd-kit/sortable'
+import { SortableContext, arrayMove, horizontalListSortingStrategy } from '@dnd-kit/sortable'
 import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core/dist/types/index'
 
-export type DraggableElementProps<T = Record<string, any>> = (
-  props: T & Record<string, any>
-) => JSX.Element
-export type DraggableItemProps<T = Record<string, any>> = {
-  attrs: {id:UniqueIdentifier} & T
-  Element?: DraggableElementProps
-}
-export type DraggableProps = {
-  items: DraggableItemProps<any>[]
-  Element: DraggableElementProps
+export { useSortable } from '@dnd-kit/sortable'
+export type DraggItemProps = { id: UniqueIdentifier } & Record<string, any>
+export type DraggProps = {
+  items: DraggItemProps[]
+  Element: (props: any) => JSX.Element
 }
 
-const DraggableItem = <T,>(props: DraggableItemProps<T>) => {
-  const { attrs, Element, } = props
-  const { listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id:attrs.id })
-
+export const draggStyle = (transform: any, isDragging: any, transition: any) => {
   let style = { cursor: 'move', transition: 'unset' }
   transform &&
     (style = Object.assign(style, {
       transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
       transition: isDragging ? 'unset' : transition
     }))
-
-  if (Element != undefined) {
-    return <Element {...attrs} style={style} ref={setNodeRef} {...listeners}  />
-  }
+  return style
 }
 
-export default <T,>(props: DraggableProps) => {
+export default (props: DraggProps) => {
   const { items: init, Element } = props
-  const [items, setItems] = useState<DraggableItemProps<T>[]>(init)
+  const [items, setItems] = useState<DraggItemProps[]>(init)
 
   const sensors = useSensors(useSensor(PointerSensor))
+  const context = items.map((item) => <Element {...item} key={item.id} />)
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
@@ -55,10 +40,6 @@ export default <T,>(props: DraggableProps) => {
       })
     }
   }
-
-  const context = items.map((item) => (
-    <DraggableItem<T>  attrs={item} Element={Element} key={item.id} />
-  ))
 
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
