@@ -7,10 +7,10 @@ export default createBrowserRouter([
     path: '/',
     Component: lazy(() => import('@/views/layout')),
     children: [
-      { index: true, element: Navigate({ to: '/home' }) },
+      { index: true, element: <Navigate to="/home" /> },
       { path: 'mate', Component: lazy(() => import('@/views/mate')) },
       { path: 'setting', Component: lazy(() => import('@/views/setting')) }
     ]
   },
-  { path: '*', element: Navigate({ to: '/home' }) }
+  { path: '*', element: <Navigate to="/home" /> }
 ])
