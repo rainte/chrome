@@ -9,23 +9,27 @@ export default () => {
   // React.createElement
   const items: TabProps[] = [
     {
-      label: '/home',
+      label: '代理'
       // children: React.createElement( import('@/views/home'))
     },
     {
-      label: '/home',
+      label: '标签',
       children: React.createElement(lazy(() => import('@/views/home')))
     },
     {
-      label: '/home',
+      label: '书签',
       children: React.createElement(lazy(() => import('@/views/home')))
     },
     {
-      label: '/home',
+      label: '翻译',
       children: React.createElement(lazy(() => import('@/views/home')))
     },
     {
-      label: '/home',
+      label: 'Json',
+      children: React.createElement(lazy(() => import('@/views/home')))
+    },
+    {
+      label: 'WebSocket',
       children: React.createElement(lazy(() => import('@/views/home')))
     }
   ]
