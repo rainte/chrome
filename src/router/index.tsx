@@ -1,7 +1,7 @@
 import { lazy } from 'react'
-import { createBrowserRouter, Navigate } from 'react-router-dom'
+import { createHashRouter, Navigate } from 'react-router-dom'
 
-export default createBrowserRouter([
+export default createHashRouter([
   { path: '/home', Component: lazy(() => import('@/views/home')) },
   {
     path: '/',
@@ -9,7 +9,8 @@ export default createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/home" /> },
       { path: 'mate', Component: lazy(() => import('@/views/mate')) },
-      { path: 'setting', Component: lazy(() => import('@/views/setting')) }
+      { path: 'setting', Component: lazy(() => import('@/views/setting')) },
+      { path: 'options', Component: lazy(() => import('@/views/options')) }
     ]
   },
   { path: '*', element: <Navigate to="/home" /> }

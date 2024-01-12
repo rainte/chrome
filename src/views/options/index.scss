@@ -1,0 +1,14 @@
+$blackColor: rgba(0, 0, 0, 0.65);
+
+.page {
+  height: 100%;
+  background-color: #f7f7f7;
+  color: $blackColor;
+
+  .tabs-title {
+    color: $blackColor;
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin: 1rem;
+  }
+}
