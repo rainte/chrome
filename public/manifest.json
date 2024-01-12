@@ -21,7 +21,7 @@
   "background": {
     "service_worker": "background.js"
   },
-  "options_page": "options.html",
+  "options_page": "index.html",
   "permissions": ["activeTab", "scripting"],
   "content_scripts": [
     {

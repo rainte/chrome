@@ -16,8 +16,8 @@ export default (name: string) => {
       },
       rollupOptions: {
         output: {
-          manualChunks: undefined,
-          assetFileNames: () => name + '.css'
+          assetFileNames: 'assets/[name]-[hash][extname]',
+          chunkFileNames: 'assets/[name]-[hash].js'
         }
       }
     },
