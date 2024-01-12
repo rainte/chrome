@@ -1,3 +1,3 @@
-import vite from '../vite'
+import vite, { name } from '../vite.config'
 
-export default vite('content')
+export default vite(name(__dirname))
