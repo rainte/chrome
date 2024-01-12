@@ -1,3 +1,5 @@
+console.log('background')
+
 chrome.runtime.onInstalled.addListener(() => {
   console.log('background onInstalled')
   chrome.action.disable()
@@ -24,8 +26,8 @@ chrome.action.onClicked.addListener((tab) => {
 })
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log('background onMessage')
-  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+  console.log('background onMessage', message, sender)
+  chrome.tabs.query({ currentWindow: true, active: true }, () => {
     sendResponse({ ok: true })
   })
 })

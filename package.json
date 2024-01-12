@@ -4,10 +4,13 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite -c src/crx/popup/vite.config.ts",
+    "dev": "vite",
     "build": "tsc && vite build -c src/crx/background/vite.config.ts && vite build -c src/crx/content/vite.config.ts && vite build -c src/crx/popup/vite.config.ts",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build1": "tsc && vite build -c src/crx/background/vite.config.ts",
+    "build2": "tsc && vite build -c src/crx/content/vite.config.ts",
+    "build3": "tsc && vite build"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",

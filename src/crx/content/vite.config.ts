@@ -1,19 +1,3 @@
-import path from 'path'
-import vite from '../../../vite.config'
+import vite from '../vite'
 
-const fileName = 'content'
-
-export default Object.assign(vite, {
-  build: {
-    lib: {
-      entry: [path.resolve(__dirname, './index.tsx')],
-      formats: ['cjs'],
-      fileName: () => fileName + '.js'
-    },
-    rollupOptions: {
-      output: {
-        assetFileNames: () => fileName + '.css'
-      }
-    }
-  }
-})
+export default vite('content')

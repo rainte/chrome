@@ -2,6 +2,8 @@ import ReactDOM from 'react-dom/client'
 import Home from '@/views/home'
 import './index.scss'
 
+console.log('content')
+
 // 向页面插入内容.
 const app = document.createElement('div')
 app.id = 'CRX-Rainte'
