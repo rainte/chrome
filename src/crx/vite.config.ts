@@ -14,7 +14,12 @@ export default (name: string) => {
         formats: ['cjs'],
         fileName: () => name + '.js'
       },
-      rollupOptions: { output: { assetFileNames: () => name + '.css' } }
+      rollupOptions: {
+        output: {
+          manualChunks: undefined,
+          assetFileNames: () => name + '.css'
+        }
+      }
     },
     plugins: [react()],
     resolve: {
