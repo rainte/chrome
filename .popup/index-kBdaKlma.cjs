@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});const e=require("./index-InsI0guJ.cjs"),t=()=>e.jsxRuntimeExports.jsx(e.jsxRuntimeExports.Fragment,{children:e.jsxRuntimeExports.jsx(e.Outlet,{})});exports.default=t;
