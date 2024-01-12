@@ -1,11 +1,28 @@
 {
+  "manifest_version": 3,
   "name": "Rainte",
   "version": "1.0",
-  "description": "Rainte Chrome 插件",
-  "manifest_version": 3,
+  "description": "Rainte Chrome CRX",
+  "icons": {
+    "16": "/images/logo.png",
+    "32": "/images/logo.png",
+    "48": "/images/logo.png",
+    "128": "/images/logo.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "/images/logo.png",
+      "24": "/images/logo.png",
+      "32": "/images/logo.png"
+    },
+    "default_title": "Rainte",
+    "default_popup": "index.html"
+  },
   "background": {
     "service_worker": "background.js"
   },
+  "options_page": "options.html",
+  "permissions": ["activeTab", "scripting"],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
@@ -14,32 +31,10 @@
       "run_at": "document_end"
     }
   ],
-  "permissions": ["storage", "declarativeContent"],
-  "host_permissions": [],
   "web_accessible_resources": [
     {
-      "resources": ["/images/app.png"],
+      "resources": ["/images/logo.png"],
       "matches": ["<all_urls>"]
-    },
-    {
-      "resources": ["insert.js"],
-      "matches": ["https://ant-design.antgroup.com/*"]
     }
-  ],
-  "action": {
-    "default_popup": "index.html",
-    "default_icon": {
-      "16": "/images/app.png",
-      "32": "/images/app.png",
-      "48": "/images/app.png",
-      "128": "/images/app.png"
-    },
-    "default_title": "React CRX MV3"
-  },
-  "icons": {
-    "16": "/images/app.png",
-    "32": "/images/app.png",
-    "48": "/images/app.png",
-    "128": "/images/app.png"
-  }
+  ]
 }

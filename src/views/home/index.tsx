@@ -1,6 +1,6 @@
 import { Tabs, TabsProps } from 'antd'
-import Mate from '@/popup/views/mate'
-import Setting from '@/popup/views/setting'
+import Mate from '@/views/mate'
+import Setting from '@/views/setting'
 
 export default () => {
   const items: TabsProps['items'] = [
