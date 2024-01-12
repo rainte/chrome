@@ -1,5 +1,5 @@
 import path from 'path'
-import vite from 'vite.config'
+import vite from '../../../vite.config'
 
 const fileName = 'content'
 
