@@ -1,55 +1,53 @@
-import React, { lazy, Suspense } from 'react'
-import type { RadioChangeEvent } from 'antd'
-import { Row, Radio, Tabs, TabPaneProps } from 'antd'
+import { Flex, Tabs, TabPaneProps } from 'antd'
+import { Bookmark, Proxy, Tab } from './components'
 import './index.scss'
 
-type TabProps = TabPaneProps & { label: string }
-
 export default () => {
-  // React.createElement
-  const items: TabProps[] = [
+  const items: (TabPaneProps & { label: string })[] = [
     {
-      label: '代理'
-      // children: React.createElement( import('@/views/home'))
-    },
-    {
-      label: '标签',
-      children: React.createElement(lazy(() => import('@/views/home')))
+      label: '代理',
+      children: <Proxy />
     },
     {
       label: '书签',
-      children: React.createElement(lazy(() => import('@/views/home')))
+      children: <Bookmark />
+    },
+    {
+      label: '标签页',
+      children: <Tab />
     },
     {
       label: '翻译',
-      children: React.createElement(lazy(() => import('@/views/home')))
+      children: <Proxy />
     },
     {
       label: 'Json',
-      children: React.createElement(lazy(() => import('@/views/home')))
+      children: <Proxy />
     },
     {
       label: 'WebSocket',
-      children: React.createElement(lazy(() => import('@/views/home')))
+      children: <Proxy />
     }
   ]
 
   return (
-    <Row className="page">
+    <Flex className="page">
       <Tabs
+        className="page-tabs"
+        defaultActiveKey="2"
         size="large"
         tabPosition="left"
         tabBarGutter={20}
         tabBarStyle={{ width: '15rem' }}
-        tabBarExtraContent={{ left: <Row className="tabs-title">设置</Row> }}
+        tabBarExtraContent={{ left: <Flex className="tabs-title">设置</Flex> }}
         items={items.map((item, i) => {
           return {
             label: item.label,
             key: i + '',
-            children: '123'
+            children: item.children
           }
         })}
       />
-    </Row>
+    </Flex>
   )
 }

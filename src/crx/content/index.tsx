@@ -1,6 +1,5 @@
 import ReactDOM from 'react-dom/client'
 import Home from '@/views/home'
-import './index.scss'
 
 console.log('content')
 
