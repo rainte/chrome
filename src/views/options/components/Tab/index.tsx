@@ -25,7 +25,7 @@ const props: UploadProps = {
 
 export default () => (
   <Dragger>
-    <Flex vertical align="center" justify="center" style={{ height: '30vw' }}>
+    <Flex vertical align="center" justify="center" style={{ height: '35vw' }}>
       <CloudUploadOutlined style={{ fontSize: '3rem' }} />
       <h3>点击上传</h3>
     </Flex>
