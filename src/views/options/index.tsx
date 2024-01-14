@@ -34,7 +34,7 @@ export default () => {
     <Flex className="page">
       <Tabs
         className="page-tabs"
-        defaultActiveKey="2"
+        defaultActiveKey="1"
         size="large"
         tabPosition="left"
         tabBarGutter={20}
