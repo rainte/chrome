@@ -1,8 +1,7 @@
 #root {
   height: 100%;
 
-  .page {
-    height: 100%;
+  > div {
     overflow: auto;
   }
 }

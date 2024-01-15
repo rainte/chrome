@@ -2,15 +2,22 @@ import Form, { FormProps } from '@/components/Form'
 import Dialog from '@/components/Dialog'
 import { Space, Input, Button } from 'antd'
 import route from '@/utils/route'
-import { i18n } from '@/utils/browser'
+import { i18n, cloud } from '@/utils/browser'
 
 export default () => {
   const TOKEN_URL = 'https://github.com/settings/tokens/new'
   const GIST_URL = 'https://gist.github.com'
 
+  const onFinish = (formData: any) => {
+    console.log('onFinish', formData)
+    return cloud.set(formData)
+  }
+
   const uploadBookmark = () => {
     Dialog.confirm({
-      onOk: () => {}
+      onOk: () => {
+        // cloud.set()
+      }
     })
   }
 
@@ -21,6 +28,7 @@ export default () => {
   }
 
   const form: FormProps = {
+    onFinish: onFinish,
     columns: [
       {
         renderFormItem: () => (

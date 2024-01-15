@@ -1,7 +1,8 @@
-import { Flex, Tabs, TabsProps } from 'antd'
+import { Tabs, TabsProps } from 'antd'
 import Agile from '@/views/agile'
 import Setting from '@/views/setting'
 import { i18n } from '@/utils/browser'
+import style from './index.module.scss'
 
 export default () => {
   const items: TabsProps['items'] = [
@@ -18,8 +19,6 @@ export default () => {
   ]
 
   return (
-    <Flex className="page">
-      <Tabs defaultActiveKey="agile" items={items} centered size="large" />
-    </Flex>
+    <Tabs className={style.page} defaultActiveKey="agile" items={items} centered size="large" />
   )
 }
