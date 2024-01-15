@@ -3,6 +3,7 @@
   "name": "Rainte",
   "version": "1.0",
   "description": "Rainte Chrome CRX",
+  "default_locale": "zh_CN",
   "icons": {
     "16": "/images/logo.png",
     "32": "/images/logo.png",

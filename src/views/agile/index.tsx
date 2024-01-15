@@ -1,4 +1,4 @@
-import { Row, Col, Button } from 'antd'
+import { Flex, Button } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import Dragg, { DraggItemProps, useSortable, draggStyle } from '@/components/Dragg'
 
@@ -15,15 +15,9 @@ const Element = (props: Item) => {
   const style = draggStyle(transform, isDragging, transition)
 
   return (
-    <Col
-      span={6}
-      onClick={() => navigate(url as string)}
-      style={style}
-      ref={setNodeRef}
-      {...listeners}
-    >
+    <Flex onClick={() => navigate(url as string)} style={style} ref={setNodeRef} {...listeners}>
       <Button block>{text}</Button>
-    </Col>
+    </Flex>
   )
 }
 
@@ -35,8 +29,8 @@ export default () => {
   ]
 
   return (
-    <Row gutter={[16, 16]}>
+    <Flex>
       <Dragg items={items} Element={Element} />
-    </Row>
+    </Flex>
   )
 }

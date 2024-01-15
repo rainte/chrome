@@ -1,7 +1,8 @@
 import Form, { FormProps } from '@/components/Form'
 import Dialog from '@/components/Dialog'
-import Route from '@/components/Route'
 import { Space, Input, Button } from 'antd'
+import route from '@/utils/route'
+import { i18n } from '@/utils/browser'
 
 export default () => {
   const TOKEN_URL = 'https://github.com/settings/tokens/new'
@@ -24,35 +25,37 @@ export default () => {
       {
         renderFormItem: () => (
           <Space.Compact>
-            <Button onClick={uploadBookmark}>上传书签</Button>
-            <Button onClick={downLoadBookmark}>下载书签</Button>
+            <Button onClick={uploadBookmark}>{i18n.get('bookmarkUpload')}</Button>
+            <Button onClick={downLoadBookmark}>{i18n.get('bookmarkDownLoad')}</Button>
           </Space.Compact>
         )
       },
       {
-        title: 'Github Token',
+        title: i18n.get('bookmarkGithubToken'),
         dataIndex: 'token',
         formItemProps: { rules: [{ required: true }] },
         renderFormItem: () => (
           <Space.Compact>
             <Input />
-            <Button onClick={() => Route.open(TOKEN_URL)}>Get Token</Button>
+            <Button onClick={() => route.open(TOKEN_URL)}>
+              {i18n.get('bookmarkGetGithubToken')}
+            </Button>
           </Space.Compact>
         )
       },
       {
-        title: 'Gist ID',
+        title: i18n.get('bookmarkGistID'),
         dataIndex: 'gist',
         formItemProps: { rules: [{ required: true }] },
         renderFormItem: () => (
           <Space.Compact>
             <Input />
-            <Button onClick={() => Route.open(GIST_URL)}>Get Gist ID</Button>
+            <Button onClick={() => route.open(GIST_URL)}>{i18n.get('bookmarkGetGistID')}</Button>
           </Space.Compact>
         )
       },
       {
-        title: '消息通知',
+        title: i18n.get('bookmarkNotice'),
         dataIndex: 'notice',
         valueType: 'switch'
       }

@@ -1,20 +1,25 @@
-import { Tabs, TabsProps } from 'antd'
-import Mate from '@/views/mate'
+import { Flex, Tabs, TabsProps } from 'antd'
+import Agile from '@/views/agile'
 import Setting from '@/views/setting'
+import { i18n } from '@/utils/browser'
 
 export default () => {
   const items: TabsProps['items'] = [
     {
-      key: 'mate',
-      label: '组件',
-      children: <Mate />
+      key: 'agile',
+      label: i18n.get('homeAgile'),
+      children: <Agile />
     },
     {
       key: 'setting',
-      label: '设置',
+      label: i18n.get('homeSetting'),
       children: <Setting />
     }
   ]
 
-  return <Tabs defaultActiveKey="mate" items={items} centered size="large" />
+  return (
+    <Flex className="page">
+      <Tabs defaultActiveKey="agile" items={items} centered size="large" />
+    </Flex>
+  )
 }
