@@ -1,25 +1,20 @@
 import { Flex, Tabs, TabPaneProps } from 'antd'
 import { Bookmark, Proxy, Tab } from './components'
-import { i18n } from '@/utils/browser'
-import style from './index.module.scss'
+import scss from './index.module.scss'
 
 export default () => {
   const items: (TabPaneProps & { label: string })[] = [
     {
-      label: i18n.get('optionsProxy'),
+      label: '代理',
       children: <Proxy />
     },
     {
-      label: i18n.get('optionsBookmark'),
+      label: '书签',
       children: <Bookmark />
     },
     {
-      label: i18n.get('optionsTab'),
+      label: '标签页',
       children: <Tab />
-    },
-    {
-      label: i18n.get('optionsProxy'),
-      children: <Proxy />
     },
     {
       label: 'Json',
@@ -33,14 +28,14 @@ export default () => {
 
   return (
     <Tabs
-      className={style.page}
+      className={scss.page}
       defaultActiveKey="1"
       size="large"
       tabPosition="left"
       tabBarGutter={20}
       tabBarStyle={{ width: '15rem' }}
       tabBarExtraContent={{
-        left: <Flex className={style.tabsTitle}>{i18n.get('optionsTitle')}</Flex>
+        left: <Flex className={scss.tabsTitle}>设置</Flex>
       }}
       items={items.map((item, i) => {
         return {

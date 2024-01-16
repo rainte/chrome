@@ -2,7 +2,7 @@ import { Tabs, TabsProps } from 'antd'
 import { i18n } from '@/utils/browser'
 import Agile from '@/views/agile'
 import Setting from '@/views/setting'
-import style from './index.module.scss'
+import scss from './index.module.scss'
 
 export default () => {
   const items: TabsProps['items'] = [
@@ -18,7 +18,5 @@ export default () => {
     }
   ]
 
-  return (
-    <Tabs className={style.page} defaultActiveKey="agile" items={items} centered size="large" />
-  )
+  return <Tabs className={scss.page} defaultActiveKey="agile" items={items} centered size="large" />
 }

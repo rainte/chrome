@@ -26,8 +26,8 @@ export { message, notification, modal }
 //     const { title, content, ...attrs } = props
 
 //     Modal.confirm({
-//       title: title || i18n.get('confirmTitle'),
-//       content: content || i18n.get('confirmContent'),
+//       title: title || '提示',
+//       content: content || '确认操作？',
 //       ...attrs
 //     })
 //   }

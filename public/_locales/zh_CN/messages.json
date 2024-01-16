@@ -1,70 +1,10 @@
 {
-  "confirmTitle": {
-    "message": "提示",
-    "description": ""
-  },
-  "confirmContent": {
-    "message": "确认操作？",
-    "description": ""
-  },
-  "messageSuccess": {
-    "message": "操作成功",
-    "description": ""
-  },
   "homeAgile": {
     "message": "组件",
     "description": ""
   },
   "homeSetting": {
     "message": "设置",
-    "description": ""
-  },
-  "optionsTitle": {
-    "message": "设置",
-    "description": ""
-  },
-  "optionsProxy": {
-    "message": "代理",
-    "description": ""
-  },
-  "optionsBookmark": {
-    "message": "书签",
-    "description": ""
-  },
-  "optionsTab": {
-    "message": "标签页",
-    "description": ""
-  },
-  "bookmarkUpload": {
-    "message": "上传书签",
-    "description": ""
-  },
-  "bookmarkDownLoad": {
-    "message": "下载书签",
-    "description": ""
-  },
-  "bookmarkGithubToken": {
-    "message": "Github Token",
-    "description": ""
-  },
-  "bookmarkGetGithubToken": {
-    "message": "Get Github Token",
-    "description": ""
-  },
-  "bookmarkGistID": {
-    "message": "Gist ID",
-    "description": ""
-  },
-  "bookmarkGetGistID": {
-    "message": "Get Gist ID",
-    "description": ""
-  },
-  "bookmarkNotice": {
-    "message": "消息通知",
-    "description": ""
-  },
-  "uploadClickText": {
-    "message": "点击上传",
     "description": ""
   }
 }
