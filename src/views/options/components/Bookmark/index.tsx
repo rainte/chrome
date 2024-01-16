@@ -17,7 +17,7 @@ export default () => {
   const onFinish = (formData: any) => {
     return cloud.set(formData).then(() => {
       // asas.message.success('123')
-      // message.success(i18n.get('messageSuccess'))
+      message.success(i18n.get('messageSuccess'))
     })
   }
 

@@ -11,6 +11,7 @@ const localJson = {
 
 const i18nWeb = {
   get: (messageName: string, substitutions?: string[] | string) => {
+    console.log('i18nWeb.get', messageName, substitutions)
     return messageName
   }
 }
@@ -48,7 +49,8 @@ const localWeb = {
   }
 }
 
-const dev = import.meta.env.DEV
-export const i18n = dev ? i18nWeb : { get: chrome.i18n.getMessage }
-export const cache = dev ? localWeb : chrome.storage.local
-export const cloud = dev ? localWeb : chrome.storage.sync
+const isDev = import.meta.env.DEV
+isDev || console.log('chrome', chrome)
+export const i18n = isDev ? i18nWeb : { get: chrome.i18n.getMessage }
+export const cache = isDev ? localWeb : chrome.storage.local
+export const cloud = isDev ? localWeb : chrome.storage.sync
