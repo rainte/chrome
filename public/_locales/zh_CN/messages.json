@@ -7,6 +7,10 @@
     "message": "确认操作？",
     "description": ""
   },
+  "messageSuccess": {
+    "message": "操作成功",
+    "description": ""
+  },
   "homeAgile": {
     "message": "组件",
     "description": ""

@@ -5,7 +5,7 @@ console.log('content')
 
 // 向页面插入内容.
 const app = document.createElement('div')
-app.id = 'CRX-Rainte'
+app.id = 'root-crx'
 document.body.appendChild(app)
 const crx = ReactDOM.createRoot(app)
 crx.render(<Home />)

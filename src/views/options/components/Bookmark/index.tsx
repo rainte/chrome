@@ -1,30 +1,38 @@
 import Form, { FormProps } from '@/components/Form'
-import Dialog from '@/components/Dialog'
 import { Space, Input, Button } from 'antd'
-import route from '@/utils/route'
 import { i18n, cloud } from '@/utils/browser'
+import { message } from '@/utils/popup'
+import route from '@/utils/route'
 
 export default () => {
+  // const asas = App.useApp()
+
   const TOKEN_URL = 'https://github.com/settings/tokens/new'
   const GIST_URL = 'https://gist.github.com'
+  const aaa = import.meta.env.VITE_SOME_KEY
+  // const { message} = App.useApp();
+  console.log('message', message, aaa)
+  // message.success(i18n.get('messageSuccess'))
 
   const onFinish = (formData: any) => {
-    console.log('onFinish', formData)
-    return cloud.set(formData)
+    return cloud.set(formData).then(() => {
+      // asas.message.success('123')
+      // message.success(i18n.get('messageSuccess'))
+    })
   }
 
   const uploadBookmark = () => {
-    Dialog.confirm({
-      onOk: () => {
-        // cloud.set()
-      }
-    })
+    // Dialog.confirm({
+    //   onOk: () => {
+    //     // cloud.set()
+    //   }
+    // })
   }
 
   const downLoadBookmark = () => {
-    Dialog.confirm({
-      onOk: () => {}
-    })
+    // Dialog.confirm({
+    //   onOk: () => {}
+    // })
   }
 
   const form: FormProps = {
@@ -40,7 +48,7 @@ export default () => {
       },
       {
         title: i18n.get('bookmarkGithubToken'),
-        dataIndex: 'token',
+        dataIndex: 'githubToken',
         formItemProps: { rules: [{ required: true }] },
         renderFormItem: () => (
           <Space.Compact>
@@ -53,7 +61,7 @@ export default () => {
       },
       {
         title: i18n.get('bookmarkGistID'),
-        dataIndex: 'gist',
+        dataIndex: 'gistId',
         formItemProps: { rules: [{ required: true }] },
         renderFormItem: () => (
           <Space.Compact>
@@ -64,7 +72,7 @@ export default () => {
       },
       {
         title: i18n.get('bookmarkNotice'),
-        dataIndex: 'notice',
+        dataIndex: 'isNotice',
         valueType: 'switch'
       }
     ]

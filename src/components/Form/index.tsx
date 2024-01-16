@@ -18,7 +18,7 @@ Form.defaultProps = {
       return (
         <AntForm.Item>
           <Flex justify="center">
-            <Space>{dom}</Space>
+            <Space>{dom.reverse()}</Space>
           </Flex>
         </AntForm.Item>
       )

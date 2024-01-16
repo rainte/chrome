@@ -1,7 +1,7 @@
 import { Tabs, TabsProps } from 'antd'
+import { i18n } from '@/utils/browser'
 import Agile from '@/views/agile'
 import Setting from '@/views/setting'
-import { i18n } from '@/utils/browser'
 import style from './index.module.scss'
 
 export default () => {

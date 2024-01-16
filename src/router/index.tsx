@@ -8,7 +8,7 @@ export default createHashRouter([
     Component: lazy(() => import('@/views/layout')),
     children: [
       { index: true, element: <Navigate to="/home" /> },
-      { path: 'mate', Component: lazy(() => import('@/views/agile')) },
+      { path: 'agile', Component: lazy(() => import('@/views/agile')) },
       { path: 'setting', Component: lazy(() => import('@/views/setting')) },
       { path: 'options', Component: lazy(() => import('@/views/options')) }
     ]
