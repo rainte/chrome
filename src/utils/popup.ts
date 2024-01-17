@@ -1,7 +1,9 @@
 import { App } from 'antd'
-import type { MessageInstance } from 'antd/es/message/interface'
+import type { MessageInstance, JointContent } from 'antd/es/message/interface'
 import type { ModalStaticFunctions } from 'antd/es/modal/confirm'
 import type { NotificationInstance } from 'antd/es/notification/interface'
+import type { ModalFuncProps } from 'antd/es/modal/interface'
+import { i18n } from '@/utils/browser'
 
 let message: MessageInstance
 let notification: NotificationInstance
@@ -12,23 +14,25 @@ export default () => {
   message = staticFunction.message
   modal = staticFunction.modal
   notification = staticFunction.notification
-  console.log(123)
   return null
 }
 
-export { message, notification, modal }
+const popup = {
+  confirm: (props: ModalFuncProps) => {
+    return modal.confirm(
+      Object.assign(
+        {
+          title: i18n.get('modalConfirmTitle'),
+          content: i18n.get('modalConfirmContent')
+        },
+        props
+      )
+    )
+  },
+  success: (content?: JointContent, duration?: number | VoidFunction, onClose?: VoidFunction) => {
+    content = content || i18n.get('messageSuccess')
+    return message.success(content, duration, onClose)
+  }
+}
 
-// import { Modal, ModalFuncProps } from 'antd'
-// import { i18n } from '@/utils/browser'
-
-// export default {
-//   confirm: (props: ModalFuncProps) => {
-//     const { title, content, ...attrs } = props
-
-//     Modal.confirm({
-//       title: title || '提示',
-//       content: content || '确认操作？',
-//       ...attrs
-//     })
-//   }
-// }
+export { message, notification, modal, popup }

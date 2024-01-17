@@ -22,8 +22,8 @@
   "background": {
     "service_worker": "background.js"
   },
-  "options_page": "index.html",
-  "permissions": ["storage", "activeTab", "scripting"],
+  "options_page": "/index.html#/options",
+  "permissions": ["storage", "bookmarks"],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

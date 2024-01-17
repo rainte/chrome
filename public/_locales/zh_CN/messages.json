@@ -1,10 +1,14 @@
 {
-  "homeAgile": {
-    "message": "组件",
+  "modalConfirmTitle": {
+    "message": "提示",
     "description": ""
   },
-  "homeSetting": {
-    "message": "设置",
+  "modalConfirmContent": {
+    "message": "确认操作？",
+    "description": ""
+  },
+  "messageSuccess": {
+    "message": "操作成功",
     "description": ""
   }
 }

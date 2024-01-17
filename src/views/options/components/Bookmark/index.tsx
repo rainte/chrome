@@ -1,42 +1,49 @@
-import Form, { FormProps } from '@/components/Form'
-import { Space, Input, Button, Typography } from 'antd'
-import { cloud } from '@/utils/browser'
-import { message } from '@/utils/popup'
+import { useEffect, useState } from 'react'
+import Form, { FormProps, formItemHandler } from '@/components/Form'
+import { Space, Input, Button, Typography, Form as aaa } from 'antd'
+import { storage, AppEnum } from '@/utils/browser'
+import { popup } from '@/utils/popup'
+import bookmark from '@/services/bookmark'
+
+const TOKEN_URL = 'https://github.com/settings/tokens/new'
+const GIST_URL = 'https://gist.github.com'
+
+type BookmarkProps = {
+  githubToken?: string
+  gistId?: string
+  isNotice?: boolean
+}
 
 export default () => {
-  // const asas = App.useApp()
+  useEffect(() => {
+    storage.cloud.get(AppEnum.Bookmark).then((res) => {
+      Form.defaultProps?.form?.setFieldsValue(res)
+    })
+  }, [])
 
-  const TOKEN_URL = 'https://github.com/settings/tokens/new'
-  const GIST_URL = 'https://gist.github.com'
+  // const request = () => storage.cloud.get(AppEnum.Bookmark)
+  const onFinish = (data: any) => storage.cloud.set(AppEnum.Bookmark, data, true)
 
-  const aaa = import.meta.env.VITE_SOME_KEY
-  // const { message} = App.useApp();
-  console.log('message', message, aaa)
-  // message.success(i18n.get('messageSuccess'))
-
-  const onFinish = (formData: any) => {
-    return cloud.set(formData).then(() => {
-      // asas.message.success('123')
-      message.success('操作成功')
+  const uploadBookmark = () => {
+    popup.confirm({
+      onOk: async () => {
+        const tree = await chrome.bookmarks.getTree()
+        console.log('tree', tree)
+      }
     })
   }
 
-  const uploadBookmark = () => {
-    // Dialog.confirm({
-    //   onOk: () => {
-    //     // cloud.set()
-    //   }
-    // })
-  }
-
   const downLoadBookmark = () => {
-    // Dialog.confirm({
-    //   onOk: () => {}
-    // })
+    popup.confirm({
+      onOk: () => {
+        // bookmark.getGistBookmark()
+        // cloud.set()
+      }
+    })
   }
 
   const form: FormProps = {
-    onFinish: onFinish,
+    onFinish,
     columns: [
       {
         renderFormItem: () => (
@@ -50,27 +57,35 @@ export default () => {
         title: 'Github Token',
         dataIndex: 'githubToken',
         formItemProps: { rules: [{ required: true }] },
-        renderFormItem: () => (
-          <Space.Compact>
-            <Input />
-            <Typography.Link href={TOKEN_URL} target="_blank">
-              <Button>Get Github Token</Button>
-            </Typography.Link>
-          </Space.Compact>
-        )
+        renderFormItem: (_, props) => {
+          const attrs = formItemHandler(props)
+
+          return (
+            <Space.Compact>
+              <Input {...attrs} />
+              <Typography.Link href={TOKEN_URL} target="_blank">
+                <Button>Get Github Token</Button>
+              </Typography.Link>
+            </Space.Compact>
+          )
+        }
       },
       {
         title: 'Gist ID',
         dataIndex: 'gistId',
         formItemProps: { rules: [{ required: true }] },
-        renderFormItem: () => (
-          <Space.Compact>
-            <Input />
-            <Typography.Link href={GIST_URL} target="_blank">
-              <Button>Get Gist ID</Button>
-            </Typography.Link>
-          </Space.Compact>
-        )
+        renderFormItem: (_, props) => {
+          const attrs = formItemHandler(props)
+
+          return (
+            <Space.Compact>
+              <Input {...attrs} />
+              <Typography.Link href={GIST_URL} target="_blank">
+                <Button>Get Gist ID</Button>
+              </Typography.Link>
+            </Space.Compact>
+          )
+        }
       },
       {
         title: '消息通知',

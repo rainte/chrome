@@ -1,4 +1,10 @@
+import { popup } from '@/utils/popup'
+
 type StorageProps = { [key: string]: any }
+
+export const AppEnum = {
+  Bookmark: 'bookmark'
+}
 
 const localJson = {
   stringify: (key: string, value: any) => {
@@ -49,8 +55,20 @@ const localWeb = {
   }
 }
 
+console.log('chrome', chrome)
 const isDev = import.meta.env.DEV
-isDev || console.log('chrome', chrome)
 export const i18n = isDev ? i18nWeb : { get: chrome.i18n.getMessage }
 export const cache = isDev ? localWeb : chrome.storage.local
 export const cloud = isDev ? localWeb : chrome.storage.sync
+export const storage = {
+  cloud: {
+    get: (domain: string) => {
+      return cloud.get(domain).then((res) => ({ ...res[domain] }))
+    },
+    set: (domain: string, data: StorageProps, isOk?: boolean) => {
+      const promise = cloud.set({ [domain]: data })
+
+      return isOk ? promise.then(() => popup.success()) : promise
+    }
+  }
+}

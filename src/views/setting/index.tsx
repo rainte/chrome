@@ -1,4 +1,4 @@
-import { Flex, List, Typography } from 'antd'
+import { Flex, List, Button, Typography } from 'antd'
 import scss from './index.module.scss'
 
 const data = [
@@ -8,18 +8,17 @@ const data = [
   'Man charged over missing wedding girl.',
   'Los Angeles battles huge wildfires.'
 ]
-// chrome.runtime.openOptionsPage()
 
 export default () => {
   const Header = () => {
     return (
-      <Flex>
-        <Typography.Link strong style={{ flexGrow: 1 }}>
+      <Flex justify="space-between">
+        <Button type="text" onClick={() => chrome.runtime.reload()}>
           重启插件
-        </Typography.Link>
-        <Typography.Link onClick={() => chrome.runtime.openOptionsPage} strong>
+        </Button>
+        <Button type="text" onClick={() => chrome.runtime.openOptionsPage()}>
           更多设置
-        </Typography.Link>
+        </Button>
       </Flex>
     )
   }

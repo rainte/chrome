@@ -5,13 +5,25 @@ import { Form as AntForm, Flex, Space } from 'antd'
 
 export type FormProps<T = Record<string, any>, ValueType = 'text'> = FormSchema<T, ValueType>
 
-const Form: React.FC<FormProps<any, any>> = <T, ValueType>(props: FormProps<T, ValueType>) => {
+export const useForm = () => {
+  const [form] = AntForm.useForm()
+  return form
+}
+
+export const formItemHandler = (props: any) => {
+  const { defaultRender, ...attrs } = props
+
+  return attrs
+}
+
+const Render: React.FC<FormProps<any, any>> = <T, ValueType>(props: FormProps<T, ValueType>) => {
   return <BetaSchemaForm {...props} />
 }
 
-export default Form
+export default Render
 
-Form.defaultProps = {
+Render.defaultProps = {
+  form: useForm(),
   layout: 'horizontal',
   submitter: {
     render: (_: any, dom: JSX.Element[]) => {
