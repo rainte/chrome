@@ -9,7 +9,7 @@ type Item = {
   url?: string
 }
 
-const Element = (props: Item) => {
+const DraggItem = (props: Item) => {
   const { id, text, url } = props
   const navigate = useNavigate()
   const { listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
@@ -42,7 +42,7 @@ const items: DraggItemProps[] = [
 export default () => {
   return (
     <Flex className={scss.page} justify="center" wrap="wrap">
-      <Dragg items={items} Element={Element} />
+      <Dragg items={items} dom={DraggItem} />
     </Flex>
   )
 }

@@ -12,18 +12,13 @@ export const useForm = () => {
   return form
 }
 
-export const formItemHandler = (props: any) => {
-  const { defaultRender, ...attrs } = props
-  return attrs
-}
-
-const Render: React.FC<FormProps<any, any>> = <T, ValueType>(props: FormProps<T, ValueType>) => {
+const dom: React.FC<FormProps<any, any>> = <T, ValueType>(props: FormProps<T, ValueType>) => {
   return <BetaSchemaForm {...props} />
 }
 
-export default Render
+export default dom
 
-Render.defaultProps = {
+dom.defaultProps = {
   layout: 'horizontal',
   submitter: {
     render: (_: any, dom: JSX.Element[]) => {

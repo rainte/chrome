@@ -7,7 +7,7 @@ export { useSortable } from '@dnd-kit/sortable'
 export type DraggItemProps = { id: UniqueIdentifier } & Record<string, any>
 export type DraggProps = {
   items: DraggItemProps[]
-  Element: (props: any) => JSX.Element
+  dom: (props: any) => JSX.Element
 }
 
 export const draggStyle = (transform: any, isDragging: any, transition: any) => {
@@ -21,11 +21,11 @@ export const draggStyle = (transform: any, isDragging: any, transition: any) => 
 }
 
 export default (props: DraggProps) => {
-  const { items: init, Element } = props
+  const { items: init, dom: Dom } = props
   const [items, setItems] = useState<DraggItemProps[]>(init)
 
   const sensors = useSensors(useSensor(PointerSensor))
-  const context = items.map((item) => <Element {...item} key={item.id} />)
+  const context = items.map((item) => <Dom {...item} key={item.id} />)
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
