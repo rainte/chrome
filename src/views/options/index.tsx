@@ -7,13 +7,13 @@ export default () => {
     { label: '书签', children: <Bookmark /> },
     { label: '代理', children: <Proxy /> },
     { label: '标签页', children: <Tab /> },
-    { label: '标签页', children: <Rainte /> }
+    { label: '全局', children: <Rainte /> }
   ]
 
   return (
     <Tabs
       className={scss.page}
-      defaultActiveKey="3"
+      defaultActiveKey="0"
       size="large"
       tabPosition="left"
       tabBarGutter={20}

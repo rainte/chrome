@@ -1,5 +1,3 @@
-import error from './error'
-
 export default {
   get: function (url: string, data?: any) {
     const body = new URLSearchParams()
@@ -16,14 +14,9 @@ export default {
   },
   fetch: function (url: string, init?: RequestInit) {
     return fetch(url, init)
-      .then((res) => {
-        const { status, statusText } = res
-        status == 200 || error.fail(statusText)
-        return res
-      })
       .then((res) => res.json())
       .then((res) => {
-        console.log('res', res)
+        console.log('fetch.res', res)
         return res
       })
   }

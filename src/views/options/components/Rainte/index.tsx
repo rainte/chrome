@@ -9,24 +9,26 @@ const links = {
   }
 }
 
-const request = () => rainte.get()
-const onFinish = (data: RainteProps) => {
-  return rainte.set(data).then(() => popup.success())
-}
+export default () => {
+  const request = () => rainte.get()
+  const onFinish = (data: RainteProps) => {
+    return rainte.set(data).then(() => popup.success())
+  }
 
-const props: FormProps = {
-  request,
-  onFinish,
-  columns: [
-    {
-      title: 'Github Token',
-      dataIndex: 'githubToken',
-      formItemProps: { rules: [{ required: true }] },
-      renderFormItem: (_, { defaultRender, ...props }) => {
-        return <FormItemLink {...links.githubToken} {...props} />
+  const props: FormProps = {
+    request,
+    onFinish,
+    columns: [
+      {
+        title: 'Github Token',
+        dataIndex: 'githubToken',
+        formItemProps: { rules: [{ required: true }] },
+        renderFormItem: (_, { defaultRender, ...props }) => {
+          return <FormItemLink {...links.githubToken} {...props} />
+        }
       }
-    }
-  ]
-}
+    ]
+  }
 
-export default () => <Form {...props} />
+  return <Form {...props} />
+}

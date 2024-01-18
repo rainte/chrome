@@ -1,6 +1,6 @@
 import { storage } from '@/utils/browser'
 
-const DOMAIN = 'rainte'
+export const DOMAIN = 'rainte'
 
 export type RainteProps = {
   githubToken?: string
