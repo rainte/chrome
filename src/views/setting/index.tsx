@@ -9,20 +9,20 @@ const data = [
   'Los Angeles battles huge wildfires.'
 ]
 
-export default () => {
-  const Header = () => {
-    return (
-      <Flex justify="space-between">
-        <Button type="text" onClick={() => chrome.runtime.reload()}>
-          重启插件
-        </Button>
-        <Button type="text" onClick={() => chrome.runtime.openOptionsPage()}>
-          更多设置
-        </Button>
-      </Flex>
-    )
-  }
+const Header = () => {
+  return (
+    <Flex justify="space-between">
+      <Button type="text" onClick={() => chrome.runtime.reload()}>
+        重启插件
+      </Button>
+      <Button type="text" onClick={() => chrome.runtime.openOptionsPage()}>
+        更多设置
+      </Button>
+    </Flex>
+  )
+}
 
+export default () => {
   return (
     <List
       className={scss.page}
