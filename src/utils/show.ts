@@ -19,15 +19,11 @@ export default () => {
 
 const popup = {
   confirm: (props: ModalFuncProps) => {
-    return modal.confirm(
-      Object.assign(
-        {
-          title: i18n.get('modalConfirmTitle'),
-          content: i18n.get('modalConfirmContent')
-        },
-        props
-      )
-    )
+    return modal.confirm({
+      title: i18n.get('modalConfirmTitle'),
+      content: i18n.get('modalConfirmContent'),
+      ...props
+    })
   },
   success: (content?: JointContent, duration?: number | VoidFunction, onClose?: VoidFunction) => {
     content = content || i18n.get('messageSuccess')

@@ -12,7 +12,7 @@ export default {
 
     return this.fetch(url, { method: 'POST', body })
   },
-  fetch: function (url: string, init?: RequestInit) {
+  fetch: (url: string, init?: RequestInit) => {
     return fetch(url, init)
       .then((res) => res.json())
       .then((res) => {

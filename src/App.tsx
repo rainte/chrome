@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { Spin, message } from 'antd'
-import popup from '@/utils/popup'
+import popup from '@/utils/show'
 import router from '@/router'
 
 export default () => {
