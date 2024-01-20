@@ -57,7 +57,7 @@ export type StoreProps = {
 }
 const KEY = 'CRX'
 export const store = {
-  get: () => cloud.get(KEY).then((data) => data[KEY] as StoreProps),
+  get: () => cloud.get(KEY).then((data) => data[KEY] || {}),
   set: (data: StoreProps) => cloud.set({ [KEY]: data })
 }
 

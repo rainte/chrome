@@ -7,7 +7,7 @@ export enum HubEnum {
 }
 
 export enum FileEnum {
-  NewTabBgImg = 'file.newTabBgImg'
+  NewTabBgImg = 'file-newTabBgImg'
 }
 
 export type FileNameProps = HubEnum | FileEnum
@@ -30,8 +30,12 @@ export default {
   url: (fileName: FileNameProps) => {
     return gist
       .get()
-      .then((res) => res.files[fileName]?.raw_url)
-      .then((res) =>fetch(res))
+      .then((res) => res.files[`${fileName}`]?.raw_url)
+      .then((res) => {
+        console.log('11221', res)
+        return res
+      })
+      .then((res) => fetch(res))
       .then((res) => res.text())
   }
 }
