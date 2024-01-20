@@ -20,22 +20,20 @@ export default {
       .then(JSON.parse)
   },
   set: (fileName: FileNameProps, data: any) => gist.set(fileName, JSON.stringify(data)),
-  upload: (fileName: FileNameProps, blob: Blob) => {
-    return fileToURL(blob)
-      .then((res) => gist.set(fileName, res))
-      .then((res) => res.files[fileName]?.raw_url)
-      .then(fetch)
-      .then((res) => res.text())
-  },
-  url: (fileName: FileNameProps) => {
-    return gist
-      .get()
-      .then((res) => res.files[`${fileName}`]?.raw_url)
-      .then((res) => {
-        console.log('11221', res)
-        return res
-      })
-      .then((res) => fetch(res))
-      .then((res) => res.text())
+  file: {
+    get: (fileName: FileNameProps) => {
+      return gist
+        .get()
+        .then((res) => res.files[`${fileName}`]?.raw_url)
+        .then((res) => (res ? fetch(res) : res))
+        .then((res) => (res ? res.text() : res))
+    },
+    set: (fileName: FileNameProps, blob: Blob) => {
+      return fileToURL(blob)
+        .then((res) => gist.set(fileName, res))
+        .then((res) => res.files[fileName]?.raw_url)
+        .then(fetch)
+        .then((res) => res.text())
+    }
   }
 }

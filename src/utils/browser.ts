@@ -51,14 +51,13 @@ export const cloud = isDev ? localWeb : chrome.storage.sync
 
 isDev || cloud.get().then((res) => console.log('cloud', res))
 
-export type StoreProps = {
-  githubToken?: string
-  gistId?: string
+export enum StoreEnum {
+  CRX = 'CRX',
+  File = 'File'
 }
-const KEY = 'CRX'
 export const store = {
-  get: () => cloud.get(KEY).then((data) => data[KEY] || {}),
-  set: (data: StoreProps) => cloud.set({ [KEY]: data })
+  get: (key: string) => cloud.get(key).then((data) => data[key] || {}),
+  set: (key: string, data: Record<string, any>) => cloud.set({ [key]: data })
 }
 
 export const fileToURL = (blob: Blob) => {

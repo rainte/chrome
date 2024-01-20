@@ -1,22 +1,23 @@
 import { useState, useEffect } from 'react'
-import { Collapse, Upload, Flex, Typography, CollapseProps } from 'antd'
+import { Collapse, Upload, Flex, Typography, Spin, CollapseProps } from 'antd'
 import Image from '@/components/Image'
 import { UploadOutlined } from '@ant-design/icons'
+import hub, { FileEnum } from '@/utils/hub'
 import { popup } from '@/utils/show'
-import hub, { FileEnum } from '@/services/hub'
 
 export default () => {
+  const [loading, setLoading] = useState(true)
   const [newTabBgImg, setNewTabBgImg] = useState<string>()
 
   useEffect(() => {
-    hub.url(FileEnum.NewTabBgImg).then((url) => {
-      console.log('aaa', url)
-      url && setNewTabBgImg(url)
-    })
+    hub.file
+      .get(FileEnum.NewTabBgImg)
+      .then((url) => setNewTabBgImg(url))
+      .finally(() => setLoading(false))
   }, [])
 
   const onFinish = (data: any) => {
-    hub.upload(FileEnum.NewTabBgImg, data.file).then((url) => {
+    hub.file.set(FileEnum.NewTabBgImg, data.file).then((url) => {
       setNewTabBgImg(url)
       popup.success()
     })
@@ -26,7 +27,9 @@ export default () => {
     return (
       <Upload.Dragger customRequest={(options) => onFinish(options)}>
         <Flex vertical align="center" justify="center" style={{ height: '35vw' }}>
-          {newTabBgImg ? (
+          {loading ? (
+            <Spin />
+          ) : newTabBgImg ? (
             <Image src={newTabBgImg} />
           ) : (
             <>

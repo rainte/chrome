@@ -9,8 +9,9 @@ export default createHashRouter([
     children: [
       { index: true, element: <Navigate to="/home" /> },
       { path: 'agile', Component: lazy(() => import('@/views/agile')) },
-      { path: 'setting', Component: lazy(() => import('@/views/setting')) },
-      { path: 'options', Component: lazy(() => import('@/views/options')) }
+      { path: 'newtab', Component: lazy(() => import('@/views/newtab')) },
+      { path: 'options', Component: lazy(() => import('@/views/options')) },
+      { path: 'setting', Component: lazy(() => import('@/views/setting')) }
     ]
   },
   { path: '*', element: <Navigate to="/home" /> }

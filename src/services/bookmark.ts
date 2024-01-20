@@ -1,4 +1,4 @@
-import hub, { HubEnum } from './hub'
+import hub, { HubEnum } from '../utils/hub'
 
 export default {
   upload: async () => {

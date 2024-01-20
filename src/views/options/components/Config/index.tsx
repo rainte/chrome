@@ -1,7 +1,7 @@
 import Form, { FormProps, FormItemLink, useForm } from '@/components/Form'
 import { Space, Input, Button, Typography } from 'antd'
 import { popup } from '@/utils/show'
-import { store } from '@/utils/browser'
+import { store, StoreEnum } from '@/utils/browser'
 import { gist } from '@/utils/octokit'
 
 const links = {
@@ -24,8 +24,8 @@ export default () => {
 
   const props: FormProps = {
     form: useForm(),
-    request: () => store.get(),
-    onFinish: (data) => store.set(data).then(() => popup.success()),
+    request: () => store.get(StoreEnum.CRX),
+    onFinish: (data) => store.set(StoreEnum.CRX, data).then(() => popup.success()),
     columns: [
       {
         title: 'Github Token',
