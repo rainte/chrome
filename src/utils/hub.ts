@@ -1,5 +1,5 @@
 import { gist } from '@/utils/octokit'
-import { fileToURL } from '@/utils/browser'
+import { toBase64 } from './file'
 
 export enum HubEnum {
   Bookmark = 'bookmark',
@@ -27,9 +27,10 @@ export default {
         .then((res) => res.files[`${fileName}`]?.raw_url)
         .then((res) => (res ? fetch(res) : res))
         .then((res) => (res ? res.text() : res))
+        .then((res: string) => res)
     },
     set: (fileName: FileNameProps, blob: Blob) => {
-      return fileToURL(blob)
+      return toBase64(blob)
         .then((res) => gist.set(fileName, res))
         .then((res) => res.files[fileName]?.raw_url)
         .then(fetch)

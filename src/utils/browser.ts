@@ -53,18 +53,13 @@ isDev || cloud.get().then((res) => console.log('cloud', res))
 
 export enum StoreEnum {
   CRX = 'CRX',
-  File = 'File'
+  NewTabBgImg = 'NewTabBgImg'
 }
 export const store = {
-  get: (key: string) => cloud.get(key).then((data) => data[key] || {}),
+  get: (key: string) =>
+    cloud
+      .get(key)
+      .then((data) => data[key] || {})
+      .then((res: StorageProps) => res),
   set: (key: string, data: Record<string, any>) => cloud.set({ [key]: data })
-}
-
-export const fileToURL = (blob: Blob) => {
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = (event) => resolve(event.target?.result as string)
-    reader.onerror = (event) => reject(event.target?.error)
-    reader.readAsDataURL(blob)
-  })
 }
