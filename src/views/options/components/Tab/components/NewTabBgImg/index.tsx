@@ -13,7 +13,7 @@ export default () => {
       .get(FileEnum.NewTabBgImg)
       .then((base64) => {
         const url = URL.createObjectURL(toBlob(base64))
-        setFiles([{ url: base64, thumbUrl: url }] as any)
+        setFiles([{ url: url, thumbUrl: url }] as any)
       })
       .finally(() => setLoading(false))
   }, [])
