@@ -1,3 +1,5 @@
+import hub, { FileNameProps } from './hub'
+
 export const toBase64 = (blob: Blob) => {
   return new Promise<string>((resolve, reject) => {
     const reader = new FileReader()

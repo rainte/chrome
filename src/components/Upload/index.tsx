@@ -10,6 +10,15 @@ export type UploadProps = AntUploadProps & {
   textStyle?: CSSProperties
 }
 
+export const percentTimer = (onProgress: any) => {
+  let percent = 0
+  return setInterval(() => {
+    percent += Math.floor(Math.random() * 10)
+    percent >= 100 && (percent = 99)
+    onProgress({ percent })
+  }, 100)
+}
+
 const onPreview = async (file: UploadFile) => {
   let src = file.url as string
 
