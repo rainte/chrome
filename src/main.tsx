@@ -2,12 +2,13 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { ConfigProvider, App } from 'antd'
 import Children from './App'
+import zhCN from 'antd/locale/zh_CN'
 import 'antd/dist/reset.css'
 import './index.scss'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ConfigProvider>
+    <ConfigProvider locale={zhCN}>
       <App className="root-app">
         <Children />
       </App>
