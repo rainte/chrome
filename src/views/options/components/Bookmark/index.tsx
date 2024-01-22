@@ -23,17 +23,20 @@ export default () => {
     popup.confirm({
       onOk: async () => {
         const res = await gist.getJson(HubEnum.Bookmark)
-        const nodes = res.tree
         await clearBookmark()
-        nodes.forEach((node: any) => {
-          addBookmark(node.children, node.id)
+        const all: Promise<void[]>[] = []
+        res.tree.forEach((node: any) => {
+          all.push(addBookmark(node.children, node.id))
         })
+        Promise.all(all).then(() => popup.success())
       }
     })
   }
 
   const onClear = () => {
-    popup.confirm({ onOk: clearBookmark })
+    popup.confirm({
+      onOk: () => clearBookmark().then(() => popup.success())
+    })
   }
 
   const clearBookmark = async () => {
