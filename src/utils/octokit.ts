@@ -14,7 +14,8 @@ export type SetProps = {
 
 const crx = async () => {
   const config = await store.get(StoreEnum.CRX)
-  config || error.fail('请先配置 Github.')
+  config.githubToken || error.fail('请先配置 Github Token.')
+  config.gistId || error.fail('请先配置 Github Gist.')
   return config as CRXProps
 }
 
