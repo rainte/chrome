@@ -12,7 +12,9 @@ export default () => {
   }, [])
 
   useEffect(() => {
+    console.log(111)
     gist.getJson(HubEnum.Tab).then((res) => {
+      console.log(444)
       if (res.status && res.newTabBgImg) {
         fetch(res.newTabBgImg)
           .then((res) => res.blob())
@@ -21,7 +23,7 @@ export default () => {
             return blob
           })
           .then((blob) => toBase64(blob))
-          .then((base64) => store.set(FileEnum.NewTabBgImg, { url: base64 }))
+          .then((url) => store.set(FileEnum.NewTabBgImg, { url }))
       }
     })
   }, [])
