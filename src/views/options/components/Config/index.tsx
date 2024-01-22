@@ -1,8 +1,8 @@
 import Form, { FormProps, FormItemLink, useForm } from '@/components/Form'
 import { Space, Input, Button, Typography } from 'antd'
-import { popup } from '@/utils/show'
-import { store, StoreEnum } from '@/utils/browser'
+import { store, StoreEnum } from '@/utils/storage'
 import { gist } from '@/utils/octokit'
+import { popup } from '@/utils/show'
 
 const links = {
   githubToken: {
@@ -38,6 +38,7 @@ export default () => {
       {
         title: 'Gist ID',
         dataIndex: 'gistId',
+        formItemProps: { rules: [{ required: true }] },
         renderFormItem: (_, { defaultRender, ...props }) => {
           return (
             <Space.Compact>

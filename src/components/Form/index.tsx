@@ -4,9 +4,7 @@ import { FormSchema } from '@ant-design/pro-form/es/components/SchemaForm'
 import { Form, Flex, Space } from 'antd'
 
 export * from './components'
-
 export type FormProps<T = Record<string, any>, ValueType = 'text'> = FormSchema<T, ValueType>
-
 export const useForm = () => {
   const [form] = Form.useForm()
   return form

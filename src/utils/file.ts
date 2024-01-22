@@ -1,5 +1,3 @@
-import hub, { FileNameProps } from './hub'
-
 export const toBase64 = (blob: Blob) => {
   return new Promise<string>((resolve, reject) => {
     const reader = new FileReader()
@@ -10,10 +8,12 @@ export const toBase64 = (blob: Blob) => {
 }
 
 export const toBlob = (base64: string) => {
-  const character = atob(base64.split(',')[1])
-  const bytes = []
-  for (let i = 0; i < character.length; i++) {
-    bytes.push(character.charCodeAt(i))
+  if (base64.split(',')) {
+    const character = atob(base64.split(',')[1])
+    const bytes = []
+    for (let i = 0; i < character.length; i++) {
+      bytes.push(character.charCodeAt(i))
+    }
+    return new Blob([new Uint8Array(bytes)])
   }
-  return new Blob([new Uint8Array(bytes)])
 }

@@ -1,21 +1,26 @@
 import { useState, useEffect } from 'react'
 import { Flex } from 'antd'
-import hub, { FileEnum } from '@/utils/hub'
-import { store } from '@/utils/browser'
-import { toBlob } from '@/utils/file'
+import { HubEnum, gist } from '@/utils/octokit'
+import { FileEnum, store } from '@/utils/storage'
+import { toBase64 } from '@/utils/file'
 
 export default () => {
   const [url, setUrl] = useState('')
 
   useEffect(() => {
-    store.get(FileEnum.NewTabBgImg).then((file) => setUrl(file.url))
+    store.get(FileEnum.NewTabBgImg).then((file) => setUrl(file?.url))
   }, [])
 
   useEffect(() => {
-    hub.file.get(FileEnum.NewTabBgImg).then((base64) => {
-      const url = URL.createObjectURL(toBlob(base64))
-      setUrl(url)
-      store.set(FileEnum.NewTabBgImg, { url })
+    gist.getJson(HubEnum.Tab).then((res) => {
+      fetch(res?.newTabBgImg)
+        .then((res) => res.blob())
+        .then((blob) => {
+          setUrl(URL.createObjectURL(blob))
+          return blob
+        })
+        .then((blob) => toBase64(blob))
+        .then((base64) => store.set(FileEnum.NewTabBgImg, { url: base64 }))
     })
   }, [])
 

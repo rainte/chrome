@@ -1,17 +1,31 @@
 import { Octokit } from '@octokit/core'
-import { store, StoreEnum } from '@/utils/browser'
-import error from '@/utils/error'
+import { store, StoreEnum, CRXProps } from './storage'
+import { popup } from './show'
+import error from './error'
+
+export enum HubEnum {
+  Bookmark = 'bookmark.json',
+  Tab = 'tab.json'
+}
+export type SetProps = {
+  key: HubEnum
+  data: string | null
+}
+
+const crx = async () => {
+  const config = await store.get(StoreEnum.CRX)
+  config || error.fail('请先配置 Github.')
+  return config as CRXProps
+}
 
 const octokit = {
-  request: async (url: string, options: any) => {
-    const config = await store.get(StoreEnum.CRX)
-    config || error.fail('请先配置 Github Token.')
-
+  request: async (url: string, options: Record<string, any>) => {
+    const config = await crx()
     return new Octokit({ auth: config.githubToken })
       .request(url, options)
       .then((res) => res.data)
       .then((res) => {
-        console.log('octokit.res', res)
+        console.log('octokit response', res)
         return res
       })
   }
@@ -26,15 +40,26 @@ export const gist = {
     })
   },
   get: async () => {
-    const config = await store.get(StoreEnum.CRX)
-    return octokit.request(`GET /gists/${config.gistId}`, { gist_id: config.gistId })
+    const config = await crx()
+    const url = `GET /gists/${config.gistId}`
+    const options = { gist_id: config.gistId }
+    return octokit.request(url, options).then((res) => res.files)
   },
-  set: async (fileName: string, content: string) => {
-    const config = await store.get(StoreEnum.CRX)
-    return octokit.request(`PATCH /gists/${config.gistId}`, {
-      gist_id: config.gistId,
-      files: { [fileName]: { content: content } }
-    })
+  set: async (props: SetProps[]) => {
+    const config = await crx()
+    const files: Record<string, any> = {}
+    props.map((item) => (files[item.key] = item.data ? { content: item.data } : null))
+    console.log('files', files)
+    const url = `PATCH /gists/${config.gistId}`
+    const options = { gist_id: config.gistId, files }
+    return octokit.request(url, options)
+  },
+  getJson: function (key: HubEnum) {
+    return this.get().then((res) => JSON.parse(res[key]?.content || '{}'))
+  },
+  setJson: function (key: HubEnum, data: any, isOk?: boolean) {
+    const res = this.set([{ key, data: JSON.stringify(data) }])
+    return isOk ? res.then(() => popup.success()) : res
   }
 }
 

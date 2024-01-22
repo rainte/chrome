@@ -27,8 +27,8 @@ export default () => {
     <List
       className={scss.page}
       header={<Header />}
-      bordered
       dataSource={data}
+      bordered
       renderItem={(item) => (
         <List.Item>
           <Typography.Text mark>[ITEM]</Typography.Text> {item}

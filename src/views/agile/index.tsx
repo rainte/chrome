@@ -30,9 +30,9 @@ export default () => {
     return (
       <Flex
         className={scss.draggItem}
-        onClick={() => navigate(url as string)}
-        style={style}
         ref={setNodeRef}
+        style={style}
+        onClick={() => url && navigate(url)}
         {...listeners}
       >
         <Button block>{text}</Button>

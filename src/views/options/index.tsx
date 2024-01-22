@@ -13,7 +13,7 @@ export default () => {
   return (
     <Tabs
       className={scss.page}
-      defaultActiveKey="2"
+      defaultActiveKey="0"
       size="large"
       tabPosition="left"
       tabBarGutter={20}

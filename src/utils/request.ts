@@ -13,11 +13,6 @@ export default {
     return this.fetch(url, { method: 'POST', body })
   },
   fetch: (url: string, init?: RequestInit) => {
-    return fetch(url, init)
-      .then((res) => res.json())
-      .then((res) => {
-        console.log('fetch.res', res)
-        return res
-      })
+    return fetch(url, init).then((res) => res.json())
   }
 }
