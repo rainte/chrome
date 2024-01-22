@@ -13,14 +13,15 @@ export default () => {
 
   useEffect(() => {
     gist.getJson(HubEnum.Tab).then((res) => {
-      fetch(res?.newTabBgImg)
-        .then((res) => res.blob())
-        .then((blob) => {
-          setUrl(URL.createObjectURL(blob))
-          return blob
-        })
-        .then((blob) => toBase64(blob))
-        .then((base64) => store.set(FileEnum.NewTabBgImg, { url: base64 }))
+      res?.newTabBgImg &&
+        fetch(res.newTabBgImg)
+          .then((res) => res.blob())
+          .then((blob) => {
+            setUrl(URL.createObjectURL(blob))
+            return blob
+          })
+          .then((blob) => toBase64(blob))
+          .then((base64) => store.set(FileEnum.NewTabBgImg, { url: base64 }))
     })
   }, [])
 
@@ -28,8 +29,9 @@ export default () => {
     <Flex
       style={{
         height: '100%',
-        backgroundSize: 'cover',
-        backgroundImage: `url(${url})`
+        backgroundImage: `url(${url})`,
+        backgroundPosition: 'center',
+        backgroundSize: 'cover'
       }}
     >
       {' '}
