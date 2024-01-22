@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Form, { FormProps, useForm } from '@/components/Form'
 import Upload from '@/components/Upload'
-import { gist, SetProps, HubEnum, } from '@/utils/octokit'
+import { gist, SetProps, HubEnum } from '@/utils/octokit'
 import { toBlob } from '@/utils/file'
 import { onUpload } from '@/utils/mate'
 import { popup } from '@/utils/show'
@@ -21,7 +21,7 @@ export default () => {
         if (res[HubEnum.Tab]) {
           const url = res[HubEnum.Tab]?.content
           if (url) {
-            const thumbUrl = URL.createObjectURL(toBlob(url))
+            const thumbUrl = URL.createObjectURL(toBlob(url) as Blob)
             setNewTabBgImgHas(true)
             setNewTabBgImg([{ url, thumbUrl }])
           }
