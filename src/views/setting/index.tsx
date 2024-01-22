@@ -1,4 +1,5 @@
 import { Flex, List, Button, Typography } from 'antd'
+import route from '@/utils/route'
 import scss from './index.module.scss'
 
 const data = [
@@ -16,7 +17,7 @@ export default () => {
         <Button type="text" onClick={() => chrome.runtime.reload()}>
           重启插件
         </Button>
-        <Button type="text" onClick={() => chrome.runtime.openOptionsPage()}>
+        <Button type="text" onClick={() => route.toCrxTab('/options')}>
           更多设置
         </Button>
       </Flex>
