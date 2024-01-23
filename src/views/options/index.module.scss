@@ -2,6 +2,10 @@
   .ant-tabs-tabpane {
     padding: 24px;
   }
+
+  .ant-tabs-content-holder {
+    overflow: auto;
+  }
 }
 
 .page {
