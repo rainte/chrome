@@ -11,13 +11,12 @@ export type UploadProps = AntUploadProps & {
 }
 
 const onPreview = async (file: UploadFile) => {
-  let src = file.url as string
-
-  const tab = window.open(src)
+  const src = file.url as string
+  const style = 'max-width: 100%; display: block; margin: auto;'
   const image = new Image()
   image.src = src
-  image.setAttribute('style', 'max-width: 100%; display: block; margin: auto;')
-  tab?.document?.write(image.outerHTML)
+  image.setAttribute('style', style)
+  window.open(src)?.document?.write(image.outerHTML)
 }
 
 const dom = (props: UploadProps) => {

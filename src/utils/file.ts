@@ -1,10 +1,10 @@
 export const toBase64 = (blob: Blob) => {
-  return new Promise<string>((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader()
-    reader.onload = (event) => resolve(event.target?.result as string)
+    reader.onload = (event) => resolve(event.target?.result)
     reader.onerror = (event) => reject(event.target?.error)
     reader.readAsDataURL(blob)
-  })
+  }).then((res) => res as string)
 }
 
 export const toBlob = (base64: string) => {

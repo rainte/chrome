@@ -28,7 +28,8 @@ const popup = {
   success: (content?: JointContent, duration?: number | VoidFunction, onClose?: VoidFunction) => {
     content = content || i18n.get('messageSuccess')
     return message.success(content, duration, onClose)
-  }
+  },
+  ask: (onOk: (...args: any[]) => any, props?: ModalFuncProps) => popup.confirm({ onOk, ...props })
 }
 
 export { message, notification, modal, popup }

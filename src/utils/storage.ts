@@ -31,7 +31,7 @@ const localWeb = {
     return res
   },
   set: async (items: StorageProps) => {
-    Object.keys(items).map((key) => localJson.stringify(key, items[key]))
+    Object.entries(items).map((item) => localJson.stringify(...item))
   }
 }
 

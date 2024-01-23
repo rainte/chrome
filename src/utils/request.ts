@@ -1,14 +1,14 @@
 export default {
-  get: function (url: string, data?: any) {
+  get: function (url: string, data?: Record<string, any>) {
     const body = new URLSearchParams()
-    data && Object.keys(data).forEach((key) => body.append(key, data[key]))
+    data && Object.entries(data).map((item) => body.append(...item))
     body.size && (url = url + '?' + body.toString())
 
     return this.fetch(url, { method: 'GET' })
   },
-  post: function (url: string, data?: any) {
+  post: function (url: string, data?: Record<string, any>) {
     const body = new FormData()
-    data && Object.keys(data).forEach((key) => body.append(key, data[key]))
+    data && Object.entries(data).map((item) => body.append(...item))
 
     return this.fetch(url, { method: 'POST', body })
   },

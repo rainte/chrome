@@ -59,7 +59,7 @@ export const gist = {
   },
   setJson: function (key: HubEnum, data: any, isOk?: boolean) {
     const res = this.set([{ key, data: JSON.stringify(data) }])
-    return isOk ? res.then(() => popup.success()) : res
+    return isOk ? res.then(popup.success()) : res
   }
 }
 

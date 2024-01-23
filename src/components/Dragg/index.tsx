@@ -4,13 +4,16 @@ import { SortableContext, arrayMove, horizontalListSortingStrategy } from '@dnd-
 import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core/dist/types/index'
 
 export { useSortable } from '@dnd-kit/sortable'
-export type DraggItemProps = { id: UniqueIdentifier } & Record<string, any>
+export type DraggItemProps = {
+  id: UniqueIdentifier
+} & Record<string, any>
 export type DraggProps = {
   items: DraggItemProps[]
   dom: (props: any) => JSX.Element
 }
 
-export const draggStyle = (transform: any, isDragging: any, transition: any) => {
+export const draggStyle = (props: any) => {
+  const { transform, isDragging, transition } = props
   let style = { cursor: 'move', transition: 'unset' }
   transform &&
     (style = Object.assign(style, {

@@ -13,19 +13,16 @@ const links = {
 
 export default () => {
   const addGist = () => {
-    popup.confirm({
-      onOk: () => {
-        gist.add().then((res) => {
-          props.form?.setFieldValue('gistId', res.id)
-        })
-      }
+    popup.ask(async () => {
+      const res = await gist.add()
+      props.form?.setFieldValue('gistId', res.id)
     })
   }
 
   const props: FormProps = {
     form: useForm(),
     request: () => store.get(StoreEnum.CRX),
-    onFinish: (data) => store.set(StoreEnum.CRX, data).then(() => popup.success()),
+    onFinish: (data) => store.set(StoreEnum.CRX, data).then(popup.success()),
     columns: [
       {
         title: 'Github Token',

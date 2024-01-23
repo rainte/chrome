@@ -25,7 +25,7 @@ export default () => {
     const { id, text, url } = props
     const navigate = useNavigate()
     const { listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
-    const style = draggStyle(transform, isDragging, transition)
+    const style = draggStyle({ transform, isDragging, transition })
 
     return (
       <Flex
