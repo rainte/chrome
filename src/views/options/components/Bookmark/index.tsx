@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react'
 import { Flex, Space, Button, Statistic, Divider } from 'antd'
 import CountUp from 'react-countup'
 import { gist, HubEnum } from '@/utils/octokit'
+import notice, { NoticeEnum } from '@/utils/notice'
 import { popup } from '@/utils/show'
+import bookmark from '@/services/bookmark'
 
 const formatter = (value: number | string) => {
   typeof value === 'string' && (value = parseInt(value))
@@ -10,7 +12,6 @@ const formatter = (value: number | string) => {
 }
 
 export default () => {
-  const bookmark = chrome.bookmarks
   const [localTotal, setLocalTotal] = useState(0)
   const [remoteTotal, setRemoteTotal] = useState(0)
 
@@ -20,18 +21,19 @@ export default () => {
 
   const onUpload = () => {
     popup.ask(async () => {
-      const nodes = await tree()
-      await gist.setJson(HubEnum.Bookmark, { tree: nodes }, true)
-      refreshTotal()
+      const nodes = await bookmark.tree()
+      await gist.setJson(HubEnum.Bookmark, { tree: nodes })
+      await refreshTotal()
+      popup.success()
     })
   }
 
   const onDownLoad = () => {
     popup.ask(async () => {
       const res = await gist.getJson(HubEnum.Bookmark)
-      await clear()
+      await bookmark.clear()
       for (const node of res.tree) {
-        await add(node)
+        await bookmark.add(node)
       }
       await refreshTotal()
       popup.success()
@@ -40,48 +42,19 @@ export default () => {
 
   const onClear = () => {
     popup.ask(async () => {
-      await clear()
+      await bookmark.clear()
       await refreshTotal()
       popup.success()
     })
   }
 
-  const tree = () => bookmark.getTree().then((nodes) => nodes[0].children || [])
-
   const refreshTotal = () => {
-    tree().then((res) => {
-      console.log('refreshTotal', res, total(res))
-    })
-    const local = tree().then(total).then(setLocalTotal)
-    const remote = gist.getJson(HubEnum.Bookmark).then((res) => setRemoteTotal(total(res.tree)))
+    const local = bookmark.tree().then(bookmark.total).then(setLocalTotal)
+    const remote = gist
+      .getJson(HubEnum.Bookmark)
+      .then((res) => setRemoteTotal(bookmark.total(res.tree)))
+    notice.send(NoticeEnum.Bookmark)
     return Promise.all([local, remote])
-  }
-
-  const add = async (node: any) => {
-    for (const item of node.children) {
-      const res = await bookmark.create({
-        title: item.title,
-        url: item.url,
-        parentId: node.id
-      })
-      item.children && (await add({ ...item, id: res.id }))
-    }
-  }
-
-  const clear = async () => {
-    const nodes = await tree()
-    for (const node of nodes) {
-      for (const item of node?.children || []) {
-        await bookmark.removeTree(item.id)
-      }
-    }
-  }
-
-  const total = (nodes: any[]) => {
-    let count = 0
-    nodes = nodes || []
-    nodes.forEach((node: any) => (count += node.url ? 1 : total(node.children)))
-    return count
   }
 
   return (

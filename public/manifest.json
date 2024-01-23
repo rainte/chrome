@@ -26,7 +26,12 @@
     "newtab": "/index.html#/newtab"
   },
   "options_page": "/index.html#/options",
-  "permissions": ["storage", "bookmarks"],
+  "permissions": [
+    "storage",
+    "bookmarks",
+    "https://*.github.com",
+    "https://*.githubusercontent.com"
+  ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
