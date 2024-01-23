@@ -24,7 +24,7 @@ export default () => {
     <Flex vertical gap="small">
       <Flex vertical gap="small">
         <Space.Compact>
-          <Button onClick={() => setCollapsed(!collapsed)}>折叠/展开</Button>
+          <Button onClick={() => setCollapsed(!collapsed)}>折/展</Button>
           <Button onClick={() => setSort(!sort)}>排序</Button>
         </Space.Compact>
         {error ? <Alert showIcon message={error} type="error" /> : null}
