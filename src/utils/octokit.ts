@@ -50,7 +50,6 @@ export const gist = {
     const config = await crx()
     const files: Record<string, any> = {}
     props.map((item) => (files[item.key] = item.data ? { content: item.data } : null))
-    console.log('files', files)
     const url = `PATCH /gists/${config.gistId}`
     const options = { gist_id: config.gistId, files }
     return octokit.request(url, options)

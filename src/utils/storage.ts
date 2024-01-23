@@ -6,9 +6,6 @@ export type CRXProps = {
 export enum StoreEnum {
   CRX = 'CRX'
 }
-export enum FileEnum {
-  NewTabBgImg = 'newTabBgImg'
-}
 
 const localJson = {
   stringify: (key: string, value: any) => {
