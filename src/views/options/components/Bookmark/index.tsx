@@ -28,47 +28,53 @@ export default () => {
 
   const onDownLoad = () => {
     popup.ask(async () => {
-      const all: any[] = []
       const res = await gist.getJson(HubEnum.Bookmark)
       await clear()
-      res.tree.forEach((node: any) => add(node.children, node.id, all))
-      await Promise.all(all)
+      for (const node of res.tree) {
+        await add(node)
+      }
       await refreshTotal()
       popup.success()
     })
   }
 
   const onClear = () => {
-    popup.ask(() => clear().then(refreshTotal).then(popup.success()))
+    popup.ask(async () => {
+      await clear()
+      await refreshTotal()
+      popup.success()
+    })
   }
 
   const tree = () => bookmark.getTree().then((nodes) => nodes[0].children || [])
 
   const refreshTotal = () => {
+    tree().then((res) => {
+      console.log('refreshTotal', res, total(res))
+    })
     const local = tree().then(total).then(setLocalTotal)
     const remote = gist.getJson(HubEnum.Bookmark).then((res) => setRemoteTotal(total(res.tree)))
     return Promise.all([local, remote])
   }
 
-  const add = (nodes: any[], parentId: string, all: Promise<any>[]) => {
-    nodes.forEach((node) => {
-      const item = bookmark
-        .create({ title: node.title, url: node.url, parentId })
-        .then((res) => node.children && add(node.children, res.id, all))
-      all.push(item)
-    })
+  const add = async (node: any) => {
+    for (const item of node.children) {
+      const res = await bookmark.create({
+        title: item.title,
+        url: item.url,
+        parentId: node.id
+      })
+      item.children && (await add({ ...item, id: res.id }))
+    }
   }
 
   const clear = async () => {
-    const all: Promise<void>[] = []
-    tree().then((nodes) =>
-      nodes.forEach((node) => {
-        node?.children?.forEach((item) => {
-          all.push(bookmark.removeTree(item.id))
-        })
-      })
-    )
-    return Promise.all(all)
+    const nodes = await tree()
+    for (const node of nodes) {
+      for (const item of node?.children || []) {
+        await bookmark.removeTree(item.id)
+      }
+    }
   }
 
   const total = (nodes: any[]) => {
