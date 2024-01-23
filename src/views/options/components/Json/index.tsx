@@ -45,7 +45,7 @@ export default () => {
           />
         </Flex>
         <Flex flex={2}>
-          <TextArea onChange={onChange} />
+          <TextArea onChange={onChange} placeholder="输入 Json 字符串..." />
         </Flex>
       </Flex>
     </Flex>
