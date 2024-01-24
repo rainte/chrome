@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Flex, Space, Button, Statistic, Divider } from 'antd'
 import CountUp from 'react-countup'
 import { gist, HubEnum } from '@/utils/octokit'

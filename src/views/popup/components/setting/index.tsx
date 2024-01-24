@@ -1,23 +1,24 @@
-import { Flex, List, Button, Typography } from 'antd'
+import { Flex, List, Button, Typography, Switch } from 'antd'
+import { ReloadOutlined, RightOutlined } from '@ant-design/icons'
 import route from '@/utils/route'
 
-const data = [
-  'Racing car sprays burning fuel into crowd.',
-  'Japanese princess to wed commoner.',
-  'Australian walks 100km after outback crash.',
-  'Man charged over missing wedding girl.',
-  'Los Angeles battles huge wildfires.'
-]
+const data = [{ label: '代理', type: 'proxy' }]
 
 export default () => {
+  const onChange = (checked: boolean, item: any) => {
+    console.log('onChange', checked, item)
+  }
+
   const Header = () => {
     return (
       <Flex justify="space-between">
         <Button type="text" onClick={() => chrome.runtime.reload()}>
+          <ReloadOutlined />
           重启插件
         </Button>
         <Button type="text" onClick={() => route.toCrxTab('/options')}>
           更多设置
+          <RightOutlined />
         </Button>
       </Flex>
     )
@@ -29,8 +30,8 @@ export default () => {
       dataSource={data}
       bordered
       renderItem={(item) => (
-        <List.Item>
-          <Typography.Text mark>[ITEM]</Typography.Text> {item}
+        <List.Item actions={[<Switch onChange={(checked) => onChange(checked, item)} />]}>
+          <Typography.Text>{item.label}</Typography.Text>
         </List.Item>
       )}
     />

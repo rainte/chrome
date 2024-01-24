@@ -12,5 +12,10 @@ export default {
   get: (location: Location<any>, key: string, defaultValue?: any) => {
     const data = new URLSearchParams(location.search)
     return data.get(key) || defaultValue
+  },
+  add: (location: Location<any>, args: { key: string; value: string }[]) => {
+    const data = new URLSearchParams(location.search)
+    args.map((item) => data.set(item.key, item.value))
+    return `${location.pathname}?${data.toString()}`
   }
 }

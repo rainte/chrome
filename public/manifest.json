@@ -3,6 +3,7 @@
   "name": "Rainte",
   "version": "1.0",
   "description": "Rainte Chrome CRX",
+  "homepage_url": "http://rainte.com",
   "default_locale": "zh_CN",
   "icons": {
     "16": "/icons/logo.png",

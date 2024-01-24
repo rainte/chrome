@@ -22,10 +22,17 @@ export default () => {
   }
 
   return (
-    <ConfigProvider theme={{ components: { Segmented: { trackBg: 'rgba(118,118,128,0.12)' } } }}>
+    <ConfigProvider
+      theme={{
+        components: {
+          Segmented: { trackBg: 'rgba(118,118,128,0.12)' },
+          List: { itemPadding: '7px 0' }
+        }
+      }}
+    >
       <Flex vertical className={scss.page}>
         <Segmented
-          options={Object.keys(doms).map((key) => {
+          options={Object.keys({ agile: doms.agile }).map((key) => {
             return {
               label: (
                 <Space>
@@ -36,6 +43,7 @@ export default () => {
               value: key
             }
           })}
+          value={key}
           onChange={setKey}
           block
         />
