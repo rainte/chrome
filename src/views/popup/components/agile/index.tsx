@@ -1,7 +1,7 @@
 import { Flex, Button } from 'antd'
-import { useNavigate } from 'react-router-dom'
 import Dragg, { DraggItemProps, useSortable, draggStyle } from '@/components/Dragg'
 import scss from './index.module.scss'
+import route from '@/utils/route'
 
 type Item = {
   id: number
@@ -11,8 +11,8 @@ type Item = {
 
 export default () => {
   const items: DraggItemProps[] = [
-    { id: 1, text: 'Tag 1' },
-    { id: 2, text: 'Tag 2' },
+    { id: 1, text: 'Json', url: '/options?tab=json' },
+    { id: 2, text: '书签', url: '/options?tab=bookmark' },
     { id: 3, text: 'Tag 3' },
     { id: 4, text: 'Tag 4' },
     { id: 5, text: 'Tag 5' },
@@ -23,7 +23,6 @@ export default () => {
 
   const DraggItem = (props: Item) => {
     const { id, text, url } = props
-    const navigate = useNavigate()
     const { listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
     const style = draggStyle({ transform, isDragging, transition })
 
@@ -32,7 +31,7 @@ export default () => {
         className={scss.draggItem}
         ref={setNodeRef}
         style={style}
-        onClick={() => url && navigate(url)}
+        onClick={() => url && route.toCrxTab(url)}
         {...listeners}
       >
         <Button block>{text}</Button>

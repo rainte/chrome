@@ -6,7 +6,7 @@ import Setting from './components/setting'
 import scss from './index.module.scss'
 
 export default () => {
-  const [key, setKey] = useState<any>('agile')
+  const [key, setKey] = useState<any>('setting')
 
   const doms: Record<string, any> = {
     agile: {
@@ -32,7 +32,7 @@ export default () => {
     >
       <Flex vertical className={scss.page}>
         <Segmented
-          options={Object.keys({ agile: doms.agile }).map((key) => {
+          options={Object.keys({ setting: doms.setting }).map((key) => {
             return {
               label: (
                 <Space>
