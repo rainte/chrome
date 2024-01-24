@@ -16,7 +16,7 @@ export default () => {
   const [remoteTotal, setRemoteTotal] = useState(0)
 
   useEffect(() => {
-    refreshTotal()
+    refreshTotal(false)
   }, [])
 
   const onUpload = () => {
@@ -48,12 +48,12 @@ export default () => {
     })
   }
 
-  const refreshTotal = () => {
+  const refreshTotal = (isNotice = true) => {
     const local = bookmark.tree().then(bookmark.total).then(setLocalTotal)
     const remote = gist
       .getJson(HubEnum.Bookmark)
       .then((res) => setRemoteTotal(bookmark.total(res.tree)))
-    notice.send(NoticeEnum.Bookmark)
+    isNotice && notice.send(NoticeEnum.Bookmark)
     return Promise.all([local, remote])
   }
 

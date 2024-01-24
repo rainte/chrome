@@ -1,34 +1,37 @@
 import { useState } from 'react'
-import { Flex, Input, Space, Button, Alert } from 'antd'
+import { Flex, Space, Input, Switch, Typography, Alert } from 'antd'
 import ReactJson from 'react-json-view'
-
-const { TextArea } = Input
+import error from '@/utils/error'
 
 export default () => {
   const [json, setJson] = useState<object>({})
-  const [error, setError] = useState('')
-  const [collapsed, setCollapsed] = useState<boolean | number>(false)
+  const [message, setMessage] = useState('')
+  const [collapsed, setCollapsed] = useState<boolean>(false)
   const [sort, setSort] = useState<boolean>(true)
 
   const onChange = (event: any) => {
     try {
-      setJson(JSON.parse(event.target.value))
-      setError('')
+      const value = event.target.value
+      isNaN(value) || error.fail(`"${value}" is not valid JSON`)
+      setJson(JSON.parse(value))
+      setMessage('')
     } catch (error: any) {
       setJson({})
-      setError(error.message)
+      setMessage(error.message)
     }
   }
 
   return (
     <Flex vertical gap="small">
-      <Flex vertical gap="small">
-        <Space.Compact>
-          <Button onClick={() => setCollapsed(!collapsed)}>折/展</Button>
-          <Button onClick={() => setSort(!sort)}>排序</Button>
-        </Space.Compact>
-        {error ? <Alert showIcon message={error} type="error" /> : null}
+      <Flex vertical>
+        <Space>
+          <Typography.Text>折/展</Typography.Text>
+          <Switch onChange={() => setCollapsed(!collapsed)} checked={collapsed} />
+          <Typography.Text>排序</Typography.Text>
+          <Switch onChange={() => setSort(!sort)} checked={sort} />
+        </Space>
       </Flex>
+      <Flex>{message ? <Alert showIcon message={message} type="error" /> : null}</Flex>
       <Flex gap="large">
         <Flex flex={2}>
           <ReactJson
@@ -40,12 +43,16 @@ export default () => {
             style={{
               padding: '1rem',
               width: '100%',
-              minHeight: '85vh'
+              minHeight: message ? '80vh' : '86vh'
             }}
           />
         </Flex>
         <Flex flex={2}>
-          <TextArea onChange={onChange} placeholder="输入 Json 字符串..." />
+          <Input.TextArea
+            defaultValue={JSON.stringify(json)}
+            onChange={onChange}
+            placeholder="输入 Json 字符串..."
+          />
         </Flex>
       </Flex>
     </Flex>
