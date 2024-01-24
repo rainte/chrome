@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Flex, Space, Input, Switch, Typography, Alert } from 'antd'
+import { Flex, Space, Input, Button, Alert } from 'antd'
+import { SortAscendingOutlined } from '@ant-design/icons'
 import ReactJson from 'react-json-view'
 import error from '@/utils/error'
 
@@ -23,13 +24,14 @@ export default () => {
 
   return (
     <Flex vertical gap="small">
-      <Flex vertical>
-        <Space>
-          <Typography.Text>折/展</Typography.Text>
-          <Switch onChange={() => setCollapsed(!collapsed)} checked={collapsed} />
-          <Typography.Text>排序</Typography.Text>
-          <Switch onChange={() => setSort(!sort)} checked={sort} />
-        </Space>
+      <Flex>
+        <Space.Compact>
+          <Button onClick={() => setCollapsed(!collapsed)}>折/展</Button>
+          <Button onClick={() => setSort(!sort)}>
+            {sort ? <SortAscendingOutlined /> : null}
+            排序
+          </Button>
+        </Space.Compact>
       </Flex>
       <Flex>{message ? <Alert showIcon message={message} type="error" /> : null}</Flex>
       <Flex gap="large">

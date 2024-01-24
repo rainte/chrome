@@ -1,6 +1,5 @@
 import { Flex, List, Button, Typography } from 'antd'
 import route from '@/utils/route'
-import scss from './index.module.scss'
 
 const data = [
   'Racing car sprays burning fuel into crowd.',
@@ -26,7 +25,6 @@ export default () => {
 
   return (
     <List
-      className={scss.page}
       header={<Header />}
       dataSource={data}
       bordered

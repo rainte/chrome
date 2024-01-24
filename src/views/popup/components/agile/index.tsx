@@ -41,7 +41,7 @@ export default () => {
   }
 
   return (
-    <Flex className={scss.page} justify="center" wrap="wrap">
+    <Flex className={scss.page} justify="space-between" wrap="wrap">
       <Dragg items={items} dom={DraggItem} />
     </Flex>
   )
