@@ -7,6 +7,7 @@ export default {
   },
   toCrxTab: (url?: string) => {
     url = '/index.html#' + (url || '')
+    console.log('toCrxTab', url)
     chrome.tabs.create({ url: chrome.runtime.getURL(url) })
   },
   get: (location: Location<any>, key: string, defaultValue?: any) => {

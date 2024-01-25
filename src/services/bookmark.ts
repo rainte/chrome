@@ -5,11 +5,11 @@ const bookmark = chrome.bookmarks
 
 const total = (isNotice = true) => {
   const local = tree().then(sum)
-  const remote = gist
+  const cloud = gist
     .getJson(HubEnum.Bookmark)
     .then((res) => res.tree)
     .then(sum)
-  return Promise.all([local, remote]).then((res) => {
+  return Promise.all([local, cloud]).then((res) => {
     isNotice && notice.send(NoticeEnum.Bookmark)
     return res
   })

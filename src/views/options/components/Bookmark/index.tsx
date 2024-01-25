@@ -11,7 +11,7 @@ const formatter = (value: number | string) => {
 
 export default () => {
   const [localTotal, setLocalTotal] = useState(0)
-  const [remoteTotal, setRemoteTotal] = useState(0)
+  const [cloudTotal, setCloudTotal] = useState(0)
 
   useEffect(() => {
     bookmark.total(false).then(setTotal)
@@ -19,7 +19,7 @@ export default () => {
 
   const setTotal = (res: any[]) => {
     setLocalTotal(res[0])
-    setRemoteTotal(res[1])
+    setCloudTotal(res[1])
   }
 
   const onUpload = () => {
@@ -55,7 +55,7 @@ export default () => {
     <Flex vertical gap="large">
       <Space size={30}>
         <Divider dashed={true} />
-        <Statistic title="云端" value={remoteTotal} formatter={formatter} />
+        <Statistic title="云端" value={cloudTotal} formatter={formatter} />
         <Divider dashed={true} />
         <Statistic title="本地" value={localTotal} formatter={formatter} />
         <Divider dashed={true} />
