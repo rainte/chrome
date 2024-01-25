@@ -34,7 +34,7 @@ export default () => {
       text: (
         <Flex gap="small">
           <CodeOutlined />
-          <Typography.Text>Json </Typography.Text>
+          <Typography.Text>Json</Typography.Text>
         </Flex>
       ),
       url: '/options?tab=json'

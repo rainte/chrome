@@ -2,7 +2,10 @@ import { Flex, List, Button, Typography, Switch } from 'antd'
 import { ReloadOutlined, RightOutlined } from '@ant-design/icons'
 import route from '@/utils/route'
 
-const data = [{ label: '演示', type: 'demo' }]
+const data = [
+  { label: '演示', type: 'demo' },
+  { label: '演示', type: 'demo' }
+]
 
 export default () => {
   const Header = () => {
@@ -34,6 +37,7 @@ export default () => {
     <Flex vertical gap="small">
       <Header />
       <List
+        bordered
         dataSource={data}
         renderItem={(item) => (
           <List.Item actions={actions(item)}>

@@ -3,7 +3,7 @@ import { ConfigProvider, Flex, Segmented, Space } from 'antd'
 import { AppstoreOutlined, SettingOutlined } from '@ant-design/icons'
 import Apps from './components/apps'
 import Setting from './components/setting'
-import scss from './index.module.scss'
+import './index.scss'
 
 export default () => {
   const [key, setKey] = useState<any>('apps')
@@ -30,7 +30,7 @@ export default () => {
         }
       }}
     >
-      <Flex vertical className={scss.page} gap="small">
+      <Flex vertical gap="small" className="popup">
         <Segmented
           options={Object.keys(doms).map((key) => {
             return {
