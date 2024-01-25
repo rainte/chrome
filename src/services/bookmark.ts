@@ -46,10 +46,15 @@ const sum = (nodes: any[]) => {
   return count
 }
 
-const tree = () =>
-  bookmark
-    .getTree()
-    .then((nodes) => nodes[0].children)
-    .then((nodes) => nodes || [])
+const tree = async () => {
+  if (import.meta.env.DEV) {
+    return []
+  } else {
+    return bookmark
+      .getTree()
+      .then((nodes) => nodes[0].children)
+      .then((nodes) => nodes || [])
+  }
+}
 
 export default { add, get, set, clear, sum, tree, total }

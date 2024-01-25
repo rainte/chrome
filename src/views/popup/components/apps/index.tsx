@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
-import { Row, Col, Button, Statistic } from 'antd'
+import { Row, Col, Flex, Typography } from 'antd'
 import Dragg, { DraggItemProps, useSortable, draggStyle } from '@/components/Dragg'
-import { BookOutlined, CloudOutlined } from '@ant-design/icons'
+import { BookOutlined, CodeOutlined } from '@ant-design/icons'
 import route from '@/utils/route'
 import bookmark from '@/services/bookmark'
 
 type Item = {
   id: number
-  text: string
+  text: JSX.Element
   url?: string
 }
 
@@ -16,44 +16,80 @@ export default () => {
   const [cloudTotal, setCloudTotal] = useState(0)
 
   useEffect(() => {
-    bookmark.total().then((res) => {
-      setLocalTotal(res[0])
-      setCloudTotal(res[1])
-    })
+    bookmark
+      .total()
+      .then((res) => {
+        setLocalTotal(res[0])
+        setCloudTotal(res[1])
+      })
+      .catch(() => {
+        setLocalTotal(88)
+        setCloudTotal(88)
+      })
   }, [])
 
   const items: DraggItemProps[] = [
-    { id: 1, text: 'Json', url: '/options?tab=json' },
-    { id: 2, text: '书签', url: '/options?tab=bookmark' }
+    {
+      id: 1,
+      text: (
+        <Flex gap="small">
+          <CodeOutlined />
+          <Typography.Text>Json </Typography.Text>
+        </Flex>
+      ),
+      url: '/options?tab=json'
+    },
+    {
+      id: 2,
+      text: (
+        <Flex gap="small">
+          <BookOutlined />
+          <Typography.Text>书签</Typography.Text>
+          <Typography.Text>
+            {cloudTotal} / {localTotal}
+          </Typography.Text>
+        </Flex>
+      ),
+      url: '/options?tab=bookmark'
+    }
   ]
 
+  const dom = (items: DraggItemProps[]) => {
+    return items.map((item) => {
+      const { text, url } = item
+      return (
+        <Col span={12} onClick={() => url && route.toCrxTab(url)}>
+          {cell(text)}
+        </Col>
+      )
+    })
+  }
+
   const DraggItem = (props: Item) => {
-    const { id, text, url } = props
+    const { id, text } = props
     const { listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
     const style = draggStyle({ transform, isDragging, transition })
 
     return (
-      <Col
-        span={12}
-        ref={setNodeRef}
-        style={style}
-        onClick={() => url && route.toCrxTab(url)}
-        {...listeners}
-      >
-        <Button block>{text}</Button>
+      <Col span={12} ref={setNodeRef} style={style} {...listeners}>
+        {cell(text)}
       </Col>
     )
   }
 
-  return (
-    <Row gutter={[10, 5]}>
-      <Dragg items={items} dom={DraggItem} />
-      <Col span={7} offset={5} title="云端">
-        <Statistic prefix={<CloudOutlined />} value={localTotal} />
-      </Col>
-      <Col span={7} title="本地">
-        <Statistic prefix={<BookOutlined />} value={cloudTotal} />
-      </Col>
-    </Row>
+  const cell = (text: JSX.Element) => (
+    <Flex
+      align="center"
+      justify="center"
+      style={{
+        padding: '0.2rem',
+        background: 'var(--ant-color-bg-base)',
+        borderRadius: 'var(--ant-border-radius)'
+      }}
+    >
+      {text}
+    </Flex>
   )
+
+  return <Row gutter={[10, 5]}>{true ? dom(items) : <Dragg items={items} dom={DraggItem} />}</Row>
 }
