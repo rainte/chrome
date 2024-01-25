@@ -12,7 +12,7 @@ export default () => {
   })
 
   return (
-    <Suspense fallback={<Spin fullscreen size="large" delay={500} />}>
+    <Suspense fallback={<Spin delay={500} fullscreen size="large" />}>
       <RouterProvider router={router} />
     </Suspense>
   )

@@ -1,14 +1,11 @@
-import { CSSProperties } from 'react'
 import { Upload, UploadFile, Flex, Typography, Spin, UploadProps as AntUploadProps } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import scss from './index.module.scss'
 
 export type { UploadFile } from 'antd'
-export type UploadProps = AntUploadProps & {
-  loading?: boolean
-  iconStyle?: CSSProperties
-  textStyle?: CSSProperties
-}
+export type UploadProps = AntUploadProps & { loading?: boolean }
+
+const size = (num: number) => `calc(var(--ant-control-height-lg) * ${num})`
+const style = (num: number) => ({ fontSize: size(num) })
 
 const onPreview = async (file: UploadFile) => {
   const src = file.url as string
@@ -21,22 +18,21 @@ const onPreview = async (file: UploadFile) => {
 
 const dom = (props: UploadProps) => {
   const { fileList = [], maxCount = 1, loading, disabled } = props
-  const uploadButton = (
-    <Flex vertical align="center" justify="center">
-      {loading ? (
-        <Spin />
-      ) : (
-        <>
-          <PlusOutlined style={props.iconStyle} />
-          <Typography.Text style={props.textStyle}>点击上传</Typography.Text>
-        </>
-      )}
-    </Flex>
-  )
 
   return (
     <Upload {...props} disabled={disabled === undefined ? loading : disabled}>
-      {fileList.length >= maxCount ? null : uploadButton}
+      {fileList.length >= maxCount ? null : (
+        <Flex vertical align="center" justify="center">
+          {loading ? (
+            <Spin />
+          ) : (
+            <>
+              <PlusOutlined style={style(0.3)} />
+              <Typography.Text style={style(0.25)}>点击上传</Typography.Text>
+            </>
+          )}
+        </Flex>
+      )}
     </Upload>
   )
 }
@@ -44,7 +40,6 @@ const dom = (props: UploadProps) => {
 export default dom
 
 dom.defaultProps = {
-  className: scss.upload,
   listType: 'picture-card',
   onPreview
 }

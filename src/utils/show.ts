@@ -25,11 +25,13 @@ const popup = {
       ...props
     })
   },
-  success: (content?: JointContent, duration?: number | VoidFunction, onClose?: VoidFunction) => {
+  success: (content?: JointContent, duration?: number | VoidFunction) => {
     content = content || i18n.get('messageSuccess')
-    return message.success(content, duration, onClose)
+    return message.success(content, duration)
   },
-  ask: (onOk: (...args: any[]) => any, props?: ModalFuncProps) => popup.confirm({ onOk, ...props })
+  ask: function (onOk: (...args: any[]) => any, props?: ModalFuncProps) {
+    return this.confirm({ onOk, ...props })
+  }
 }
 
 export { message, notification, modal, popup }

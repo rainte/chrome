@@ -30,7 +30,7 @@ export default (props: DraggProps) => {
   const sensors = useSensors(useSensor(PointerSensor))
   const context = items.map((item) => <Dom {...item} key={item.id} />)
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
     if (!over) return
 
@@ -45,7 +45,7 @@ export default (props: DraggProps) => {
   }
 
   return (
-    <DndContext sensors={sensors} onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
+    <DndContext sensors={sensors} onDragEnd={onDragEnd} collisionDetection={closestCenter}>
       <SortableContext items={items} strategy={horizontalListSortingStrategy}>
         {context}
       </SortableContext>

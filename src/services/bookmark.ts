@@ -23,10 +23,14 @@ const clear = async () => {
 const total = (nodes: any[]) => {
   let count = 0
   nodes = nodes || []
-  nodes.forEach((node: any) => (count += node.url ? 1 : total(node.children)))
+  nodes.map((node: any) => (count += node.url ? 1 : total(node.children)))
   return count
 }
 
-const tree = () => bookmark.getTree().then((nodes) => nodes[0].children || [])
+const tree = () =>
+  bookmark
+    .getTree()
+    .then((nodes) => nodes[0].children)
+    .then((nodes) => nodes || [])
 
 export default { add, clear, total, tree }

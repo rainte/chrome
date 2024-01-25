@@ -9,7 +9,7 @@ import './index.scss'
 console.log('chrome', chrome)
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ConfigProvider locale={zhCN}>
+    <ConfigProvider locale={zhCN} theme={{ cssVar: true, hashed: false }}>
       <App className="root-app">
         <Children />
       </App>

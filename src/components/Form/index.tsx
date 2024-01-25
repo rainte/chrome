@@ -1,4 +1,3 @@
-import React from 'react'
 import { BetaSchemaForm } from '@ant-design/pro-components'
 import { FormSchema } from '@ant-design/pro-form/es/components/SchemaForm'
 import { Form, Flex, Space } from 'antd'
@@ -10,7 +9,7 @@ export const useForm = () => {
   return form
 }
 
-const dom: React.FC<FormProps<any, any>> = <T, ValueType>(props: FormProps<T, ValueType>) => {
+const dom = (props: FormProps) => {
   return <BetaSchemaForm {...props} />
 }
 

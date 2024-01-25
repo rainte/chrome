@@ -13,9 +13,9 @@ export default {
     const data = new URLSearchParams(location.search)
     return data.get(key) || defaultValue
   },
-  add: (location: Location<any>, args: { key: string; value: string }[]) => {
+  add: (location: Location<any>, params: Record<string, string>) => {
     const data = new URLSearchParams(location.search)
-    args.map((item) => data.set(item.key, item.value))
+    Object.entries(params).map((item) => data.set(...item))
     return `${location.pathname}?${data.toString()}`
   }
 }

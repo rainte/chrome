@@ -36,7 +36,7 @@ export default () => {
       tabBarExtraContent={{ left: <Flex className={scss.tabsTitle}>设置</Flex> }}
       onTabClick={(activeKey) => {
         setTab(activeKey)
-        const url = route.add(location, [{ key: TAB, value: activeKey }])
+        const url = route.add(location, { [TAB]: activeKey })
         navigate(url)
       }}
       items={items.map((item) => {

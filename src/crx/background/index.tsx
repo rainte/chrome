@@ -17,7 +17,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log('onMessage', message, sender, sendResponse)
   onClear()
 
-  chrome.tabs.query({ currentWindow: true, active: true }, () => {
+  chrome.tabs.query({ currentWindow: true, active: true }).then(() => {
     sendResponse({ ok: true })
   })
 })

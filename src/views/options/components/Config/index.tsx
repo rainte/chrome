@@ -19,7 +19,7 @@ export default () => {
     })
   }
 
-  const props: FormProps = {
+  const props: FormProps<any, any> = {
     form: useForm(),
     request: () => store.get(StoreEnum.CRX),
     onFinish: (data) => store.set(StoreEnum.CRX, data).then(popup.success()),
