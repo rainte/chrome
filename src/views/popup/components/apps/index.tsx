@@ -87,7 +87,7 @@ export default () => {
         borderRadius: 'var(--ant-border-radius)'
       }}
     >
-      {text}
+      <Typography.Link>{text}</Typography.Link>
     </Flex>
   )
 
