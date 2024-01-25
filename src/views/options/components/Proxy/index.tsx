@@ -9,17 +9,17 @@ export default () => {
   const form: FormProps = {
     columns: [
       {
-        title: 'Github Token',
-        dataIndex: 'token',
+        title: '代理模式',
+        dataIndex: 'mode',
+        valueType: 'select',
         formItemProps: { rules: [{ required: true }] },
-        renderFormItem: () => (
-          <Space.Compact>
-            <Input />
-            <Button onClick={() => open('https://github.com/settings/tokens/new')}>
-              Get Token
-            </Button>
-          </Space.Compact>
-        )
+        valueEnum: {
+          direct: { text: 'direct', status: 'direct' },
+          auto_detect: { text: 'auto_detect', status: 'auto_detect' },
+          pac_script: { text: 'pac_script', status: 'pac_script' },
+          fixed_servers: { text: 'fixed_servers', status: 'fixed_servers' },
+          system: { text: 'system', status: 'system' }
+        }
       },
       {
         title: 'Gist ID',

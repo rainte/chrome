@@ -17,6 +17,7 @@ export default dom
 
 dom.defaultProps = {
   layout: 'horizontal',
+  wrapperCol: { span: 6 },
   submitter: {
     render: (_: any, dom: JSX.Element[]) => {
       return (

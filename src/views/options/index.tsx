@@ -10,7 +10,7 @@ const TAB = 'tab'
 export default () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const [tab, setTab] = useState('json')
+  const [tab, setTab] = useState('proxy')
 
   useEffect(() => {
     const activeKey = route.get(location, TAB)
