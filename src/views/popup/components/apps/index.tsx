@@ -78,17 +78,19 @@ export default () => {
   }
 
   const cell = (text: JSX.Element) => (
-    <Flex
-      align="center"
-      justify="center"
-      style={{
-        padding: '0.2rem',
-        background: 'var(--ant-color-bg-base)',
-        borderRadius: 'var(--ant-border-radius)'
-      }}
-    >
-      <Typography.Link>{text}</Typography.Link>
-    </Flex>
+    <Typography.Link>
+      <Flex
+        align="center"
+        justify="center"
+        style={{
+          padding: '0.2rem',
+          background: 'var(--ant-color-bg-base)',
+          borderRadius: 'var(--ant-border-radius)'
+        }}
+      >
+        {text}
+      </Flex>
+    </Typography.Link>
   )
 
   return <Row gutter={[10, 5]}>{true ? dom(items) : <Dragg items={items} dom={DraggItem} />}</Row>
