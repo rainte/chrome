@@ -32,7 +32,7 @@ const octokit = {
   }
 }
 
-const content = (data: any) => (data === null ? { content: data } : null)
+const content = (data: any) => (data === null ? null : { content: data })
 
 export const gist = {
   add: () => {
@@ -63,7 +63,7 @@ export const gist = {
   },
   setJson: function (key: HubEnum, data: any, isOk?: boolean) {
     const res = this.set([{ key, data: JSON.stringify(data) }])
-    return isOk ? res.then(popup.success()) : res
+    return isOk ? res.then(() => popup.success()) : res
   }
 }
 

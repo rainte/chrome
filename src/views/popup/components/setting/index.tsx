@@ -2,13 +2,9 @@ import { Flex, List, Button, Typography, Switch } from 'antd'
 import { ReloadOutlined, RightOutlined } from '@ant-design/icons'
 import route from '@/utils/route'
 
-const data = [{ label: '代理', type: 'proxy' }]
+const data = [{ label: '演示', type: 'demo' }]
 
 export default () => {
-  const onChange = (checked: boolean, item: any) => {
-    console.log('onChange', checked, item)
-  }
-
   const Header = () => {
     return (
       <Flex justify="space-between">
@@ -24,16 +20,27 @@ export default () => {
     )
   }
 
+  const actions = (item: any) => {
+    return [
+      <Switch
+        onChange={(checked) => {
+          console.log('onChange', checked, item)
+        }}
+      />
+    ]
+  }
+
   return (
-    <List
-      header={<Header />}
-      dataSource={data}
-      bordered
-      renderItem={(item) => (
-        <List.Item actions={[<Switch onChange={(checked) => onChange(checked, item)} />]}>
-          <Typography.Text>{item.label}</Typography.Text>
-        </List.Item>
-      )}
-    />
+    <Flex vertical gap="small">
+      <Header />
+      <List
+        dataSource={data}
+        renderItem={(item) => (
+          <List.Item actions={actions(item)}>
+            <Typography.Text>{item.label}</Typography.Text>
+          </List.Item>
+        )}
+      />
+    </Flex>
   )
 }

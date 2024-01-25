@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Flex, Tabs, TabPaneProps } from 'antd'
+import { Tabs, Typography, TabPaneProps } from 'antd'
 import route from '@/utils/route'
 import * as Dom from './components'
-import scss from './index.module.scss'
+import './index.scss'
 
 const TAB = 'tab'
 
@@ -25,15 +25,23 @@ export default () => {
     { id: 'config', label: '配置', children: <Dom.Config /> }
   ]
 
+  const titleStyle = { margin: '1rem', color: 'rgba(0, 0, 0, 0.65)' }
+
   return (
     <Tabs
-      className={scss.page}
+      className="options"
       activeKey={tab}
       size="large"
       tabPosition="left"
       tabBarGutter={20}
       tabBarStyle={{ width: '15rem' }}
-      tabBarExtraContent={{ left: <Flex className={scss.tabsTitle}>设置</Flex> }}
+      tabBarExtraContent={{
+        left: (
+          <Typography.Title level={3} style={titleStyle}>
+            设置
+          </Typography.Title>
+        )
+      }}
       onTabClick={(activeKey) => {
         setTab(activeKey)
         const url = route.add(location, { [TAB]: activeKey })

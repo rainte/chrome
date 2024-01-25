@@ -27,13 +27,10 @@ export default () => {
       <Flex>
         <Space.Compact>
           <Button onClick={() => setCollapsed(!collapsed)}>折/展</Button>
-          <Button onClick={() => setSort(!sort)}>
-            {sort ? <SortAscendingOutlined /> : null}
-            排序
-          </Button>
+          <Button onClick={() => setSort(!sort)}>{sort && <SortAscendingOutlined />} 排序</Button>
         </Space.Compact>
       </Flex>
-      <Flex>{message ? <Alert showIcon message={message} type="error" /> : null}</Flex>
+      <Flex>{message && <Alert showIcon message={message} type="error" />}</Flex>
       <Flex gap="large">
         <Flex flex={2}>
           <ReactJson

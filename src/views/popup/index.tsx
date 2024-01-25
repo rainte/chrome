@@ -1,18 +1,18 @@
 import { useState } from 'react'
 import { ConfigProvider, Flex, Segmented, Space } from 'antd'
 import { AppstoreOutlined, SettingOutlined } from '@ant-design/icons'
-import Agile from './components/agile'
+import Apps from './components/apps'
 import Setting from './components/setting'
 import scss from './index.module.scss'
 
 export default () => {
-  const [key, setKey] = useState<any>('setting')
+  const [key, setKey] = useState<any>('apps')
 
   const doms: Record<string, any> = {
-    agile: {
+    apps: {
       label: '组件',
       icon: <AppstoreOutlined />,
-      dom: <Agile />
+      dom: <Apps />
     },
     setting: {
       label: '设置',
@@ -30,9 +30,9 @@ export default () => {
         }
       }}
     >
-      <Flex vertical className={scss.page}>
+      <Flex vertical className={scss.page} gap="small">
         <Segmented
-          options={Object.keys({ setting: doms.setting }).map((key) => {
+          options={Object.keys(doms).map((key) => {
             return {
               label: (
                 <Space>

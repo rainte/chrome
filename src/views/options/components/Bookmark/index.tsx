@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Flex, Space, Button, Statistic, Divider } from 'antd'
 import CountUp from 'react-countup'
-import { gist, HubEnum } from '@/utils/octokit'
-import notice, { NoticeEnum } from '@/utils/notice'
 import { popup } from '@/utils/show'
 import bookmark from '@/services/bookmark'
 
@@ -16,26 +14,31 @@ export default () => {
   const [remoteTotal, setRemoteTotal] = useState(0)
 
   useEffect(() => {
-    refreshTotal(false)
+    bookmark.total(false).then(setTotal)
   }, [])
+
+  const setTotal = (res: any[]) => {
+    setLocalTotal(res[0])
+    setRemoteTotal(res[1])
+  }
 
   const onUpload = () => {
     popup.ask(async () => {
       const nodes = await bookmark.tree()
-      await gist.setJson(HubEnum.Bookmark, { tree: nodes })
-      await refreshTotal()
+      await bookmark.set(nodes)
+      await bookmark.total().then(setTotal)
       popup.success()
     })
   }
 
   const onDownLoad = () => {
     popup.ask(async () => {
-      const res = await gist.getJson(HubEnum.Bookmark)
+      const res = await bookmark.get()
       await bookmark.clear()
       for (const node of res.tree) {
         await bookmark.add(node)
       }
-      await refreshTotal()
+      await bookmark.total().then(setTotal)
       popup.success()
     })
   }
@@ -43,18 +46,9 @@ export default () => {
   const onClear = () => {
     popup.ask(async () => {
       await bookmark.clear()
-      await refreshTotal()
+      await bookmark.total().then(setTotal)
       popup.success()
     })
-  }
-
-  const refreshTotal = (isNotice = true) => {
-    const local = bookmark.tree().then(bookmark.total).then(setLocalTotal)
-    const remote = gist
-      .getJson(HubEnum.Bookmark)
-      .then((res) => setRemoteTotal(bookmark.total(res.tree)))
-    isNotice && notice.send(NoticeEnum.Bookmark)
-    return Promise.all([local, remote])
   }
 
   return (

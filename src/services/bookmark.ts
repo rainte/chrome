@@ -1,4 +1,19 @@
+import { gist, HubEnum } from '@/utils/octokit'
+import notice, { NoticeEnum } from '@/utils/notice'
+
 const bookmark = chrome.bookmarks
+
+const total = (isNotice = true) => {
+  const local = tree().then(sum)
+  const remote = gist
+    .getJson(HubEnum.Bookmark)
+    .then((res) => res.tree)
+    .then(sum)
+  return Promise.all([local, remote]).then((res) => {
+    isNotice && notice.send(NoticeEnum.Bookmark)
+    return res
+  })
+}
 
 const add = async (node: any) => {
   for (const item of node.children) {
@@ -11,6 +26,10 @@ const add = async (node: any) => {
   }
 }
 
+const get = () => gist.getJson(HubEnum.Bookmark)
+
+const set = (nodes: any) => gist.setJson(HubEnum.Bookmark, { tree: nodes })
+
 const clear = async () => {
   const nodes = await tree()
   for (const node of nodes) {
@@ -20,10 +39,10 @@ const clear = async () => {
   }
 }
 
-const total = (nodes: any[]) => {
+const sum = (nodes: any[]) => {
   let count = 0
   nodes = nodes || []
-  nodes.map((node: any) => (count += node.url ? 1 : total(node.children)))
+  nodes.map((node: any) => (count += node.url ? 1 : sum(node.children)))
   return count
 }
 
@@ -33,4 +52,4 @@ const tree = () =>
     .then((nodes) => nodes[0].children)
     .then((nodes) => nodes || [])
 
-export default { add, clear, total, tree }
+export default { add, get, set, clear, sum, tree, total }

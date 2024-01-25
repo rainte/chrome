@@ -21,7 +21,7 @@ const dom = (props: UploadProps) => {
 
   return (
     <Upload {...props} disabled={disabled === undefined ? loading : disabled}>
-      {fileList.length >= maxCount ? null : (
+      {fileList.length < maxCount && (
         <Flex vertical align="center" justify="center">
           {loading ? (
             <Spin />

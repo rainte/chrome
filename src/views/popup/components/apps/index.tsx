@@ -1,6 +1,6 @@
-import { Flex, Button } from 'antd'
+import { Row, Col, Button, Statistic } from 'antd'
 import Dragg, { DraggItemProps, useSortable, draggStyle } from '@/components/Dragg'
-import scss from './index.module.scss'
+import { BookOutlined, CloudOutlined } from '@ant-design/icons'
 import route from '@/utils/route'
 
 type Item = {
@@ -12,13 +12,7 @@ type Item = {
 export default () => {
   const items: DraggItemProps[] = [
     { id: 1, text: 'Json', url: '/options?tab=json' },
-    { id: 2, text: '书签', url: '/options?tab=bookmark' },
-    { id: 3, text: 'Tag 3' },
-    { id: 4, text: 'Tag 4' },
-    { id: 5, text: 'Tag 5' },
-    { id: 6, text: 'Tag 6' },
-    { id: 7, text: 'Tag 7' },
-    { id: 8, text: 'Tag 8' }
+    { id: 2, text: '书签', url: '/options?tab=bookmark' }
   ]
 
   const DraggItem = (props: Item) => {
@@ -27,21 +21,27 @@ export default () => {
     const style = draggStyle({ transform, isDragging, transition })
 
     return (
-      <Flex
-        className={scss.draggItem}
+      <Col
+        span={12}
         ref={setNodeRef}
         style={style}
         onClick={() => url && route.toCrxTab(url)}
         {...listeners}
       >
         <Button block>{text}</Button>
-      </Flex>
+      </Col>
     )
   }
 
   return (
-    <Flex className={scss.page} justify="space-between" wrap="wrap">
+    <Row gutter={[10, 5]}>
       <Dragg items={items} dom={DraggItem} />
-    </Flex>
+      <Col span={7} offset={5} title="云端">
+        <Statistic prefix={<CloudOutlined />} value={112893} />
+      </Col>
+      <Col span={7} title="本地">
+        <Statistic prefix={<BookOutlined />} value={112893} />
+      </Col>
+    </Row>
   )
 }

@@ -1,0 +1,11 @@
+.options {
+  height: 100%;
+
+  .ant-tabs-content-holder {
+    overflow: auto;
+  }
+
+  .ant-tabs-tabpane {
+    padding: var(--ant-padding-lg);
+  }
+}

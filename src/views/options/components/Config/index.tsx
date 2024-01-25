@@ -22,7 +22,7 @@ export default () => {
   const props: FormProps<any, any> = {
     form: useForm(),
     request: () => store.get(StoreEnum.CRX),
-    onFinish: (data) => store.set(StoreEnum.CRX, data).then(popup.success()),
+    onFinish: (data) => store.set(StoreEnum.CRX, data).then(() => popup.success()),
     columns: [
       {
         title: 'Github Token',
