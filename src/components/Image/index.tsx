@@ -2,9 +2,7 @@ import { Image as AntImage, ImageProps } from 'antd'
 
 export type { ImageProps } from 'antd'
 
-const dom = (props: ImageProps) => {
-  return <AntImage {...props} />
-}
+const dom = (props: ImageProps) => <AntImage {...props} />
 
 export default dom
 

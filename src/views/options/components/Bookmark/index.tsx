@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Flex, Space, Button, Statistic, Divider } from 'antd'
 import CountUp from 'react-countup'
+import * as bookmark from '@/services/bookmark'
 import { popup } from '@/utils/show'
-import bookmark from '@/services/bookmark'
 
 const formatter = (value: number | string) => {
   typeof value === 'string' && (value = parseInt(value))
@@ -14,7 +14,7 @@ export default () => {
   const [cloudTotal, setCloudTotal] = useState(0)
 
   useEffect(() => {
-    bookmark.total(false).then(setTotal)
+    bookmark.total().then(setTotal)
   }, [])
 
   const setTotal = (res: any[]) => {
@@ -24,29 +24,29 @@ export default () => {
 
   const onUpload = () => {
     popup.ask(async () => {
-      const nodes = await bookmark.tree()
-      await bookmark.set(nodes)
-      await bookmark.total().then(setTotal)
+      const nodes = await bookmark.local.get()
+      await bookmark.cloud.set({ tree: nodes })
+      await bookmark.total().then(bookmark.warn).then(setTotal)
       popup.success()
     })
   }
 
   const onDownLoad = () => {
     popup.ask(async () => {
-      const res = await bookmark.get()
-      await bookmark.clear()
+      const res = await bookmark.cloud.get()
+      await bookmark.local.clear()
       for (const node of res.tree) {
-        await bookmark.add(node)
+        await bookmark.local.add(node)
       }
-      await bookmark.total().then(setTotal)
+      await bookmark.total().then(bookmark.warn).then(setTotal)
       popup.success()
     })
   }
 
   const onClear = () => {
     popup.ask(async () => {
-      await bookmark.clear()
-      await bookmark.total().then(setTotal)
+      await bookmark.local.clear()
+      await bookmark.total().then(bookmark.warn).then(setTotal)
       popup.success()
     })
   }

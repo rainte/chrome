@@ -5,7 +5,7 @@ import route from '@/utils/route'
 import * as Dom from './components'
 import './index.scss'
 
-const TAB = 'tab'
+const KEY_TAB = 'tab'
 
 export default () => {
   const location = useLocation()
@@ -13,7 +13,7 @@ export default () => {
   const [tab, setTab] = useState('proxy')
 
   useEffect(() => {
-    const activeKey = route.get(location, TAB)
+    const activeKey = route.get(location, KEY_TAB)
     activeKey && setTab(activeKey)
   }, [])
 
@@ -44,7 +44,7 @@ export default () => {
       }}
       onTabClick={(activeKey) => {
         setTab(activeKey)
-        const url = route.add(location, { [TAB]: activeKey })
+        const url = route.add(location, { [KEY_TAB]: activeKey })
         navigate(url)
       }}
       items={items.map((item) => {

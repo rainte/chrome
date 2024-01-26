@@ -1,7 +1,7 @@
 import { Space, Input, Button, Typography } from 'antd'
 
 export type FormItemLinkProps = {
-  name: string
+  name?: string
   url?: string
 }
 

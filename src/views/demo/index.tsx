@@ -1,6 +1,6 @@
-import Form, { FormProps } from '@/components/Form'
+import Form, { useForm, FormProps } from '@/components/Form'
 import Upload from '@/components/Upload'
-import { onUpload } from '@/utils/mate'
+import { onUpload } from '@/utils/file'
 import './index.scss'
 
 export default () => {
@@ -8,7 +8,8 @@ export default () => {
     props.form?.setFieldValue('newTabBgImg', files)
   }
 
-  const props: FormProps<any, any> = {
+  const props: FormProps = {
+    form: useForm(),
     columns: [
       {
         title: '背景图',

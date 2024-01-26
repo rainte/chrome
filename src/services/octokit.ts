@@ -1,7 +1,6 @@
 import { Octokit } from '@octokit/core'
-import { store, StoreEnum, CRXProps } from './storage'
-import { popup } from './show'
-import error from './error'
+import { store, StoreEnum, CRXProps } from '@/services/storage'
+import error from '@/utils/error'
 
 export enum HubEnum {
   Bookmark = 'bookmark.json',
@@ -13,10 +12,10 @@ export type SetProps = {
 }
 
 const crx = async () => {
-  const config = await store.get(StoreEnum.CRX)
+  const config = await store.get<CRXProps>(StoreEnum.CRX)
   config.githubToken || error.fail('请先配置 Github Token.')
   config.gistId || error.fail('请先配置 Github Gist.')
-  return config as CRXProps
+  return config
 }
 
 const octokit = {
@@ -56,14 +55,13 @@ export const gist = {
     const options = { gist_id: config.gistId, files }
     return octokit.request(url, options)
   },
-  getJson: function (key: HubEnum) {
+  getJson: function <T = any>(key: HubEnum): Promise<T> {
     return this.get()
       .then((res) => res[key]?.content || '{}')
       .then(JSON.parse)
   },
-  setJson: function (key: HubEnum, data: any, isOk?: boolean) {
-    const res = this.set([{ key, data: JSON.stringify(data) }])
-    return isOk ? res.then(() => popup.success()) : res
+  setJson: function (key: HubEnum, data: any) {
+    return this.set([{ key, data: JSON.stringify(data) }])
   }
 }
 

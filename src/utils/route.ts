@@ -10,7 +10,7 @@ export default {
     console.log('toCrxTab', url)
     chrome.tabs.create({ url: chrome.runtime.getURL(url) })
   },
-  get: (location: Location<any>, key: string, defaultValue?: any) => {
+  get: (location: Location<any>, key: string, defaultValue?: string) => {
     const data = new URLSearchParams(location.search)
     return data.get(key) || defaultValue
   },

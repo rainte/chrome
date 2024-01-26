@@ -1,11 +1,15 @@
-.options {
-  height: 100%;
+.ant-app {
+  background-color: #fff;
 
-  .ant-tabs-content-holder {
-    overflow: auto;
-  }
+  .options {
+    height: 100%;
 
-  .ant-tabs-tabpane {
-    padding: var(--ant-padding-lg);
+    .ant-tabs-content-holder {
+      overflow: auto;
+    }
+
+    .ant-tabs-tabpane {
+      padding: var(--ant-padding-lg);
+    }
   }
 }

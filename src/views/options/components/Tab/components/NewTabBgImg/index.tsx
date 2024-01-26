@@ -1,11 +1,17 @@
 import Form, { FormProps, useForm } from '@/components/Form'
-import { gist, HubEnum } from '@/utils/octokit'
+import { gist, HubEnum } from '@/services/octokit'
+import { popup } from '@/utils/show'
+
+export type NewTabBgImgProps = {
+  status?: boolean
+  newTabBgImg?: string
+}
 
 export default () => {
   const props: FormProps = {
     form: useForm(),
     request: () => gist.getJson(HubEnum.Tab),
-    onFinish: (data) => gist.setJson(HubEnum.Tab, data, true),
+    onFinish: (data) => gist.setJson(HubEnum.Tab, data).then(() => popup.success()),
     columns: [
       {
         title: '开启',

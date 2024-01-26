@@ -8,9 +8,5 @@ export type NoticeProps = {
 }
 
 export default {
-  send: (type: NoticeEnum, text?: any) =>
-    chrome.runtime.sendMessage({
-      type,
-      text
-    })
+  send: (type: NoticeEnum, text?: any) => chrome.runtime.sendMessage({ type, text })
 }

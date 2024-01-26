@@ -4,8 +4,9 @@ import { PlusOutlined } from '@ant-design/icons'
 export type { UploadFile } from 'antd'
 export type UploadProps = AntUploadProps & { loading?: boolean }
 
-const size = (num: number) => `calc(var(--ant-control-height-lg) * ${num})`
-const style = (num: number) => ({ fontSize: size(num) })
+const style = (num: number) => ({
+  fontSize: `calc(var(--ant-control-height-lg) * ${num})`
+})
 
 const onPreview = async (file: UploadFile) => {
   const src = file.url as string

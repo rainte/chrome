@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Row, Col, Flex, Typography } from 'antd'
-import Dragg, { DraggItemProps, useSortable, draggStyle } from '@/components/Dragg'
+import Dragg, { useSortable, draggStyle } from '@/components/Dragg'
 import { BookOutlined, CodeOutlined } from '@ant-design/icons'
 import route from '@/utils/route'
-import bookmark from '@/services/bookmark'
+import * as bookmark from '@/services/bookmark'
 
 type Item = {
   id: number
@@ -18,7 +18,7 @@ export default () => {
   useEffect(() => {
     bookmark
       .total()
-      .then((res) => {
+      .then((res: any[]) => {
         setLocalTotal(res[0])
         setCloudTotal(res[1])
       })
@@ -28,7 +28,7 @@ export default () => {
       })
   }, [])
 
-  const items: DraggItemProps[] = [
+  const items: Item[] = [
     {
       id: 1,
       text: (
@@ -54,7 +54,7 @@ export default () => {
     }
   ]
 
-  const dom = (items: DraggItemProps[]) => {
+  const dom = (items: Item[]) => {
     return items.map((item) => {
       const { text, url } = item
       return (
@@ -93,5 +93,5 @@ export default () => {
     </Typography.Link>
   )
 
-  return <Row gutter={[10, 5]}>{true ? dom(items) : <Dragg items={items} dom={DraggItem} />}</Row>
+  return <Row gutter={[10, 5]}>{dom(items) && <Dragg items={items} dom={DraggItem} />}</Row>
 }

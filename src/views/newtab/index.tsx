@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Flex } from 'antd'
-import { gist, HubEnum } from '@/utils/octokit'
+import { gist, HubEnum } from '@/services/octokit'
+import { NewTabBgImgProps } from '@/views/options/components/Tab/components/NewTabBgImg'
 
 export default () => {
   const [url, setUrl] = useState('')
 
   useEffect(() => {
-    gist.getJson(HubEnum.Tab).then((res) => {
+    gist.getJson<NewTabBgImgProps>(HubEnum.Tab).then((res) => {
       res.status && res.newTabBgImg && setUrl(res.newTabBgImg)
     })
   }, [])

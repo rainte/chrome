@@ -11,7 +11,7 @@ const localJson = {
   stringify: (key: string, value: any) => {
     return localStorage.setItem(key, JSON.stringify(value))
   },
-  parse: (key: string) => {
+  parse: function <T = any>(key: string): T {
     return JSON.parse(localStorage.getItem(key) as string)
   }
 }
@@ -39,11 +39,9 @@ const isDev = import.meta.env.DEV
 export const cache = isDev ? localWeb : chrome.storage.local
 export const cloud = isDev ? localWeb : chrome.storage.sync
 export const store = {
-  get: (key: string) =>
-    cloud
-      .get(key)
-      .then((data) => data[key] || {})
-      .then((res: StorageProps) => res),
+  get: function <T = Record<string, any>>(key: string): Promise<T> {
+    return cloud.get(key).then((data) => data[key] || {})
+  },
   set: (key: string, data: StorageProps) => cloud.set({ [key]: data })
 }
 
