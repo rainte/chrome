@@ -5,6 +5,7 @@ import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core/dist/types/in
 
 export { useSortable } from '@dnd-kit/sortable'
 export type DraggProps<T = any> = {
+  show?: boolean
   items: (T & { id: UniqueIdentifier })[]
   dom: (props: T & { id: UniqueIdentifier }) => JSX.Element
 }
@@ -30,9 +31,10 @@ export const draggStyle = (props: {
 }
 
 export default function <T = any>(props: DraggProps<T>) {
-  const { items: init, dom: Dom } = props
-  const [items, setItems] = useState<(T & { id: UniqueIdentifier })[]>(init)
+  const { items: init, dom: Dom, show = true } = props
+  if (!show) return
 
+  const [items, setItems] = useState<(T & { id: UniqueIdentifier })[]>(init)
   const sensors = useSensors(useSensor(PointerSensor))
   const context = items.map((item) => <Dom {...item} key={item.id} />)
 

@@ -93,5 +93,10 @@ export default () => {
     </Typography.Link>
   )
 
-  return <Row gutter={[10, 5]}>{dom(items) && <Dragg items={items} dom={DraggItem} />}</Row>
+  return (
+    <Row gutter={[10, 5]}>
+      {dom(items)}
+      <Dragg show={false} items={items} dom={DraggItem} />
+    </Row>
+  )
 }
