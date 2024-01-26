@@ -19,8 +19,9 @@ export default () => {
         valueType: 'switch'
       },
       {
-        title: '背景图地址',
-        dataIndex: 'newTabBgImg'
+        title: '背景图 URL',
+        dataIndex: 'newTabBgImg',
+        formItemProps: { wrapperCol: { span: 12 } }
       }
     ]
   }

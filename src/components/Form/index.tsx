@@ -17,6 +17,8 @@ export default dom
 
 dom.defaultProps = {
   layout: 'horizontal',
+  labelWrap: true,
+  scrollToFirstError: true,
   wrapperCol: { span: 6 },
   submitter: {
     render: (_: any, dom: JSX.Element[]) => {
