@@ -3,6 +3,7 @@ import { Space, Input, Button } from 'antd'
 
 export default () => {
   const open = (url: string) => {
+    // chrome.storage.
     window.open(url, '_blank')
   }
 
