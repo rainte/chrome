@@ -4,7 +4,8 @@ import error from '@/utils/error'
 
 export enum HubEnum {
   Bookmark = 'bookmark.json',
-  Tab = 'tab.json'
+  Tab = 'tab.json',
+  PROXY = 'proxy.json'
 }
 export type SetProps = {
   key: HubEnum

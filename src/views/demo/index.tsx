@@ -3,6 +3,12 @@ import Upload from '@/components/Upload'
 import { onUpload } from '@/utils/file'
 import './index.scss'
 
+const StatusMap = new Map([
+  [1, { text: '正常', status: 'Success' }],
+  [2, { text: '冻结', status: 'Error' }]
+])
+console.log('StatusMap', StatusMap)
+
 export default () => {
   const setNewTabBgImg = (files: any[]) => {
     props.form?.setFieldValue('newTabBgImg', files)

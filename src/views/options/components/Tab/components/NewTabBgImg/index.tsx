@@ -12,6 +12,7 @@ export default () => {
     form: useForm(),
     request: () => gist.getJson(HubEnum.Tab),
     onFinish: (data) => gist.setJson(HubEnum.Tab, data).then(() => popup.success()),
+    wrapperCol: { span: 12 },
     columns: [
       {
         title: '开启',
@@ -20,8 +21,7 @@ export default () => {
       },
       {
         title: '背景图 URL',
-        dataIndex: 'newTabBgImg',
-        formItemProps: { wrapperCol: { span: 12 } }
+        dataIndex: 'newTabBgImg'
       }
     ]
   }

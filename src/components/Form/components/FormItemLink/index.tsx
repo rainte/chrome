@@ -6,11 +6,11 @@ export type FormItemLinkProps = InputProps & {
 }
 
 export default (props: FormItemLinkProps) => {
-  const { name, url, ...attrs } = props
+  const { name, url, ...more } = props
 
   return (
-    <Space.Compact>
-      <Input {...attrs} />
+    <Space.Compact style={{ width: '100%' }}>
+      <Input {...more} />
       <Typography.Link href={url} target="_blank">
         <Button>{name}</Button>
       </Typography.Link>

@@ -23,6 +23,7 @@ export default () => {
     form: useForm(),
     request: () => store.get(StoreEnum.CRX),
     onFinish: (data) => store.set(StoreEnum.CRX, data).then(() => popup.success()),
+    wrapperCol: { span: 10 },
     columns: [
       {
         title: 'Github Token',
@@ -38,7 +39,7 @@ export default () => {
         formItemProps: { rules: [{ required: true }] },
         renderFormItem: (_, { defaultRender, ...props }) => {
           return (
-            <Space.Compact>
+            <Space.Compact style={{ width: '100%' }}>
               <Input {...props} />
               <Button onClick={addGist}>自动生成</Button>
               <Typography.Link href="https://gist.github.com" target="_blank">

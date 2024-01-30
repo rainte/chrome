@@ -10,25 +10,36 @@ export const useForm = () => {
 }
 
 const dom = function <T = any, ValueType = 'text'>(props: FormProps<T, ValueType>) {
-  return <BetaSchemaForm {...props} />
+  const { labelCol, wrapperCol } = props
+  const init = defaultProps({ labelCol, wrapperCol } as FormProps)
+  const attrs = { ...init, ...props } as FormProps
+
+  return <BetaSchemaForm {...attrs} />
 }
 
 export default dom
 
-dom.defaultProps = {
-  layout: 'horizontal',
-  labelWrap: true,
-  scrollToFirstError: true,
-  wrapperCol: { span: 6 },
-  submitter: {
-    render: (_: any, dom: JSX.Element[]) => {
-      return (
-        <Form.Item>
-          <Flex justify="center">
-            <Space>{dom.reverse()}</Space>
-          </Flex>
-        </Form.Item>
-      )
+const defaultProps = (props: FormProps): FormProps => {
+  const { labelCol = { span: 3 }, wrapperCol = { span: 6 } } = props
+  const span = (labelCol.span as number) + (wrapperCol.span as number)
+
+  const res = {
+    layout: 'horizontal',
+    scrollToFirstError: true,
+    labelCol: labelCol,
+    wrapperCol: wrapperCol,
+    submitter: {
+      render: (_: any, submitter: JSX.Element[]) => {
+        return (
+          <Form.Item wrapperCol={{ span: span }}>
+            <Flex justify="center">
+              <Space>{submitter.reverse()}</Space>
+            </Flex>
+          </Form.Item>
+        )
+      }
     }
-  }
+  } as FormProps
+
+  return res
 }

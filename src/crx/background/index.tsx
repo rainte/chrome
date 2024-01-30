@@ -1,3 +1,5 @@
+import { NoticeEnum } from '@/services/notice'
+
 console.log('background')
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -15,7 +17,10 @@ chrome.action.onClicked.addListener((tab) => {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log('onMessage', message, sender, sendResponse)
-  onClear()
+
+  if (message.type === NoticeEnum.Bookmark) {
+    onClear()
+  }
 
   chrome.tabs.query({ currentWindow: true, active: true }).then(() => {
     sendResponse({ ok: true })
