@@ -10,7 +10,7 @@ const KEY_TAB = 'tab'
 export default () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const [tab, setTab] = useState('proxy')
+  const [tab, setTab] = useState('json')
 
   useEffect(() => {
     const activeKey = route.get(location, KEY_TAB)
@@ -19,9 +19,9 @@ export default () => {
 
   const items: (TabPaneProps & { label: string })[] = [
     { id: 'json', label: 'Json', children: <Dom.Json /> },
-    { id: 'proxy', label: '代理', children: <Dom.Proxy /> },
     { id: 'bookmark', label: '书签', children: <Dom.Bookmark /> },
     { id: 'tab', label: '标签页', children: <Dom.Tab /> },
+    { id: 'proxy', label: '代理', children: <Dom.Proxy /> },
     { id: 'config', label: '配置', children: <Dom.Config /> }
   ]
 
