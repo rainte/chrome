@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Rainte",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "Rainte Chrome CRX",
   "homepage_url": "http://rainte.com",
   "default_locale": "zh_CN",
@@ -27,7 +27,7 @@
     "newtab": "/index.html#/newtab"
   },
   "options_page": "/index.html#/options",
-  "permissions": ["storage", "bookmarks", "proxy"],
+  "permissions": ["storage", "bookmarks"],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

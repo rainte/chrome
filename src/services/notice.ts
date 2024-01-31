@@ -1,6 +1,5 @@
 export enum NoticeEnum {
-  Bookmark = 'Bookmark',
-  Proxy = 'Proxy'
+  Bookmark = 'Bookmark'
 }
 
 export type NoticeProps = {
