@@ -21,7 +21,6 @@ export default () => {
     { id: 'json', label: 'Json', children: <Dom.Json /> },
     { id: 'bookmark', label: '书签', children: <Dom.Bookmark /> },
     { id: 'tab', label: '标签页', children: <Dom.Tab /> },
-    { id: 'proxy', label: '代理', children: <Dom.Proxy /> },
     { id: 'config', label: '配置', children: <Dom.Config /> }
   ]
 

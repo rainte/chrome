@@ -3,7 +3,7 @@ import { Row, Col, Flex, Typography } from 'antd'
 import Dragg, { useSortable, draggStyle } from '@/components/Dragg'
 import { BookOutlined, CodeOutlined } from '@ant-design/icons'
 import route from '@/utils/route'
-import * as bookmark from '@/services/bookmark'
+import bookmark from '@/services/bookmark'
 
 type Item = {
   id: number

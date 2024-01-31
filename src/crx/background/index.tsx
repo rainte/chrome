@@ -1,4 +1,4 @@
-import { NoticeEnum } from '@/services/notice'
+import bookmark from '@/services/bookmark'
 
 console.log('background')
 
@@ -15,31 +15,12 @@ chrome.action.onClicked.addListener((tab) => {
   })
 })
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log('onMessage', message, sender, sendResponse)
-
-  if (message.type === NoticeEnum.Bookmark) {
-    onClear()
-  }
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log('background onMessage', request, sender, sendResponse)
 
   chrome.tabs.query({ currentWindow: true, active: true }).then(() => {
     sendResponse({ ok: true })
   })
 })
 
-const onChanged = () => {
-  chrome.action.setBadgeText({ text: '!' })
-  chrome.action.setBadgeBackgroundColor({ color: 'red' })
-}
-
-const onClear = () => {
-  chrome.action.setBadgeText({ text: '' })
-}
-
-chrome.bookmarks.onCreated.addListener(onChanged)
-chrome.bookmarks.onChanged.addListener(onChanged)
-chrome.bookmarks.onRemoved.addListener(onChanged)
-chrome.bookmarks.onMoved.addListener(onChanged)
-chrome.bookmarks.onImportBegan.addListener(onChanged)
-chrome.bookmarks.onImportEnded.addListener(onChanged)
-chrome.bookmarks.onChildrenReordered.addListener(onChanged)
+bookmark.listener()

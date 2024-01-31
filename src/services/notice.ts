@@ -1,5 +1,6 @@
 export enum NoticeEnum {
-  Bookmark = 'Bookmark'
+  Bookmark = 'Bookmark',
+  Proxy = 'Proxy'
 }
 
 export type NoticeProps = {
@@ -8,5 +9,6 @@ export type NoticeProps = {
 }
 
 export default {
-  send: (type: NoticeEnum, text?: any) => chrome.runtime.sendMessage({ type, text })
+  send: (type: NoticeEnum, text?: any) => chrome.runtime.sendMessage({ type, text }),
+  clear: () => chrome.action.setBadgeText({ text: '' })
 }

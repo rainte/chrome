@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Flex, Space, Button, Statistic, Divider } from 'antd'
 import CountUp from 'react-countup'
-import * as bookmark from '@/services/bookmark'
+import bookmark from '@/services/bookmark'
 import { popup } from '@/utils/show'
 
 const formatter = (value: number | string) => {
@@ -24,29 +24,32 @@ export default () => {
 
   const onUpload = () => {
     popup.ask(async () => {
-      const nodes = await bookmark.local.get()
-      await bookmark.cloud.set({ tree: nodes })
-      await bookmark.total().then(bookmark.warn).then(setTotal)
+      const nodes = await bookmark.getLocalBookmark()
+      await bookmark.setCloudBookmark({ tree: nodes })
+      await bookmark.total().then(setTotal)
+      await bookmark.clearNotice()
       popup.success()
     })
   }
 
   const onDownLoad = () => {
     popup.ask(async () => {
-      const res = await bookmark.cloud.get()
-      await bookmark.local.clear()
+      const res = await bookmark.getCloudBookmark()
+      await bookmark.clearLocalBookmark()
       for (const node of res.tree) {
-        await bookmark.local.add(node)
+        await bookmark.addLocalBookmark(node)
       }
-      await bookmark.total().then(bookmark.warn).then(setTotal)
+      await bookmark.total().then(setTotal)
+      await bookmark.clearNotice()
       popup.success()
     })
   }
 
   const onClear = () => {
     popup.ask(async () => {
-      await bookmark.local.clear()
-      await bookmark.total().then(bookmark.warn).then(setTotal)
+      await bookmark.clearLocalBookmark()
+      await bookmark.total().then(setTotal)
+      await bookmark.clearNotice()
       popup.success()
     })
   }

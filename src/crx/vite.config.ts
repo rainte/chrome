@@ -7,6 +7,9 @@ export const name = (dir: string) => path.basename(dir)
 
 export default (name: string) => {
   return defineConfig({
+    define: {
+      'process.env': {}
+    },
     build: {
       outDir: '.' + name,
       lib: {
