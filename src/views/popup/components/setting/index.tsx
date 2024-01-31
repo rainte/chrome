@@ -27,6 +27,7 @@ export default () => {
     <Flex vertical gap="small">
       <Header />
       <List
+        split
         bordered
         dataSource={data}
         renderItem={(item) => (
