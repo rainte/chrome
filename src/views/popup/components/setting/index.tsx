@@ -30,8 +30,8 @@ export default () => {
         bordered
         dataSource={data}
         renderItem={(item) => (
-          <Typography.Link href={item.url}>
-            <List.Item actions={[<RightOutlined />]}>
+          <Typography.Link onClick={() => route.toCrxTab(item.url)}>
+            <List.Item extra={<RightOutlined />}>
               <Typography.Text>{item.label}</Typography.Text>
             </List.Item>
           </Typography.Link>
