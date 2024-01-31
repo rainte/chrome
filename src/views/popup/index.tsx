@@ -6,7 +6,7 @@ import Setting from './components/setting'
 import './index.scss'
 
 export default () => {
-  const [key, setKey] = useState<any>('apps')
+  const [key, setKey] = useState<any>('setting')
 
   const doms: Record<string, any> = {
     apps: {
