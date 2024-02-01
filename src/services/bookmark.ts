@@ -61,6 +61,6 @@ export default {
     chrome.bookmarks.onMoved.addListener(this.warnNotice)
     chrome.bookmarks.onImportBegan.addListener(this.warnNotice)
     chrome.bookmarks.onImportEnded.addListener(this.warnNotice)
-    chrome.bookmarks.onChildrenReordered.addListener(this.warnNotice)
+    // chrome.bookmarks.onChildrenReordered.addListener(this.warnNotice)
   }
 }
