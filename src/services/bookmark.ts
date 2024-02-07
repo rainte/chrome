@@ -1,5 +1,6 @@
 import { gist, HubEnum } from '@/services/octokit'
 import notice from './notice'
+import { cloud } from './storage'
 
 export type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode
 export type BookmarkProps = {
@@ -49,7 +50,8 @@ export default {
       .then(sum)
     return Promise.all([res1, res2])
   },
-  warnNotice: async () => {
+  warnNotice: async (...args: any[]) => {
+    cloud.set({ warnNotice: args })
     chrome.action.setBadgeText({ text: '!' })
     chrome.action.setBadgeBackgroundColor({ color: 'red' })
   },
@@ -59,8 +61,5 @@ export default {
     chrome.bookmarks.onChanged.addListener(this.warnNotice)
     chrome.bookmarks.onRemoved.addListener(this.warnNotice)
     chrome.bookmarks.onMoved.addListener(this.warnNotice)
-    chrome.bookmarks.onImportBegan.addListener(this.warnNotice)
-    chrome.bookmarks.onImportEnded.addListener(this.warnNotice)
-    // chrome.bookmarks.onChildrenReordered.addListener(this.warnNotice)
   }
 }
