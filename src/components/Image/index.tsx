@@ -2,11 +2,11 @@ import { Image as AntImage, ImageProps } from 'antd'
 
 export type { ImageProps } from 'antd'
 
-const dom = (props: ImageProps) => <AntImage {...props} />
+export default function App(props: ImageProps) {
+  return <AntImage {...props} />
+}
 
-export default dom
-
-dom.defaultProps = {
+App.defaultProps = {
   width: '100%',
   height: '100%',
   preview: false,

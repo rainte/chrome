@@ -1,5 +1,5 @@
 import { Upload, UploadFile, Flex, Typography, Spin, UploadProps as AntUploadProps } from 'antd'
-import { PlusOutlined } from '@ant-design/icons'
+import { AiOutlinePlus } from 'react-icons/ai'
 
 export type { UploadFile } from 'antd'
 export type UploadProps = AntUploadProps & { loading?: boolean }
@@ -17,7 +17,7 @@ const onPreview = async (file: UploadFile) => {
   window.open(src)?.document?.write(image.outerHTML)
 }
 
-const dom = (props: UploadProps) => {
+export default function App(props: UploadProps) {
   const { fileList = [], maxCount = 1, loading, disabled } = props
 
   return (
@@ -28,7 +28,7 @@ const dom = (props: UploadProps) => {
             <Spin />
           ) : (
             <>
-              <PlusOutlined style={style(0.3)} />
+              <AiOutlinePlus style={style(0.3)} />
               <Typography.Text style={style(0.25)}>点击上传</Typography.Text>
             </>
           )}
@@ -38,9 +38,7 @@ const dom = (props: UploadProps) => {
   )
 }
 
-export default dom
-
-dom.defaultProps = {
+App.defaultProps = {
   listType: 'picture-card',
   onPreview
 }

@@ -9,15 +9,12 @@ export const useForm = () => {
   return form
 }
 
-const dom = function <T = any, ValueType = 'text'>(props: FormProps<T, ValueType>) {
+export default function App<T = any, ValueType = 'text'>(props: FormProps<T, ValueType>) {
   const { labelCol, wrapperCol } = props
   const init = defaultProps({ labelCol, wrapperCol } as FormProps)
-  const attrs = { ...init, ...props } as FormProps
 
-  return <BetaSchemaForm {...attrs} />
+  return <BetaSchemaForm {...({ ...init, ...props } as FormProps)} />
 }
-
-export default dom
 
 const defaultProps = (props: FormProps): FormProps => {
   const { labelCol = { span: 3 }, wrapperCol = { span: 6 } } = props

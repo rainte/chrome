@@ -1,25 +1,16 @@
 import { useState } from 'react'
-import { ConfigProvider, Flex, Segmented, Space } from 'antd'
-import { AppstoreOutlined, SettingOutlined } from '@ant-design/icons'
+import { ConfigProvider, Segmented, Flex } from 'antd'
+import { AiFillAppstore, AiOutlineSetting } from 'react-icons/ai'
 import Apps from './components/apps'
 import Setting from './components/setting'
-import './index.scss'
+
+const options = [
+  { label: '组件', icon: <AiFillAppstore />, dom: <Apps /> },
+  { label: '设置', icon: <AiOutlineSetting />, dom: <Setting /> }
+]
 
 export default () => {
-  const [key, setKey] = useState<any>('setting')
-
-  const doms: Record<string, any> = {
-    apps: {
-      label: '组件',
-      icon: <AppstoreOutlined />,
-      dom: <Apps />
-    },
-    setting: {
-      label: '设置',
-      icon: <SettingOutlined />,
-      dom: <Setting />
-    }
-  }
+  const [key, setKey] = useState(0)
 
   return (
     <ConfigProvider
@@ -30,24 +21,33 @@ export default () => {
         }
       }}
     >
-      <Flex vertical gap="small" className="popup">
+      <Flex
+        vertical
+        gap="small"
+        className="popup"
+        style={{
+          width: '17rem',
+          padding: '1rem',
+          backgroundColor: '#ededed'
+        }}
+      >
         <Segmented
-          options={Object.keys(doms).map((key) => {
+          options={options.map((item, index) => {
             return {
               label: (
-                <Space>
-                  {doms[key].icon}
-                  {doms[key].label}
-                </Space>
+                <Flex gap="small" align="center" justify="center">
+                  {item.icon}
+                  {item.label}
+                </Flex>
               ),
-              value: key
+              value: index
             }
           })}
           value={key}
           onChange={setKey}
           block
         />
-        {doms[key]?.dom}
+        {options[key].dom}
       </Flex>
     </ConfigProvider>
   )

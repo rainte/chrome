@@ -9,7 +9,7 @@ const StatusMap = new Map([
 ])
 console.log('StatusMap', StatusMap)
 
-export default () => {
+export default function App() {
   const setNewTabBgImg = (files: any[]) => {
     props.form?.setFieldValue('newTabBgImg', files)
   }
