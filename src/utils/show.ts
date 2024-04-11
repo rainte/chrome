@@ -3,7 +3,7 @@ import type { MessageInstance, JointContent } from 'antd/es/message/interface'
 import type { ModalStaticFunctions } from 'antd/es/modal/confirm'
 import type { NotificationInstance } from 'antd/es/notification/interface'
 import type { ModalFuncProps } from 'antd/es/modal/interface'
-import i18n from '@/services/i18n'
+import i18n from '@/utils/i18n'
 
 let message: MessageInstance
 let notification: NotificationInstance

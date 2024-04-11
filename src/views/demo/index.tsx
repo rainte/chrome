@@ -1,6 +1,6 @@
 import Form, { useForm, FormProps } from '@/components/Form'
 import Upload from '@/components/Upload'
-import { onUpload } from '@/utils/file'
+import fast from '@/utils/fast'
 import './index.scss'
 
 const StatusMap = new Map([
@@ -9,7 +9,7 @@ const StatusMap = new Map([
 ])
 console.log('StatusMap', StatusMap)
 
-export default function App() {
+export default function () {
   const setNewTabBgImg = (files: any[]) => {
     props.form?.setFieldValue('newTabBgImg', files)
   }
@@ -24,7 +24,7 @@ export default function App() {
           return (
             <Upload
               fileList={props.value}
-              customRequest={onUpload}
+              customRequest={fast.file.onUpload}
               onChange={({ fileList }) => setNewTabBgImg(fileList)}
             />
           )

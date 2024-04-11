@@ -1,6 +1,6 @@
 import Form, { FormProps, FormItemLink, useForm } from '@/components/Form'
 import { Space, Input, Button, Typography } from 'antd'
-import { store, StoreEnum } from '@/services/storage'
+import storage, { StoreEnum } from '@/utils/storage'
 import { gist } from '@/services/octokit'
 import { popup } from '@/utils/show'
 
@@ -11,7 +11,7 @@ const links = {
   }
 }
 
-export default () => {
+export default function () {
   const addGist = () => {
     popup.ask(async () => {
       const res = await gist.add()
@@ -21,8 +21,8 @@ export default () => {
 
   const props: FormProps = {
     form: useForm(),
-    request: () => store.get(StoreEnum.CRX),
-    onFinish: (data) => store.set(StoreEnum.CRX, data).then(() => popup.success()),
+    request: () => storage.get(StoreEnum.CRX).then((res) => res || {}),
+    onFinish: (data) => storage.set(StoreEnum.CRX, data).then(() => popup.success()),
     wrapperCol: { span: 10 },
     columns: [
       {

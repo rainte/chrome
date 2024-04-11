@@ -9,7 +9,7 @@ export const useForm = () => {
   return form
 }
 
-export default function App<T = any, ValueType = 'text'>(props: FormProps<T, ValueType>) {
+export default function <T = any, ValueType = 'text'>(props: FormProps<T, ValueType>) {
   const { labelCol, wrapperCol } = props
   const init = defaultProps({ labelCol, wrapperCol } as FormProps)
 

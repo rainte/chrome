@@ -1,14 +1,14 @@
 import { Flex, List, Typography } from 'antd'
 import { Text } from '@rainte/react'
 import { AiOutlineReload, AiOutlineRight } from 'react-icons/ai'
-import route from '@/utils/route'
+import fast from '@/utils/fast'
+import { items, KEY_TAB } from '@/views/options'
 
-const data = [
-  { label: 'Json', url: '/options?tab=json' },
-  { label: '书签', url: '/options?tab=bookmark' }
-]
+const data = items.map((item) => {
+  return { ...item, url: `/options?${KEY_TAB}=${item.id}` }
+})
 
-export default function App() {
+export default function () {
   return (
     <Flex vertical gap="small">
       <Flex justify="space-between" style={{ padding: '0 1rem' }}>
@@ -25,7 +25,7 @@ export default function App() {
           align="center"
           gap="small"
           style={{ cursor: 'pointer' }}
-          onClick={() => route.toCrxTab('/options')}
+          onClick={() => fast.url.toCrxTab('/options')}
         >
           <Text>更多</Text>
           <AiOutlineRight />
@@ -37,7 +37,7 @@ export default function App() {
         bordered
         dataSource={data}
         renderItem={(item) => (
-          <Typography.Link onClick={() => route.toCrxTab(item.url)}>
+          <Typography.Link onClick={() => fast.url.toCrxTab(item.url)}>
             <List.Item extra={<AiOutlineRight />}>
               <Typography.Text>{item.label}</Typography.Text>
             </List.Item>

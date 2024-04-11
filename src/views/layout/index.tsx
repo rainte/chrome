@@ -1,9 +1,5 @@
 import { Outlet } from 'react-router-dom'
 
-export default () => {
-  return (
-    <>
-      <Outlet />
-    </>
-  )
+export default function () {
+  return <Outlet />
 }

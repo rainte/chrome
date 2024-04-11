@@ -1,6 +1,6 @@
 import { gist, HubEnum } from '@/services/octokit'
+import storage, { StoreEnum } from '@/utils/storage'
 import notice from './notice'
-import { cloud } from './storage'
 
 export type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode
 export type BookmarkProps = {
@@ -51,7 +51,7 @@ export default {
     return Promise.all([res1, res2])
   },
   warnNotice: async (...args: any[]) => {
-    cloud.set({ warnNotice: args })
+    storage.set(StoreEnum.Bookmark, args)
     chrome.action.setBadgeText({ text: '!' })
     chrome.action.setBadgeBackgroundColor({ color: 'red' })
   },

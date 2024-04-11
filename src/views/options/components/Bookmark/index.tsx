@@ -9,7 +9,7 @@ const formatter = (value: number | string) => {
   return <CountUp end={value} />
 }
 
-export default () => {
+export default function () {
   const [localTotal, setLocalTotal] = useState(0)
   const [cloudTotal, setCloudTotal] = useState(0)
 

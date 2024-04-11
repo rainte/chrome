@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Flex, Space, Input, Button, Alert } from 'antd'
-import { SortAscendingOutlined } from '@ant-design/icons'
+import { AiOutlineSortAscending } from 'react-icons/ai'
 import ReactJson from 'react-json-view'
-import error from '@/utils/error'
+import fast from '@/utils/fast'
 
-export default () => {
+export default function () {
   const [value, setValue] = useState<string>('{}')
   const [json, setJson] = useState<object>({})
   const [message, setMessage] = useState('')
@@ -15,7 +15,7 @@ export default () => {
     try {
       const value = event.target.value
       setValue(value)
-      isNaN(value) || error.fail(`"${value}" is not valid JSON`)
+      isNaN(value) || fast.fail(`"${value}" is not valid JSON`)
       setJson(JSON.parse(value))
       setMessage('')
     } catch (error: any) {
@@ -41,7 +41,7 @@ export default () => {
             <Space.Compact>
               <Button onClick={() => setCollapsed(!collapsed)}>折/展</Button>
               <Button onClick={() => setSort(!sort)}>
-                {sort && <SortAscendingOutlined />} 排序
+                {sort && <AiOutlineSortAscending />} 排序
               </Button>
             </Space.Compact>
           </Flex>

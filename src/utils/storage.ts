@@ -1,19 +1,14 @@
+import { storage } from '@rainte/react'
+
 export type StorageProps = Record<string, any>
 export type CRXProps = {
   githubToken: string
   gistId: string
 }
 export enum StoreEnum {
-  CRX = 'CRX'
-}
-
-const localJson = {
-  stringify: (key: string, value: any) => {
-    return localStorage.setItem(key, JSON.stringify(value))
-  },
-  parse: function <T = any>(key: string): T {
-    return JSON.parse(localStorage.getItem(key) as string)
-  }
+  CRX = 'CRX',
+  Bookmark = 'Bookmark',
+  Tab = 'Tab'
 }
 
 const localWeb = {
@@ -21,28 +16,29 @@ const localWeb = {
     const res: StorageProps = {}
 
     if (typeof keys === 'string') {
-      res[keys] = localJson.parse(keys)
+      res[keys] = storage.local.get(keys)
     } else if (Array.isArray(keys)) {
-      keys.map((key) => (res[key] = localJson.parse(key)))
+      keys.map((key) => (res[key] = storage.local.get(key)))
     } else if (keys instanceof Object) {
-      Object.keys(keys).map((key) => (res[key] = localJson.parse(key)))
+      Object.keys(keys).map((key) => (res[key] = storage.local.get(key)))
     }
 
     return res
   },
   set: async (items: StorageProps) => {
-    Object.entries(items).map((item) => localJson.stringify(...item))
+    Object.entries(items).map((item) => storage.local.set(...item))
   }
 }
 
 const isDev = import.meta.env.DEV
 export const cache = isDev ? localWeb : chrome.storage.local
 export const cloud = isDev ? localWeb : chrome.storage.sync
-export const store = {
+export default {
   get: function <T = Record<string, any>>(key: string): Promise<T> {
-    return cloud.get(key).then((data) => data[key] || {})
+    return cache.get(key).then((data) => data[key])
   },
-  set: (key: string, data: StorageProps) => cloud.set({ [key]: data })
+  set: (key: string, data: StorageProps) => cache.set({ [key]: data })
 }
 
+isDev || cache.get().then((res) => console.log('cache', res))
 isDev || cloud.get().then((res) => console.log('cloud', res))

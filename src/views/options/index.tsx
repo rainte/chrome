@@ -1,30 +1,30 @@
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Tabs, Typography, TabPaneProps } from 'antd'
-import route from '@/utils/route'
+import fast from '@/utils/fast'
 import * as Dom from './components'
 import './index.scss'
 
-const KEY_TAB = 'tab'
+export const KEY_TAB = 'tab'
 
-export default () => {
+export const items: (TabPaneProps & { label: string })[] = [
+  { id: 'json', label: 'Json', children: <Dom.Json /> },
+  { id: 'bookmark', label: '书签', children: <Dom.Bookmark /> },
+  { id: 'tab', label: '标签页', children: <Dom.Tab /> },
+  { id: 'config', label: '配置', children: <Dom.Config /> }
+]
+
+const titleStyle = { margin: '1rem', color: 'rgba(0, 0, 0, 0.65)' }
+
+export default function () {
   const location = useLocation()
   const navigate = useNavigate()
   const [tab, setTab] = useState('json')
 
   useEffect(() => {
-    const activeKey = route.get(location, KEY_TAB)
+    const activeKey = fast.url.get(location, KEY_TAB)
     activeKey && setTab(activeKey)
   }, [])
-
-  const items: (TabPaneProps & { label: string })[] = [
-    { id: 'json', label: 'Json', children: <Dom.Json /> },
-    { id: 'bookmark', label: '书签', children: <Dom.Bookmark /> },
-    { id: 'tab', label: '标签页', children: <Dom.Tab /> },
-    { id: 'config', label: '配置', children: <Dom.Config /> }
-  ]
-
-  const titleStyle = { margin: '1rem', color: 'rgba(0, 0, 0, 0.65)' }
 
   return (
     <Tabs
@@ -43,7 +43,7 @@ export default () => {
       }}
       onTabClick={(activeKey) => {
         setTab(activeKey)
-        const url = route.add(location, { [KEY_TAB]: activeKey })
+        const url = fast.url.add(location, { [KEY_TAB]: activeKey })
         navigate(url)
       }}
       items={items.map((item) => {

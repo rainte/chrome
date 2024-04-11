@@ -1,6 +1,6 @@
 import { Octokit } from '@octokit/core'
-import { store, StoreEnum, CRXProps } from '@/services/storage'
-import error from '@/utils/error'
+import storage, { StoreEnum, CRXProps } from '@/utils/storage'
+import fast from '@/utils/fast'
 
 export enum HubEnum {
   Bookmark = 'bookmark.json',
@@ -12,9 +12,8 @@ export type SetProps = {
 }
 
 const crx = async () => {
-  const config = await store.get<CRXProps>(StoreEnum.CRX)
-  config.githubToken || error.fail('请先配置 Github Token.')
-  config.gistId || error.fail('请先配置 Github Gist.')
+  const config = await storage.get<CRXProps>(StoreEnum.CRX)
+  config || fast.warn('请先到配置菜单,配置 Github 相关参数.')
   return config
 }
 
@@ -28,6 +27,7 @@ const octokit = {
         console.log('octokit response', res)
         return res
       })
+      .catch((error) => fast.warn(error.message))
   }
 }
 

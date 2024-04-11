@@ -39,6 +39,10 @@
     {
       "resources": ["/icons/logo.png"],
       "matches": ["<all_urls>"]
+    },
+    {
+      "resources": ["/insert.js"],
+      "matches": ["<all_urls>"]
     }
   ]
 }

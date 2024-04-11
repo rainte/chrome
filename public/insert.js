@@ -1,1 +1,1 @@
-console.log('insert.js')
+console.log('insert')
