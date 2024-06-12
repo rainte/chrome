@@ -4,7 +4,7 @@ import { AiOutlineSortAscending } from 'react-icons/ai'
 import ReactJson from 'react-json-view'
 import fast from '@/utils/fast'
 
-export default function () {
+export default function App() {
   const [value, setValue] = useState<string>('{}')
   const [json, setJson] = useState<object>({})
   const [message, setMessage] = useState('')

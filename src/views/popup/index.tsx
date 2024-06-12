@@ -9,7 +9,7 @@ const options = [
   { label: '设置', icon: <AiOutlineSetting />, dom: <Setting /> }
 ]
 
-export default function () {
+export default function App() {
   const [key, setKey] = useState(0)
 
   return (

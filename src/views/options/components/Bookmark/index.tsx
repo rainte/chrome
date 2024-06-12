@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Flex, Space, Button, Statistic, Divider } from 'antd'
+import { Flex, Space, Button, Statistic, Divider, Tag } from 'antd'
 import CountUp from 'react-countup'
 import bookmark from '@/services/bookmark'
 import { popup } from '@/utils/show'
@@ -9,12 +9,14 @@ const formatter = (value: number | string) => {
   return <CountUp end={value} />
 }
 
-export default function () {
+export default function App() {
   const [localTotal, setLocalTotal] = useState(0)
   const [cloudTotal, setCloudTotal] = useState(0)
+  const [isChange, setIsChange] = useState(false)
 
   useEffect(() => {
     bookmark.total().then(setTotal)
+    bookmark.isChange().then(setIsChange)
   }, [])
 
   const setTotal = (res: any[]) => {
@@ -58,9 +60,18 @@ export default function () {
     <Flex vertical gap="large">
       <Space size={30}>
         <Divider dashed={true} />
-        <Statistic title="云端" value={cloudTotal} formatter={formatter} />
+        <Statistic
+          title={
+            <>
+              本地&nbsp;
+              {isChange && <Tag color="error">已变</Tag>}
+            </>
+          }
+          value={localTotal}
+          formatter={formatter}
+        />
         <Divider dashed={true} />
-        <Statistic title="本地" value={localTotal} formatter={formatter} />
+        <Statistic title={<>云端&nbsp;</>} value={cloudTotal} formatter={formatter} />
         <Divider dashed={true} />
       </Space>
       <Space.Compact>

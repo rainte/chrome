@@ -11,7 +11,7 @@ const links = {
   }
 }
 
-export default function () {
+export default function App() {
   const addGist = () => {
     popup.ask(async () => {
       const res = await gist.add()

@@ -16,7 +16,7 @@ export const items: (TabPaneProps & { label: string })[] = [
 
 const titleStyle = { margin: '1rem', color: 'rgba(0, 0, 0, 0.65)' }
 
-export default function () {
+export default function App() {
   const location = useLocation()
   const navigate = useNavigate()
   const [tab, setTab] = useState('json')

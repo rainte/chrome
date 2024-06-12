@@ -18,3 +18,24 @@ export class SubDexie extends Dexie {
 }
 
 export const db = new SubDexie()
+
+export const get = (key: string, value = true) => {
+  return db.rows
+    .where({ key })
+    .first()
+    .then((res) => (value ? res?.value : res))
+}
+
+export const set = async (key: string, value: any) => {
+  const ok = await get(key, false)
+  if (ok) {
+    await db.rows.where({ key }).modify({ value })
+  } else {
+    await db.rows.add({ key, value })
+  }
+}
+
+export default {
+  get,
+  set
+}

@@ -8,7 +8,7 @@ const data = items.map((item) => {
   return { ...item, url: `/options?${KEY_TAB}=${item.id}` }
 })
 
-export default function () {
+export default function App() {
   return (
     <Flex vertical gap="small">
       <Flex justify="space-between" style={{ padding: '0 1rem' }}>
