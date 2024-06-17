@@ -9,7 +9,7 @@ export default function App() {
   const [json, setJson] = useState<object>({})
   const [message, setMessage] = useState('')
   const [collapsed, setCollapsed] = useState<boolean>(false)
-  const [sort, setSort] = useState<boolean>(true)
+  const [sort, setSort] = useState<boolean>(false)
 
   const onChange = (event: any) => {
     try {
@@ -47,11 +47,15 @@ export default function App() {
           </Flex>
           <Flex flex={2}>
             <ReactJson
-              src={json}
-              sortKeys={sort}
-              collapsed={collapsed}
-              theme="monokai"
-              quotesOnKeys={false}
+              src={json} // 数据.
+              sortKeys={sort} // 排序.
+              collapsed={collapsed} // 展开.
+              theme="monokai" // 主题.
+              name={false} // 根名称.
+              quotesOnKeys={false} // 引号.
+              displayArrayKey={false} // 显示数组键名.
+              displayDataTypes={false} // 显示数据类型.
+              displayObjectSize={false} // 显示对象大小.
               style={{
                 padding: '1rem',
                 width: '100%',

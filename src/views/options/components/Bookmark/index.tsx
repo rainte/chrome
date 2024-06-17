@@ -15,43 +15,43 @@ export default function App() {
   const [isChange, setIsChange] = useState(false)
 
   useEffect(() => {
-    bookmark.total().then(setTotal)
-    bookmark.isChange().then(setIsChange)
+    refresh()
   }, [])
 
-  const setTotal = (res: any[]) => {
-    setLocalTotal(res[0])
-    setCloudTotal(res[1])
+  const refresh = () => {
+    const total = bookmark.total().then((res) => {
+      setLocalTotal(res[0])
+      setCloudTotal(res[1])
+    })
+    const change = bookmark.isChange().then(setIsChange)
+    return Promise.all([total, change])
   }
 
   const onUpload = () => {
     popup.ask(async () => {
-      const nodes = await bookmark.getLocalBookmark()
-      await bookmark.setCloudBookmark({ tree: nodes })
-      await bookmark.total().then(setTotal)
-      await bookmark.clearNotice()
+      const nodes = await bookmark.local.get()
+      await bookmark.cloud.set({ tree: nodes })
+      await refresh().then(bookmark.warn.clear)
       popup.success()
     })
   }
 
   const onDownLoad = () => {
     popup.ask(async () => {
-      const res = await bookmark.getCloudBookmark()
-      await bookmark.clearLocalBookmark()
+      const res = await bookmark.cloud.get()
+      await bookmark.local.clear()
       for (const node of res.tree) {
-        await bookmark.addLocalBookmark(node)
+        await bookmark.local.add(node)
       }
-      await bookmark.total().then(setTotal)
-      await bookmark.clearNotice()
+      await refresh().then(bookmark.warn.clear)
       popup.success()
     })
   }
 
   const onClear = () => {
     popup.ask(async () => {
-      await bookmark.clearLocalBookmark()
-      await bookmark.total().then(setTotal)
-      await bookmark.clearNotice()
+      await bookmark.local.clear()
+      await refresh().then(bookmark.warn.clear)
       popup.success()
     })
   }
