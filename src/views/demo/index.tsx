@@ -1,4 +1,4 @@
-import Form, { useForm, FormProps } from '@/components/Form'
+import Form, { FormProps } from '@/components/Form'
 import Upload from '@/components/Upload'
 import fast from '@/utils/fast'
 import './index.scss'
@@ -15,12 +15,13 @@ export default function App() {
   }
 
   const props: FormProps = {
-    form: useForm(),
+    form: Form.useForm(),
     columns: [
       {
         title: '背景图',
         dataIndex: 'newTabBgImg',
-        renderFormItem: (_, { defaultRender, ...props }) => {
+        renderFormItem: (_, props) => {
+          delete (props as any).defaultRender
           return (
             <Upload
               fileList={props.value}

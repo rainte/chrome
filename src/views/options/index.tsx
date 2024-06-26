@@ -1,20 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Tabs, Typography, TabPaneProps } from 'antd'
+import { TabPaneProps, Tabs, Typography } from 'antd'
 import fast from '@/utils/fast'
 import * as Dom from './components'
 import './index.scss'
 
-export const KEY_TAB = 'tab'
-
-export const items: (TabPaneProps & { label: string })[] = [
+const titleStyle = { margin: '1rem', color: 'rgba(0, 0, 0, 0.65)' }
+const KEY_TAB = 'tab'
+const items: (TabPaneProps & { label: string })[] = [
   { id: 'json', label: 'Json', children: <Dom.Json /> },
   { id: 'bookmark', label: '书签', children: <Dom.Bookmark /> },
   { id: 'tab', label: '标签页', children: <Dom.Tab /> },
   { id: 'config', label: '配置', children: <Dom.Config /> }
 ]
-
-const titleStyle = { margin: '1rem', color: 'rgba(0, 0, 0, 0.65)' }
 
 export default function App() {
   const location = useLocation()
@@ -24,7 +22,7 @@ export default function App() {
   useEffect(() => {
     const activeKey = fast.url.get(location, KEY_TAB)
     activeKey && setTab(activeKey)
-  }, [])
+  }, [location])
 
   return (
     <Tabs
@@ -56,3 +54,6 @@ export default function App() {
     />
   )
 }
+
+App.KEY_TAB = KEY_TAB
+App.items = items

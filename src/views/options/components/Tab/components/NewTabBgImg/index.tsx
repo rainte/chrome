@@ -1,7 +1,7 @@
-import Form, { FormProps, useForm } from '@/components/Form'
+import Form, { FormProps } from '@/components/Form'
 import { gist, HubEnum } from '@/services/octokit'
 import { popup } from '@/utils/show'
-import { TabEnum } from '../..'
+import { Tab } from '../../..'
 
 export type NewTabBgImgProps = {
   status?: boolean
@@ -11,10 +11,10 @@ export type NewTabBgImgProps = {
 
 export default function App() {
   const props: FormProps = {
-    form: useForm(),
-    request: () => gist.getJson(HubEnum.Tab).then((res) => res[TabEnum.NewTabBgImg]),
+    form: Form.useForm(),
+    request: () => gist.getJson(HubEnum.Tab).then((res) => res[Tab.TabEnum.NewTabBgImg]),
     onFinish: (data) =>
-      gist.setJson(HubEnum.Tab, { [TabEnum.NewTabBgImg]: data }).then(() => popup.success()),
+      gist.setJson(HubEnum.Tab, { [Tab.TabEnum.NewTabBgImg]: data }).then(() => popup.success()),
     wrapperCol: { span: 12 },
     columns: [
       {

@@ -1,7 +1,7 @@
 import { Collapse, CollapseProps } from 'antd'
 import NewTabBgImg from './components/NewTabBgImg'
 
-export enum TabEnum {
+enum TabEnum {
   NewTabBgImg = 'NewTabBgImg'
 }
 
@@ -10,3 +10,5 @@ export default function App() {
 
   return <Collapse defaultActiveKey={0} items={items} />
 }
+
+App.TabEnum = TabEnum

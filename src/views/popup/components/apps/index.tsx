@@ -2,10 +2,10 @@ import { Flex, List, Typography } from 'antd'
 import { Text } from '@rainte/react'
 import { AiOutlineReload, AiOutlineRight } from 'react-icons/ai'
 import fast from '@/utils/fast'
-import { items, KEY_TAB } from '@/views/options'
+import Options from '@/views/options'
 
-const data = items.map((item) => {
-  return { ...item, url: `/options?${KEY_TAB}=${item.id}` }
+const data = Options.items.map((item) => {
+  return { ...item, url: `/options?${Options.KEY_TAB}=${item.id}` }
 })
 
 export default function App() {

@@ -1,4 +1,4 @@
-import Form, { FormProps, FormItemLink, useForm } from '@/components/Form'
+import Form, { FormProps, FormItemLink } from '@/components/Form'
 import { Space, Input, Button, Typography } from 'antd'
 import storage, { StoreEnum } from '@/utils/storage'
 import { gist } from '@/services/octokit'
@@ -20,7 +20,7 @@ export default function App() {
   }
 
   const props: FormProps = {
-    form: useForm(),
+    form: Form.useForm(),
     request: () => storage.get(StoreEnum.CRX).then((res) => res || {}),
     onFinish: (data) => storage.set(StoreEnum.CRX, data).then(() => popup.success()),
     wrapperCol: { span: 10 },
@@ -29,7 +29,8 @@ export default function App() {
         title: 'Github Token',
         dataIndex: 'githubToken',
         formItemProps: { rules: [{ required: true }] },
-        renderFormItem: (_, { defaultRender, ...props }) => {
+        renderFormItem: (_, props) => {
+          delete (props as any).defaultRender
           return <FormItemLink {...links.githubToken} {...props} />
         }
       },
@@ -37,7 +38,8 @@ export default function App() {
         title: 'Gist ID',
         dataIndex: 'gistId',
         formItemProps: { rules: [{ required: true }] },
-        renderFormItem: (_, { defaultRender, ...props }) => {
+        renderFormItem: (_, props) => {
+          delete (props as any).defaultRender
           return (
             <Space.Compact style={{ width: '100%' }}>
               <Input {...props} />

@@ -1,7 +1,7 @@
 import { lazy } from 'react'
 import { createHashRouter, Navigate } from 'react-router-dom'
 
-export default createHashRouter([
+const router = createHashRouter([
   { path: 'demo', Component: lazy(() => import('@/views/demo')) },
   {
     path: '/',
@@ -15,3 +15,5 @@ export default createHashRouter([
   },
   { path: '*', element: <Navigate to="/popup" /> }
 ])
+
+export default router

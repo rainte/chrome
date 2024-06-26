@@ -26,11 +26,13 @@ const local = {
       item.children && (await this.add({ ...item, id: res.id }))
     }
   },
-  get: () => {
+  get: async () => {
     return chrome.bookmarks
-      .getTree()
-      .then((nodes) => nodes[0].children)
-      .then((nodes) => nodes || [])
+      ? chrome.bookmarks
+          .getTree()
+          .then((nodes) => nodes[0].children)
+          .then((nodes) => nodes || [])
+      : []
   },
   clear: async function () {
     const nodes = await this.get()

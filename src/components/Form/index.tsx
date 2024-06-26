@@ -1,15 +1,17 @@
 import { BetaSchemaForm } from '@ant-design/pro-components'
 import { FormSchema } from '@ant-design/pro-form/es/components/SchemaForm'
-import { Form, Flex, Space } from 'antd'
+import { Form as AntForm, Flex, Space } from 'antd'
 
-export * from './components'
+export { default as FormItemLink } from './components/FormItemLink'
+
 export type FormProps<T = any, ValueType = 'text'> = FormSchema<T, ValueType>
-export const useForm = () => {
-  const [form] = Form.useForm()
+
+const useForm = () => {
+  const [form] = AntForm.useForm()
   return form
 }
 
-export default function <T = any, ValueType = 'text'>(props: FormProps<T, ValueType>) {
+export default function Form<T = any, ValueType = 'text'>(props: FormProps<T, ValueType>) {
   const { labelCol, wrapperCol } = props
   const init = defaultProps({ labelCol, wrapperCol } as FormProps)
 
@@ -26,13 +28,13 @@ const defaultProps = (props: FormProps): FormProps => {
     labelCol: labelCol,
     wrapperCol: wrapperCol,
     submitter: {
-      render: (_: any, submitter: JSX.Element[]) => {
+      render: (_, submitter) => {
         return (
-          <Form.Item wrapperCol={{ span: span }}>
+          <AntForm.Item wrapperCol={{ span: span }}>
             <Flex justify="center">
               <Space>{submitter.reverse()}</Space>
             </Flex>
-          </Form.Item>
+          </AntForm.Item>
         )
       }
     }
@@ -40,3 +42,5 @@ const defaultProps = (props: FormProps): FormProps => {
 
   return res
 }
+
+Form.useForm = useForm

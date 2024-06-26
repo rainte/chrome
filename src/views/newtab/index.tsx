@@ -3,7 +3,7 @@ import { Flex } from 'antd'
 import db from '@/utils/db'
 import { StoreEnum } from '@/utils/storage'
 import { gist, HubEnum } from '@/services/octokit'
-import { TabEnum } from '@/views/options/components/Tab'
+import Tab from '@/views/options/components/Tab'
 import { NewTabBgImgProps } from '@/views/options/components/Tab/components/NewTabBgImg'
 
 export default function App() {
@@ -20,25 +20,25 @@ export default function App() {
 
   useEffect(() => {
     setUrl(URL.createObjectURL(newtab?.blob || new Blob([])))
-  }, [newtab?.url])
+  }, [newtab])
 
   const getCache = () => {
-    return db.get(StoreEnum.Tab).then((res) => res[TabEnum.NewTabBgImg])
+    return db.get(StoreEnum.Tab).then((res) => res[Tab.TabEnum.NewTabBgImg])
   }
 
   const setCache = () => {
     return gist
       .getJson(HubEnum.Tab)
       .then(async (res) => {
-        const url = res[TabEnum.NewTabBgImg]?.url
+        const url = res[Tab.TabEnum.NewTabBgImg]?.url
         if (url) {
-          res[TabEnum.NewTabBgImg].blob = await fetch(url).then((res) => res.blob())
+          res[Tab.TabEnum.NewTabBgImg].blob = await fetch(url).then((res) => res.blob())
         }
 
         db.set(StoreEnum.Tab, res)
         return res
       })
-      .then((res) => res[TabEnum.NewTabBgImg])
+      .then((res) => res[Tab.TabEnum.NewTabBgImg])
   }
 
   const show = (data: any) => {

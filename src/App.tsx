@@ -4,7 +4,7 @@ import { Spin } from 'antd'
 import popup from '@/utils/show'
 import router from '@/router'
 
-export default function () {
+export default function App() {
   popup()
 
   return (

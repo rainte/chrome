@@ -1,4 +1,11 @@
-import { Upload, UploadFile, Flex, Typography, Spin, UploadProps as AntUploadProps } from 'antd'
+import {
+  Upload as AntUpload,
+  UploadFile,
+  Flex,
+  Typography,
+  Spin,
+  UploadProps as AntUploadProps
+} from 'antd'
 import { AiOutlinePlus } from 'react-icons/ai'
 
 export type { UploadFile } from 'antd'
@@ -17,11 +24,11 @@ const onPreview = async (file: UploadFile) => {
   window.open(src)?.document?.write(image.outerHTML)
 }
 
-export default function App(props: UploadProps) {
+export default function Upload(props: UploadProps) {
   const { fileList = [], maxCount = 1, loading, disabled } = props
 
   return (
-    <Upload {...props} disabled={disabled === undefined ? loading : disabled}>
+    <AntUpload {...props} disabled={disabled === undefined ? loading : disabled}>
       {fileList.length < maxCount && (
         <Flex vertical align="center" justify="center">
           {loading ? (
@@ -34,11 +41,11 @@ export default function App(props: UploadProps) {
           )}
         </Flex>
       )}
-    </Upload>
+    </AntUpload>
   )
 }
 
-App.defaultProps = {
+Upload.defaultProps = {
   listType: 'picture-card',
   onPreview
 }

@@ -5,7 +5,7 @@ export type FormItemLinkProps = InputProps & {
   url?: string
 }
 
-export default function (props: FormItemLinkProps) {
+export default function FormItemLink(props: FormItemLinkProps) {
   const { name, url, ...more } = props
 
   return (
