@@ -6,16 +6,16 @@
   "homepage_url": "http://rainte.com",
   "default_locale": "zh_CN",
   "icons": {
-    "16": "/icons/logo.png",
-    "32": "/icons/logo.png",
-    "48": "/icons/logo.png",
-    "128": "/icons/logo.png"
+    "16": "/icons/favicon.png",
+    "32": "/icons/favicon.png",
+    "48": "/icons/favicon.png",
+    "128": "/icons/favicon.png"
   },
   "action": {
     "default_icon": {
-      "16": "/icons/logo.png",
-      "24": "/icons/logo.png",
-      "32": "/icons/logo.png"
+      "16": "/icons/favicon.png",
+      "24": "/icons/favicon.png",
+      "32": "/icons/favicon.png"
     },
     "default_title": "Rainte",
     "default_popup": "index.html"
