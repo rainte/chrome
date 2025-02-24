@@ -1,3 +1,3 @@
-import { http } from '@rainte/react'
+import { http } from '@rainte/js'
 
 export default http

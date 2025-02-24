@@ -1,4 +1,4 @@
-import { storage } from '@rainte/react'
+import { storage } from '@rainte/js'
 
 export type StorageProps = Record<string, any>
 export type CRXProps = {

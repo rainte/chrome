@@ -23,5 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
+/rainte
 package-lock.json
 pnpm-lock.yaml

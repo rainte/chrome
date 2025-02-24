@@ -34,7 +34,7 @@ fs.readdirSync('./src/crx').forEach((dir) => {
   const cwd = path.join('./src/crx', dir)
   if (fs.lstatSync(cwd).isDirectory()) {
     const from = path.resolve(process.cwd(), '.' + dir)
-    const to = path.resolve(process.cwd(), 'dist')
+    const to = path.resolve(process.cwd(), 'rainte')
 
     copy(from, to)
     del(from)

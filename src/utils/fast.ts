@@ -1,4 +1,4 @@
-import { fast, file as fastFile } from '@rainte/react'
+import { fast, file as fastFile } from '@rainte/js'
 import { Location } from 'react-router-dom'
 import { message } from '@/utils/show'
 
