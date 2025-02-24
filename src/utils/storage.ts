@@ -35,9 +35,9 @@ export const cache = isDev ? localWeb : chrome.storage.local
 export const cloud = isDev ? localWeb : chrome.storage.sync
 export default {
   get: function <T = Record<string, any>>(key: string): Promise<T> {
-    return cache.get(key).then((data) => data[key])
+    return cloud.get(key).then((data) => data[key])
   },
-  set: (key: string, data: StorageProps) => cache.set({ [key]: data })
+  set: (key: string, data: StorageProps) => cloud.set({ [key]: data })
 }
 
 isDev || cache.get().then((res) => console.log('cache', res))
