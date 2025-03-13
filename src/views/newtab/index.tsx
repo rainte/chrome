@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Flex } from 'antd'
-import db from '@/utils/db'
+import { db } from '@rainte/js'
 import { StoreEnum } from '@/utils/storage'
 import { gist, HubEnum } from '@/services/octokit'
-import Tab from '@/views/options/components/Tab'
-import { NewTabBgImgProps } from '@/views/options/components/Tab/components/NewTabBgImg'
+import { NewTabBgImgProps, NEWTAB_BGIMG_KEY } from '@/views/options/tab/components/NewTabBgImg'
 
 export default function App() {
   const [url, setUrl] = useState('')
@@ -23,22 +22,22 @@ export default function App() {
   }, [newtab])
 
   const getCache = () => {
-    return db.get(StoreEnum.Tab).then((res) => res[Tab.TabEnum.NewTabBgImg])
+    return db.get(StoreEnum.Tab).then((res) => res[NEWTAB_BGIMG_KEY])
   }
 
   const setCache = () => {
     return gist
       .getJson(HubEnum.Tab)
       .then(async (res) => {
-        const url = res[Tab.TabEnum.NewTabBgImg]?.url
+        const url = res[NEWTAB_BGIMG_KEY]?.url
         if (url) {
-          res[Tab.TabEnum.NewTabBgImg].blob = await fetch(url).then((res) => res.blob())
+          res[NEWTAB_BGIMG_KEY].blob = await fetch(url).then((res) => res.blob())
         }
 
         db.set(StoreEnum.Tab, res)
         return res
       })
-      .then((res) => res[Tab.TabEnum.NewTabBgImg])
+      .then((res) => res[NEWTAB_BGIMG_KEY])
   }
 
   const show = (data: any) => {

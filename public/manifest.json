@@ -27,7 +27,7 @@
     "newtab": "/index.html#/newtab"
   },
   "options_page": "/index.html#/options",
-  "permissions": ["storage", "bookmarks"],
+  "permissions": ["storage", "bookmarks", "proxy"],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

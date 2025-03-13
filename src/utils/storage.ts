@@ -8,6 +8,7 @@ export type CRXProps = {
 export enum StoreEnum {
   CRX = 'CRX',
   Bookmark = 'Bookmark',
+  Proxy = 'Proxy',
   Tab = 'Tab'
 }
 

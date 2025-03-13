@@ -33,10 +33,10 @@ export default function App() {
   }
 
   return (
-    <Flex vertical gap="small">
+    <Flex vertical gap="small" style={{ height: '100%' }}>
       <Flex>{message && <Alert showIcon message={message} type="error" />}</Flex>
-      <Flex gap="large">
-        <Flex vertical gap="small" flex={2}>
+      <Flex gap="large" justify="space-between" style={{ height: '100%' }}>
+        <Flex vertical gap="small" style={{ width: '50%' }}>
           <Flex>
             <Space.Compact>
               <Button onClick={() => setCollapsed(!collapsed)}>折/展</Button>
@@ -45,24 +45,24 @@ export default function App() {
               </Button>
             </Space.Compact>
           </Flex>
-          <Flex flex={2}>
-            <ReactJson
-              src={json} // 数据.
-              sortKeys={sort} // 排序.
-              collapsed={collapsed} // 展开.
-              theme="monokai" // 主题.
-              name={false} // 根名称.
-              quotesOnKeys={false} // 引号.
-              displayArrayKey={false} // 显示数组键名.
-              displayDataTypes={false} // 显示数据类型.
-              displayObjectSize={false} // 显示对象大小.
-              style={{
-                padding: '1rem',
-                width: '100%',
-                minHeight: message ? '80vh' : '86vh'
-              }}
-            />
-          </Flex>
+          <ReactJson
+            src={json} // 数据.
+            sortKeys={sort} // 排序.
+            collapsed={collapsed} // 展开.
+            theme="monokai" // 主题.
+            name={false} // 根名称.
+            quotesOnKeys={false} // 引号.
+            displayArrayKey={false} // 显示数组键名.
+            displayDataTypes={false} // 显示数据类型.
+            displayObjectSize={false} // 显示对象大小.
+            style={{
+              display: 'flex',
+              flex: 2,
+              padding: '1rem',
+              overflow: 'auto',
+              height: message ? '80vh' : '86vh'
+            }}
+          />
         </Flex>
         <Flex vertical gap="small" flex={2}>
           <Flex>

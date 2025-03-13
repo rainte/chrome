@@ -19,10 +19,14 @@ export default function App() {
     })
   }
 
+  const onRequest = () => storage.get(StoreEnum.CRX).then((res) => res || {})
+
+  const onFinish = (data: any) => storage.set(StoreEnum.CRX, data).then(() => popup.success())
+
   const props: FormProps = {
     form: Form.useForm(),
-    request: () => storage.get(StoreEnum.CRX).then((res) => res || {}),
-    onFinish: (data) => storage.set(StoreEnum.CRX, data).then(() => popup.success()),
+    request: onRequest,
+    onFinish: onFinish,
     wrapperCol: { span: 10 },
     columns: [
       {

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { ConfigProvider, Segmented, Flex } from 'antd'
 import { AiFillAppstore, AiOutlineSetting } from 'react-icons/ai'
-import Apps from './components/apps'
-import Setting from './components/setting'
+import Apps from './components/Apps'
+import Setting from './components/Setting'
 
 const options = [
   { label: '组件', icon: <AiFillAppstore />, dom: <Apps /> },
