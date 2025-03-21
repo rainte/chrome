@@ -1,4 +1,4 @@
-import bookmark from '@/services/bookmark'
+import notice from '@/services/notice'
 
 console.log('background')
 
@@ -23,4 +23,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   })
 })
 
-bookmark.listener()
+chrome.bookmarks.onCreated.addListener(notice.send())
+chrome.bookmarks.onChanged.addListener(notice.send())
+chrome.bookmarks.onRemoved.addListener(notice.send())
+chrome.bookmarks.onMoved.addListener(notice.send())

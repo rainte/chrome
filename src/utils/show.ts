@@ -3,6 +3,7 @@ import type { MessageInstance, JointContent } from 'antd/es/message/interface'
 import type { ModalStaticFunctions } from 'antd/es/modal/confirm'
 import type { NotificationInstance } from 'antd/es/notification/interface'
 import type { ModalFuncProps } from 'antd/es/modal/interface'
+import { fast } from '@rainte/js'
 import i18n from '@/utils/i18n'
 
 let message: MessageInstance
@@ -28,6 +29,11 @@ const popup = {
   success: (content?: JointContent, duration?: number | VoidFunction) => {
     content = content || i18n.get('messageSuccess')
     return message.success(content, duration)
+  },
+  error: (content?: string, duration?: number | VoidFunction) => {
+    content = content || i18n.get('messageError')
+    message.error(content, duration)
+    fast.fail(content)
   },
   ask: function (onOk: (...args: any[]) => any, props?: ModalFuncProps) {
     return this.confirm({ onOk, ...props })

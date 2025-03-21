@@ -1,120 +1,220 @@
-import React from 'react'
-import { Button, Collapse, Form, Input, Select, Space, Switch, Typography } from 'antd'
+import { useEffect, useState } from 'react'
+import { Form, FormProps } from '@rainte/ant'
+import { Button } from 'antd'
+import { ModeEnum, getFixedModes, direct } from '@/services/proxy'
+import { http } from '@rainte/js'
+import { popup } from '@/utils/show'
+import { ProxyProps } from '../../index'
 
-const itemValue = {
-  status: true,
-  rule: 'domain',
-  value: '',
-  mode: 'direct'
-}
+const modeMap = new Map([
+  ['domain', { text: '域名' }],
+  ['regex', { text: '正则' }],
+  ['ip', { text: 'IP/CIDR' }]
+])
 
-const App: React.FC = () => {
-  const [form] = Form.useForm()
+const formatMap = new Map([
+  ['base64', { text: 'Base64' }],
+  ['raw', { text: 'Raw' }]
+])
 
-  form.setFieldsValue({
-    name: '',
-    default: 'direct',
-    rules: [itemValue],
-    external_mode: 'direct',
-    external_url: '',
-    external_parse: 'Base64',
-    external_content: ''
-  })
+export default function App(props: ProxyProps) {
+  const { id, onGet, onFinish } = props
+  const [proxyMap, setProxyMap] = useState<Map<string, any>>()
+  const [loading, setLoading] = useState(false)
 
-  const renderConnect = (
-    <Select options={[{ label: '直连', value: 'direct' }]} style={{ width: '15vw' }} />
-  )
+  useEffect(() => {
+    getFixedModes().then((modes) => {
+      setProxyMap(new Map(modes.map((item) => [item.id, { text: item.name }])))
+    })
+  }, [])
 
-  const renderRule = (
-    <Form.Item>
-      <Form.List name="rules">
-        {(subFields, subOpt) => (
-          <>
-            {subFields.map((subField) => (
-              <Space key={subField.key} align="start">
-                <Form.Item name={[subField.name, 'status']}>
-                  <Switch />
-                </Form.Item>
-                <Form.Item name={[subField.name, 'rule']}>
-                  <Select
-                    options={[
-                      { label: '域名通配符', value: 'domain' },
-                      { label: '正则表达式', value: 'regex' },
-                      { label: 'IP/CIDR', value: 'ip' }
-                    ]}
-                    style={{ width: '10vw' }}
-                  />
-                </Form.Item>
-                <Form.Item name={[subField.name, 'value']}>
-                  <Input style={{ width: '20vw' }} />
-                </Form.Item>
-                <Form.Item name={[subField.name, 'mode']}>{renderConnect}</Form.Item>
-                <Button type="link" onClick={() => subOpt.remove(subField.name)}>
-                  删除
-                </Button>
-              </Space>
-            ))}
-            <br />
-            <Button type="dashed" onClick={() => subOpt.add(itemValue)}>
-              添加
-            </Button>
-          </>
-        )}
-      </Form.List>
-    </Form.Item>
-  )
+  const fetchExternalData = () => {
+    setLoading(true)
+    const form = options.form
 
-  const renderExternal = (
-    <>
-      <Form.Item label="模式" name="external_mode">
-        {renderConnect}
-      </Form.Item>
-
-      <Form.Item label="规则地址" name="external_url">
-        <Input
-          addonBefore={
-            <Form.Item name="external_parse" noStyle>
-              <Select options={[{ label: 'Base64' }, { label: 'Raw' }]} />
-            </Form.Item>
+    http.axios
+      .get(form?.getFieldValue(['pac', 'url']))
+      .then((res) => {
+        res.status == 200 || popup.error(res.statusText)
+        return res.data
+      })
+      .then((data) => {
+        try {
+          if (form?.getFieldValue(['pac', 'format']) == 'base64') {
+            data = atob(data)
           }
-          addonAfter={<Button type="link">更新</Button>}
-          defaultValue="https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt"
-        />
-      </Form.Item>
+        } catch (e) {
+          data = null
+          popup.error(String(e))
+        } finally {
+          form?.setFieldValue(['pac', 'value'], data)
+        }
+      })
+      .finally(() => setLoading(false))
+  }
 
-      <Form.Item shouldUpdate>
-        {() => {
-          return (
-            <Typography>
-              <pre style={{ height: '20vh', overflow: 'auto' }}>
-                {form.getFieldValue('external_content')}
-              </pre>
-            </Typography>
-          )
-        }}
-      </Form.Item>
-    </>
-  )
+  const options: FormProps = {
+    form: Form.useForm(),
+    initialValues: {
+      default: direct.id,
+      pac: {
+        status: true,
+        format: 'base64',
+        url: 'https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt',
+        proxy: direct.id
+      }
+    },
+    request: () => onGet!(id),
+    onFinish: (values: any) => onFinish!({ ...values, id, mode: ModeEnum.PacScript }),
+    wrapperCol: { span: 12 },
+    columns: [
+      {
+        title: '名称',
+        dataIndex: 'name',
+        formItemProps: { rules: [{ required: true }] }
+      },
+      {
+        title: '默认规则',
+        dataIndex: 'default',
+        valueType: 'select',
+        valueEnum: proxyMap,
+        formItemProps: { rules: [{ required: true }] }
+      },
+      {
+        title: '本地规则',
+        dataIndex: 'rules',
+        valueType: 'formList',
+        fieldProps: {
+          creatorRecord: {
+            status: true,
+            mode: 'domain',
+            proxy: direct.id
+          }
+        },
+        formItemProps: { wrapperCol: { span: 17 } },
+        columns: [
+          {
+            valueType: 'group',
+            fieldProps: { size: 'small' },
+            columns: [
+              {
+                dataIndex: 'status',
+                valueType: 'switch',
+                formItemProps: { rules: [{ required: true }] }
+              },
+              {
+                valueType: 'dependency',
+                name: ['status'],
+                columns: ({ status }) => [
+                  {
+                    valueType: 'group',
+                    fieldProps: { size: 'small' },
+                    columns: [
+                      {
+                        dataIndex: 'mode',
+                        valueType: 'select',
+                        valueEnum: modeMap,
+                        width: 'xs',
+                        formItemProps: { rules: [{ required: status }] }
+                      },
+                      {
+                        dataIndex: 'value',
+                        width: 'md',
+                        formItemProps: { rules: [{ required: status }] }
+                      },
+                      {
+                        dataIndex: 'proxy',
+                        valueType: 'select',
+                        valueEnum: proxyMap,
+                        width: 'xs',
+                        formItemProps: { rules: [{ required: status }] }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        title: '外部规则',
+        dataIndex: 'formSet',
+        valueType: 'formSet',
+        tooltip: '仅支持 AutoProxy 规则',
+        fieldProps: { formItemProps: { style: { marginBottom: 0 } } },
+        formItemProps: { wrapperCol: { span: 24 } },
+        columns: [
+          {
+            dataIndex: ['pac', 'status'],
+            valueType: 'switch',
+            formItemProps: { rules: [{ required: true }] }
+          },
+          {
+            valueType: 'dependency',
+            name: [['pac', 'status']],
+            columns: ({ pac }) => [
+              {
+                valueType: 'group',
+                fieldProps: { size: 'small' },
+                columns: [
+                  {
+                    dataIndex: ['pac', 'format'],
+                    valueType: 'select',
+                    valueEnum: formatMap,
+                    width: 'xs',
+                    formItemProps: { rules: [{ required: pac.status }] }
+                  },
+                  {
+                    dataIndex: ['pac', 'url'],
+                    width: 'md',
+                    formItemProps: { rules: [{ required: pac.status }] }
+                  },
+                  {
+                    dataIndex: ['pac', 'proxy'],
+                    valueType: 'select',
+                    valueEnum: proxyMap,
+                    width: 'xs',
+                    formItemProps: { rules: [{ required: pac.status }] }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            renderFormItem: (_, __) => (
+              <Button loading={loading} onClick={fetchExternalData}>
+                获取
+              </Button>
+            )
+          }
+        ]
+      },
+      {
+        title: '每日更新',
+        dataIndex: ['pac', 'day'],
+        valueType: 'switch'
+      },
+      {
+        valueType: 'dependency',
+        name: [
+          ['pac', 'status'],
+          ['pac', 'url']
+        ],
+        columns: ({ pac }) => [
+          {
+            dataIndex: ['pac', 'value'],
+            valueType: 'code',
+            formItemProps: {
+              rules: [{ required: pac.status && pac.url }],
+              wrapperCol: { span: 18, offset: 3 }
+            },
+            fieldProps: { autoSize: { minRows: 10, maxRows: 10 } }
+          }
+        ]
+      }
+    ]
+  }
 
-  return (
-    <Form labelCol={{ span: 3 }} form={form} style={{ flex: 2 }}>
-      <Form.Item label="名称" name="name">
-        <Input />
-      </Form.Item>
-
-      <Form.Item label="默认规则" name="default">
-        {renderConnect}
-      </Form.Item>
-
-      <Collapse
-        activeKey={[0, 1]}
-        items={[
-          { label: '切换规则', children: renderRule },
-          { label: '外部规则', children: renderExternal }
-        ]}
-      />
-    </Form>
-  )
+  return <Form {...options} style={{ flex: 2 }} />
 }
-
-export default App

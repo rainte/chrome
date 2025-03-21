@@ -1,37 +1,28 @@
 import { useState, useEffect } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Layout, Menu, Typography } from 'antd'
+import { menus } from '@/router'
 
-const items = [
-  { key: 'json', label: 'Json' },
-  { key: 'bookmark', label: '书签' },
-  { key: 'proxy', label: '代理' },
-  { key: 'tab', label: '标签页' },
-  { key: 'config', label: '配置' }
-]
+const items = menus.map((item) => {
+  return { key: item.url, label: item.label }
+})
 
 export default function App() {
   const location = useLocation()
   const navigate = useNavigate()
-  const [selectedKey, setSelectedKey] = useState<string>('')
+  const [selectedKey, setSelectedKey] = useState('')
 
   useEffect(() => {
     const key = location.pathname.split('/').filter(Boolean).pop()
     const item = items.find((item) => item.key == key)
-    console.log('item', item ? item.key : items[0].key)
     setSelectedKey(item ? item.key : items[0].key)
   }, [])
 
   return (
     <Layout style={{ height: '100vh' }}>
       <Layout.Sider>
-        <Typography.Title
-          style={{
-            color: 'white',
-            textAlign: 'center'
-          }}
-        >
-          Rainte
+        <Typography.Title style={{ color: 'white', textAlign: 'center' }}>
+          {import.meta.env.VITE_NAME}
         </Typography.Title>
         <Menu
           mode="inline"

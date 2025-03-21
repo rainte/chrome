@@ -30,10 +30,10 @@ const del = (dir) => {
   }
 }
 
-fs.readdirSync('./src/crx').forEach((dir) => {
-  const cwd = path.join('./src/crx', dir)
+fs.readdirSync('./crx').forEach((dir) => {
+  const cwd = path.join('./crx', dir)
   if (fs.lstatSync(cwd).isDirectory()) {
-    const from = path.resolve(process.cwd(), '.' + dir)
+    const from = path.resolve(process.cwd(), `.${dir}`)
     const to = path.resolve(process.cwd(), 'rainte')
 
     copy(from, to)

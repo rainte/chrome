@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { ConfigProvider, Segmented, Flex } from 'antd'
-import { AiFillAppstore, AiOutlineSetting } from 'react-icons/ai'
-import Apps from './components/Apps'
+import { AiOutlineGlobal, AiOutlineAppstore } from 'react-icons/ai'
+import Proxy from './components/Proxy'
 import Setting from './components/Setting'
 
 const options = [
-  { label: '组件', icon: <AiFillAppstore />, dom: <Apps /> },
-  { label: '设置', icon: <AiOutlineSetting />, dom: <Setting /> }
+  { label: '代理', icon: <AiOutlineGlobal />, dom: <Proxy /> },
+  { label: '应用', icon: <AiOutlineAppstore />, dom: <Setting /> }
 ]
 
 export default function App() {
@@ -17,14 +17,13 @@ export default function App() {
       theme={{
         components: {
           Segmented: { trackBg: 'rgba(118,118,128,0.12)' },
-          List: { itemPadding: '7px 0' }
+          Menu: { itemBg: '#ededed' }
         }
       }}
     >
       <Flex
         vertical
         gap="small"
-        className="popup"
         style={{
           width: '17rem',
           padding: '1rem',

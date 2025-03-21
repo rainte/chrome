@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Flex, Space, Button, Statistic, Divider, Tag } from 'antd'
-import CountUp from 'react-countup'
 import bookmark from '@/services/bookmark'
+import CountUp from 'react-countup'
 import { popup } from '@/utils/show'
 
 const formatter = (value: number | string) => {
@@ -19,41 +19,20 @@ export default function App() {
   }, [])
 
   const refresh = () => {
-    const total = bookmark.total().then((res) => {
-      setLocalTotal(res[0])
-      setCloudTotal(res[1])
-    })
-    const change = bookmark.isChange().then(setIsChange)
-    return Promise.all([total, change])
+    const local = bookmark.local.get()
+    const cloud = bookmark.cloud.get()
+    local?.then((tree) => setLocalTotal(bookmark.total(tree ?? [])))
+    cloud?.then((tree) => setCloudTotal(bookmark.total(tree ?? [])))
+    bookmark.isChange(local, cloud).then(setIsChange)
   }
 
-  const onUpload = () => {
-    popup.ask(async () => {
-      const nodes = await bookmark.local.get()
-      await bookmark.cloud.set({ tree: nodes })
-      await refresh().then(bookmark.warn.clear)
-      popup.success()
-    })
-  }
-
-  const onDownLoad = () => {
-    popup.ask(async () => {
-      const res = await bookmark.cloud.get()
-      await bookmark.local.clear()
-      for (const node of res.tree) {
-        await bookmark.local.add(node)
-      }
-      await refresh().then(bookmark.warn.clear)
-      popup.success()
-    })
-  }
-
-  const onClear = () => {
-    popup.ask(async () => {
-      await bookmark.local.clear()
-      await refresh().then(bookmark.warn.clear)
-      popup.success()
-    })
+  const onClick = (method: () => Promise<any>) => {
+    return popup.ask(() =>
+      method().then(() => {
+        refresh()
+        popup.success()
+      })
+    )
   }
 
   return (
@@ -61,23 +40,18 @@ export default function App() {
       <Space size={30}>
         <Divider dashed={true} />
         <Statistic
-          title={
-            <>
-              本地&nbsp;
-              {isChange && <Tag color="error">已变</Tag>}
-            </>
-          }
+          title={<>本地 {isChange && <Tag color="error">已变</Tag>}</>}
           value={localTotal}
           formatter={formatter}
         />
         <Divider dashed={true} />
-        <Statistic title={<>云端&nbsp;</>} value={cloudTotal} formatter={formatter} />
+        <Statistic title={<>云端 </>} value={cloudTotal} formatter={formatter} />
         <Divider dashed={true} />
       </Space>
       <Space.Compact>
-        <Button onClick={onUpload}>上传书签</Button>
-        <Button onClick={onDownLoad}>下载书签</Button>
-        <Button onClick={onClear}>清空书签</Button>
+        <Button onClick={() => onClick(bookmark.onUpload)}>上传书签</Button>
+        <Button onClick={() => onClick(bookmark.onDownLoad)}>下载书签</Button>
+        <Button onClick={() => onClick(bookmark.local.clear)}>清空书签</Button>
       </Space.Compact>
     </Flex>
   )

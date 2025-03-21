@@ -1,20 +1,15 @@
 import { storage } from '@rainte/js'
 
-export type StorageProps = Record<string, any>
-export type CRXProps = {
-  githubToken: string
-  gistId: string
-}
-export enum StoreEnum {
-  CRX = 'CRX',
-  Bookmark = 'Bookmark',
-  Proxy = 'Proxy',
-  Tab = 'Tab'
+export enum StorageEnum {
+  CRX = 'crx',
+  Bookmark = 'bookmark',
+  Proxy = 'proxy',
+  Tab = 'tab'
 }
 
 const localWeb = {
-  get: async (keys?: string | string[] | StorageProps | null) => {
-    const res: StorageProps = {}
+  get: async (keys?: string | string[] | ObjectProps | null) => {
+    const res: ObjectProps = {}
 
     if (typeof keys === 'string') {
       res[keys] = storage.local.get(keys)
@@ -26,7 +21,7 @@ const localWeb = {
 
     return res
   },
-  set: async (items: StorageProps) => {
+  set: async (items: ObjectProps) => {
     Object.entries(items).map((item) => storage.local.set(...item))
   }
 }
@@ -34,11 +29,16 @@ const localWeb = {
 const isDev = import.meta.env.DEV
 export const cache = isDev ? localWeb : chrome.storage.local
 export const cloud = isDev ? localWeb : chrome.storage.sync
+
+const get = <T = ObjectProps>(key: string): Promise<T | undefined> => {
+  return cloud.get(key).then((res) => res[key])
+}
+
+const set = (key: string, data: ObjectProps) => cloud.set({ [key]: data })
+
 export default {
-  get: function <T = Record<string, any>>(key: string): Promise<T> {
-    return cloud.get(key).then((data) => data[key])
-  },
-  set: (key: string, data: StorageProps) => cloud.set({ [key]: data })
+  get,
+  set
 }
 
 isDev || cache.get().then((res) => console.log('cache', res))

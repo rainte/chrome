@@ -1,14 +1,6 @@
 {
-  "modalConfirmTitle": {
-    "message": "提示",
-    "description": ""
-  },
-  "modalConfirmContent": {
-    "message": "确认操作？",
-    "description": ""
-  },
-  "messageSuccess": {
-    "message": "操作成功",
-    "description": ""
-  }
+  "modalConfirmTitle": { "message": "提示" },
+  "modalConfirmContent": { "message": "确认操作？" },
+  "messageSuccess": { "message": "操作成功" },
+  "messageError": { "message": "操作失败" }
 }

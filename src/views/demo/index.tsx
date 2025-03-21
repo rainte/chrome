@@ -1,5 +1,4 @@
-import Form, { FormProps } from '@/components/Form'
-import Upload from '@/components/Upload'
+import { Form, FormProps } from '@rainte/ant'
 import fast from '@/utils/fast'
 import './index.scss'
 
@@ -10,26 +9,14 @@ const StatusMap = new Map([
 console.log('StatusMap', StatusMap)
 
 export default function App() {
-  const setNewTabBgImg = (files: any[]) => {
-    props.form?.setFieldValue('newTabBgImg', files)
-  }
-
   const props: FormProps = {
-    form: Form.useForm(),
+    onFinish: (formData) => console.log('onFinish', formData),
     columns: [
       {
-        title: '背景图',
-        dataIndex: 'newTabBgImg',
-        renderFormItem: (_, props) => {
-          delete (props as any).defaultRender
-          return (
-            <Upload
-              fileList={props.value}
-              customRequest={fast.file.onUpload}
-              onChange={({ fileList }) => setNewTabBgImg(fileList)}
-            />
-          )
-        }
+        title: '图片',
+        dataIndex: 'image',
+        valueType: 'upload',
+        fieldProps: { customRequest: fast.onUpload }
       }
     ]
   }

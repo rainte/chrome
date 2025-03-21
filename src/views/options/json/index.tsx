@@ -2,14 +2,14 @@ import { useState } from 'react'
 import { Flex, Space, Input, Button, Alert } from 'antd'
 import { AiOutlineSortAscending } from 'react-icons/ai'
 import ReactJson from 'react-json-view'
-import fast from '@/utils/fast'
+import { fast } from '@rainte/js'
 
 export default function App() {
-  const [value, setValue] = useState<string>('{}')
-  const [json, setJson] = useState<object>({})
+  const [value, setValue] = useState('{}')
+  const [json, setJson] = useState({})
   const [message, setMessage] = useState('')
-  const [collapsed, setCollapsed] = useState<boolean>(false)
-  const [sort, setSort] = useState<boolean>(false)
+  const [collapsed, setCollapsed] = useState(false)
+  const [sort, setSort] = useState(false)
 
   const onChange = (event: any) => {
     try {
@@ -59,8 +59,7 @@ export default function App() {
               display: 'flex',
               flex: 2,
               padding: '1rem',
-              overflow: 'auto',
-              height: message ? '80vh' : '86vh'
+              overflow: 'auto'
             }}
           />
         </Flex>

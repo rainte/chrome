@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+/// <reference types="@rainte/js/global" />
 
 import { ReactJsonViewProps as IReactJsonViewProps } from 'react-json-view'
 
