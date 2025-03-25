@@ -19,7 +19,7 @@ const router = createHashRouter([
     path: '/',
     Component: lazy(() => import('@/views/layout/blank')),
     children: [
-      { index: true, element: <Navigate to="/options/json" /> },
+      { index: true, element: <Navigate to="/popup" /> },
       { path: 'newtab', Component: lazy(() => import('@/views/newtab')) },
       {
         path: 'options',

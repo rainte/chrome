@@ -5,6 +5,6 @@ const i18nWeb = {
   }
 }
 
-const isDev = import.meta.env.DEV
+const isDev = import.meta.env.MODE == 'development'
 const i18n = isDev ? i18nWeb : { get: chrome.i18n.getMessage }
 export default i18n

@@ -44,6 +44,8 @@ export default function App() {
 
   const onFinish = (values: any) => {
     proxy.get().then(async (res) => {
+      values.pac?.value && (values.pac.value = undefined)
+
       if (values.id) {
         res?.rules?.forEach((item, index, array) => item.id == values.id && (array[index] = values))
       } else {

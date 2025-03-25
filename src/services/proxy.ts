@@ -1,4 +1,6 @@
+import { http } from '@rainte/js'
 import storage, { StorageEnum } from '@/services/storage'
+import { gfwlistToPAC, gfwlistToPACProps } from '@/services/gfwlist'
 
 export type ProxyConfig = chrome.proxy.ProxyConfig
 
@@ -30,34 +32,41 @@ export const getFixedModes = () => {
 }
 
 export const getAllModes = () =>
-  get().then((res) =>
-    res?.rules?.reduce(
-      (acc, item) => {
-        if (item.mode == ModeEnum.FixedServers) {
-          acc.fixed.push(item)
-        } else if (item.mode == ModeEnum.PacScript) {
-          acc.pac.push(item)
-        }
-        return acc
-      },
-      { fixed: [], pac: [] }
+  get()
+    .then((res) => {
+      res.rules ??= []
+      return res
+    })
+    .then((res) =>
+      res.rules?.reduce(
+        (acc, item) => {
+          if (item.mode == ModeEnum.FixedServers) {
+            acc.fixed.push(item)
+          } else if (item.mode == ModeEnum.PacScript) {
+            acc.pac.push(item)
+          }
+          return acc
+        },
+        { fixed: [], pac: [] }
+      )
     )
-  )
 
-export const setProxy = async (value: ProxyConfig) => {
+export const _setProxy = async (value: ProxyConfig, callback?: () => void) => {
   const context = await chrome.runtime.getContexts({})
   const scope = context[0]?.incognito ? 'incognito_persistent' : 'regular'
 
-  chrome.proxy.settings.set({ value, scope }, () => {
+  console.log('设置代理', { value, scope })
+  return chrome.proxy.settings.set({ value, scope }, () => {
     if (chrome.runtime.lastError) {
       console.error('设置代理失败', chrome.runtime.lastError)
     } else {
       console.info('代理设置成功！', value, scope)
+      callback && callback()
     }
   })
 }
 
-export const getProxyConfig = async (id: string): Promise<ProxyConfig> => {
+export const setProxy = async (id: string): Promise<void> => {
   let mode: string = ModeEnum.Direct
   let rules = undefined
   let pacScript = undefined
@@ -68,19 +77,31 @@ export const getProxyConfig = async (id: string): Promise<ProxyConfig> => {
     mode = ModeEnum.System
   } else {
     const all = await get()
-    const rule = all?.rules?.find((item) => item.id == id)
 
+    const fixeds = all?.rules?.filter((item) => item.mode == ModeEnum.FixedServers)
+    fixeds?.unshift(direct)
+    const rule = all?.rules?.find((item) => item.id == id)
     if (rule.mode == ModeEnum.FixedServers) {
       mode = ModeEnum.FixedServers
       rules = makeFixedConfig(rule)
+      _setProxy({ mode, rules })
     } else if (rule.mode == ModeEnum.PacScript) {
-      mode = ModeEnum.PacScript
-      const fixeds = all?.rules?.filter((item) => item.mode == ModeEnum.FixedServers)
-      pacScript = { data: await makePacConfig(rule, fixeds ?? []) }
+      const proxy = fixeds?.find((item) => item.id == rule.default)
+
+      _setProxy({ mode: ModeEnum.FixedServers, rules: makeFixedConfig(proxy) }, async () => {
+        mode = ModeEnum.PacScript
+        pacScript = { data: await makePacConfig(rule, [direct, ...(fixeds ?? [])]) }
+        _setProxy({ mode, pacScript })
+      })
     }
   }
+}
 
-  return { mode, rules, pacScript }
+export const fetchPacData = (url: string, format: string) => {
+  return http.axios
+    .get(url)
+    .then((res) => res.data)
+    .then((data) => (format == 'base64' ? atob(data) : data))
 }
 
 export default {
@@ -90,14 +111,14 @@ export default {
   set,
   getFixedModes,
   getAllModes,
-  setProxy,
-  getProxyConfig
+  _setProxy,
+  setProxy
 }
 
 const makeFixedConfig = (rule: any): chrome.proxy.ProxyRules => {
   return {
     singleProxy: {
-      scheme: rule.scheme,
+      scheme: 'PROXY' == rule.scheme ? 'http' : rule.scheme?.toLocaleLowerCase(),
       host: rule.host,
       port: rule.port
     },
@@ -109,37 +130,30 @@ const makeFixedConfig = (rule: any): chrome.proxy.ProxyRules => {
 }
 
 const makePacConfig = async (config: any, fixeds: any[]) => {
-  let pac = `function FindProxyForURL(url, host) {`
-  config.rules.forEach((rule: any) => {
-    const fixed = fixeds.find((item) => item.id == rule.proxy)
-    const proxy = fixedProxy(fixed)
-    if (rule.mode == 'domain') {
-      pac += ` if (shExpMatch(host, "${rule.value}")) {return "${proxy}";}`
-    } else if (rule.mode == 'regex') {
-      pac += ` if (/${rule.value}/.test(host)) {return "${proxy}";}`
-    } else if (rule.mode == 'ip') {
-      const [ip, prefix] = rule.value.split('/')
-      pac += ` if (isInNet(host, "${ip}", "${ipToNetmask(prefix)}")) {return "${proxy}";}`
-    }
-  })
+  const rules = config.rules
+    .filter((item: any) => item.stauts)
+    .map((item: any) => {
+      const proxy = fixedProxy(fixeds, item.proxy)
+      return { rule: item.value, proxy }
+    })
 
-  pac += ` return "${fixedProxy(config.default)}"; }`
-  return pac
-}
-
-const ipToNetmask = (prefix: number) => {
-  const mask = []
-  for (let i = 0; i < 4; i++) {
-    const bits = Math.min(prefix, 8)
-    mask.push(256 - Math.pow(2, 8 - bits))
-    prefix -= bits
+  const gfwlist: gfwlistToPACProps = {
+    proxy: fixedProxy(fixeds, config.default),
+    rules
   }
-  return mask.join('.')
+  if (config.pac.status) {
+    gfwlist.data = await fetchPacData(config.pac.url, config.pac.format)
+    console.log('fetchPacData', gfwlist.data)
+  }
+
+  return gfwlistToPAC(gfwlist)
 }
 
-const fixedProxy = (proxy: any) => {
-  if (proxy.id == direct.id) {
+const fixedProxy = (fixeds: any[], id: any) => {
+  if (id == direct.id) {
     return 'DIRECT'
   }
+
+  const proxy = fixeds.find((item) => item.id == id)
   return `${proxy.scheme} ${proxy.host}:${proxy.port}`
 }

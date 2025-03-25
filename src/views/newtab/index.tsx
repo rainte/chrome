@@ -2,22 +2,25 @@ import { useState, useEffect } from 'react'
 import { Flex } from 'antd'
 import { db } from '@rainte/js'
 import { StorageEnum } from '@/services/storage'
-import { NEWTAB_BGIMG_KEY, NewTabBgImgProps } from '@/views/options/tab/components/NewTabBgImg'
+import { NEWTAB_BGIMG_KEY } from '@/views/options/tab/components/NewTabBgImg'
 
 export default function App() {
-  const [newtab, setNewtab] = useState<NewTabBgImgProps>()
+  const [newtab, setNewtab] = useState<string>(URL.createObjectURL(new Blob([])))
 
   useEffect(() => {
     db.get(StorageEnum.Tab)
       .then((res) => res[NEWTAB_BGIMG_KEY])
-      .then(setNewtab)
+      .then((res) => {
+        res.status && setNewtab(URL.createObjectURL(res.files[0]))
+        console.log('aaaa', newtab)
+      })
   }, [])
 
   return (
     <Flex
       style={{
-        height: '100%',
-        backgroundImage: `url(${URL.createObjectURL(newtab?.files?.[0] ?? new Blob([]))})`,
+        height: '100vh',
+        backgroundImage: `url(${newtab})`,
         backgroundPosition: 'center',
         backgroundSize: 'cover'
       }}

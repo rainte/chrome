@@ -1,22 +1,23 @@
 import { useState, useEffect } from 'react'
 import { Flex, Radio, Dropdown, Button, Input } from 'antd'
-import proxy, { getProxyConfig, ModeEnum, setProxy } from '@/services/proxy'
+import proxy, { setProxy } from '@/services/proxy'
 import storage, { StorageEnum } from '@/services/storage'
 import fast from '@/utils/fast'
 import { AiOutlineDown, AiOutlineSetting } from 'react-icons/ai'
 
 export default function App() {
   const [domain, setDomain] = useState(location.hostname)
-  const [proxys, setProxys] = useState<any[]>([])
+  const [fixeds, setFixeds] = useState<any[]>([])
+  const [pacs, setPacs] = useState<any[]>([])
   const [selected, setSelected] = useState<string>(proxy.direct.id)
   const [loading, setLoading] = useState(false)
   const [isPac, setIsPac] = useState(false)
 
   useEffect(() => {
-    proxy
-      .getAllModes()
-      .then((res) => [...res.fixed, ...res.pac])
-      .then(setProxys)
+    proxy.getAllModes().then((res) => {
+      setFixeds(res.fixed)
+      setPacs(res.pac)
+    })
   }, [])
 
   useEffect(() => {
@@ -26,8 +27,7 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    const proxy = proxys.find((itme) => itme.id == selected)
-    setIsPac(proxy?.mode == ModeEnum.PacScript)
+    setIsPac(!!pacs.find((itme) => itme.id == selected))
   }, [selected])
 
   const onChange = async (id: string) => {
@@ -35,16 +35,17 @@ export default function App() {
     storage.get(StorageEnum.Proxy).then((res) => {
       storage.set(StorageEnum.Proxy, { ...res, use: id })
     })
-    setProxy(await getProxyConfig(id))
+    setProxy(id)
   }
 
   const onAdd = (value: string) => {
     setLoading(true)
     proxy.get().then((res) => {
-      res?.rules?.forEach((item) => {
+      res.rules ??= []
+      res.rules.forEach((item) => {
         if (item.id == selected) {
-          const rule = { status: true, mode: 'domain', data: domain, proxy: value }
-          item.rules ? item.rules.push(rule) : (item.rules = [rule])
+          const rule = { status: true, mode: 'domain', value: domain, proxy: value }
+          item.rules.push(rule)
         }
       })
       proxy.set(res).finally(() => setLoading(false))
@@ -66,8 +67,7 @@ export default function App() {
       <Dropdown
         trigger={['click']}
         menu={{
-          items: [proxy.direct, ...proxys].map((item) => {
-            console.log('item', item)
+          items: [proxy.direct, ...fixeds].map((item) => {
             return { key: item.id, label: item.name }
           }),
           onClick: (e) => onAdd(e.key)
@@ -94,7 +94,7 @@ export default function App() {
       <Radio.Group
         value={selected}
         onChange={(e) => onChange(e.target.value)}
-        options={[proxy.direct, proxy.system, ...proxys].map((item) => {
+        options={[proxy.direct, proxy.system, ...fixeds, ...pacs].map((item) => {
           return { value: item.id, label: item.name }
         })}
         style={{

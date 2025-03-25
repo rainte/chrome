@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Form, FormProps } from '@rainte/ant'
-import { Button } from 'antd'
-import { ModeEnum, getFixedModes, direct } from '@/services/proxy'
-import { http } from '@rainte/js'
+import { Button, Typography } from 'antd'
+import { ModeEnum, getFixedModes, direct, fetchPacData } from '@/services/proxy'
 import { popup } from '@/utils/show'
 import { ProxyProps } from '../../index'
 
@@ -28,29 +27,20 @@ export default function App(props: ProxyProps) {
     })
   }, [])
 
-  const fetchExternalData = () => {
+  const fetchExternalData = async () => {
     setLoading(true)
-    const form = options.form
+    const url = options.form?.getFieldValue(['pac', 'url'])
+    const format = options.form?.getFieldValue(['pac', 'format'])
 
-    http.axios
-      .get(form?.getFieldValue(['pac', 'url']))
-      .then((res) => {
-        res.status == 200 || popup.error(res.statusText)
-        return res.data
-      })
-      .then((data) => {
-        try {
-          if (form?.getFieldValue(['pac', 'format']) == 'base64') {
-            data = atob(data)
-          }
-        } catch (e) {
-          data = null
-          popup.error(String(e))
-        } finally {
-          form?.setFieldValue(['pac', 'value'], data)
-        }
-      })
-      .finally(() => setLoading(false))
+    let data = null
+    try {
+      data = await fetchPacData(url, format)
+    } catch (e) {
+      popup.error(String(e))
+    } finally {
+      options.form?.setFieldValue(['pac', 'value'], data)
+      setLoading(false)
+    }
   }
 
   const options: FormProps = {
@@ -64,7 +54,11 @@ export default function App(props: ProxyProps) {
         proxy: direct.id
       }
     },
-    request: () => onGet!(id),
+    request: () =>
+      onGet!(id).then(async (res: any) => {
+        res.pac.status && (res.pac.value = await fetchPacData(res.pac.url, res.pac.format))
+        return res
+      }),
     onFinish: (values: any) => onFinish!({ ...values, id, mode: ModeEnum.PacScript }),
     wrapperCol: { span: 12 },
     columns: [
@@ -91,7 +85,18 @@ export default function App(props: ProxyProps) {
             proxy: direct.id
           }
         },
-        formItemProps: { wrapperCol: { span: 17 } },
+        formItemProps: {
+          wrapperCol: { span: 17 },
+          tooltip: (
+            <Typography.Link
+              target="_blank"
+              style={{ color: 'white' }}
+              href="https://developer.chrome.com/docs/extensions/reference/api/proxy#bypass_list"
+            >
+              点击查看规则
+            </Typography.Link>
+          )
+        },
         columns: [
           {
             valueType: 'group',

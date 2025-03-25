@@ -26,9 +26,12 @@ const localWeb = {
   }
 }
 
-const isDev = import.meta.env.DEV
+const isDev = import.meta.env.MODE == 'development'
 export const cache = isDev ? localWeb : chrome.storage.local
 export const cloud = isDev ? localWeb : chrome.storage.sync
+
+isDev || cache.get().then((res) => console.log('cache', res))
+isDev || cloud.get().then((res) => console.log('cloud', res))
 
 const get = <T = ObjectProps>(key: string): Promise<T | undefined> => {
   return cloud.get(key).then((res) => res[key])
@@ -40,6 +43,3 @@ export default {
   get,
   set
 }
-
-isDev || cache.get().then((res) => console.log('cache', res))
-isDev || cloud.get().then((res) => console.log('cloud', res))

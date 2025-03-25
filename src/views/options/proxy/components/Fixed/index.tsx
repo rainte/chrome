@@ -1,6 +1,7 @@
 import { Form, FormProps } from '@rainte/ant'
 import { ModeEnum } from '@/services/proxy'
 import { ProxyProps } from '../../index'
+import { Typography } from 'antd'
 
 export default function App(props: ProxyProps) {
   const { id, onGet, onFinish } = props
@@ -57,7 +58,17 @@ export default function App(props: ProxyProps) {
         title: '过滤地址',
         dataIndex: 'bypassList',
         valueType: 'textarea',
+        tooltip: (
+          <Typography.Link
+            target="_blank"
+            style={{ color: 'white' }}
+            href="https://developer.chrome.com/docs/extensions/reference/api/proxy#bypass_list"
+          >
+            点击查看规则
+          </Typography.Link>
+        ),
         fieldProps: { rows: 9 }
+        // https://developer.chrome.com/docs/extensions/reference/api/proxy#bypass_list
       }
     ]
   }

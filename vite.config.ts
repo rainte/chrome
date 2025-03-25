@@ -6,5 +6,8 @@ export default defineConfig({
   define: { 'process.env': {} },
   plugins: [react()],
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
-  build: { outDir: 'rainte' }
+  build: {
+    chunkSizeWarningLimit: 3200,
+    outDir: 'rainte'
+  }
 })
