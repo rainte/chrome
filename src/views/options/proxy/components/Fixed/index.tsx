@@ -45,15 +45,15 @@ export default function App(props: ProxyProps) {
         valueType: 'digit',
         formItemProps: { rules: [{ required: true }] }
       },
-      {
-        title: '认证用户名',
-        dataIndex: 'user'
-      },
-      {
-        title: '认证密码',
-        dataIndex: 'password',
-        valueType: 'password'
-      },
+      // {
+      //   title: '认证用户名',
+      //   dataIndex: 'user'
+      // },
+      // {
+      //   title: '认证密码',
+      //   dataIndex: 'password',
+      //   valueType: 'password'
+      // },
       {
         title: '过滤地址',
         dataIndex: 'bypassList',
