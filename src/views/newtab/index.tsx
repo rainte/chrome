@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Flex } from 'antd'
-import { db } from '@rainte/js'
+import { db, file } from '@rainte/js'
 import { StorageEnum } from '@/services/storage'
 import { NEWTAB_BGIMG_KEY } from '@/views/options/tab/components/NewTabBgImg'
 
@@ -11,8 +11,10 @@ export default function App() {
     db.get(StorageEnum.Tab)
       .then((res) => res[NEWTAB_BGIMG_KEY])
       .then((res) => {
-        res.status && setNewtab(URL.createObjectURL(res.files[0]))
-        console.log('aaaa', newtab)
+        if (res.status) {
+          const blob = file.toBlob(res.files.pop().base64)
+          setNewtab(URL.createObjectURL(blob))
+        }
       })
   }, [])
 

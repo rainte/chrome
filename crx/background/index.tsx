@@ -1,6 +1,18 @@
 import notice from '@/services/notice'
+import proxy from '@/services/proxy'
 
 console.log('background')
+
+chrome.runtime.onStartup.addListener(() => {
+  console.log('background onStartup')
+
+  proxy.get().then(async (res) => {
+    if (res.use) {
+      const rule = res.rules?.find((item) => item.id == res.use)
+      rule.day && proxy.setProxy(await proxy.getProxyConfig(res.use))
+    }
+  })
+})
 
 chrome.runtime.onInstalled.addListener(() => {
   console.log('background onInstalled')

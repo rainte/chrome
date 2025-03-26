@@ -1,6 +1,6 @@
 import { http } from '@rainte/js'
 import storage, { StorageEnum } from '@/services/storage'
-import { gfwlistToPAC, gfwlistToPACProps } from '@/services/gfwlist'
+import { gfwlistToPAC, gfwlistToPACProps, toPacDown } from '@/services/gfwlist'
 
 export type ProxyConfig = chrome.proxy.ProxyConfig
 
@@ -51,7 +51,7 @@ export const getAllModes = () =>
       )
     )
 
-export const _setProxy = async (value: ProxyConfig, callback?: () => void) => {
+export const setProxy = async (value: ProxyConfig, callback?: () => void) => {
   const context = await chrome.runtime.getContexts({})
   const scope = context[0]?.incognito ? 'incognito_persistent' : 'regular'
 
@@ -66,7 +66,7 @@ export const _setProxy = async (value: ProxyConfig, callback?: () => void) => {
   })
 }
 
-export const setProxy = async (id: string): Promise<void> => {
+export const getProxyConfig = async (id: string): Promise<ProxyConfig> => {
   let mode: string = ModeEnum.Direct
   let rules = undefined
   let pacScript = undefined
@@ -77,24 +77,20 @@ export const setProxy = async (id: string): Promise<void> => {
     mode = ModeEnum.System
   } else {
     const all = await get()
-
-    const fixeds = all?.rules?.filter((item) => item.mode == ModeEnum.FixedServers)
-    fixeds?.unshift(direct)
     const rule = all?.rules?.find((item) => item.id == id)
+
     if (rule.mode == ModeEnum.FixedServers) {
       mode = ModeEnum.FixedServers
       rules = makeFixedConfig(rule)
-      _setProxy({ mode, rules })
     } else if (rule.mode == ModeEnum.PacScript) {
-      const proxy = fixeds?.find((item) => item.id == rule.default)
+      const fixeds = all?.rules?.filter((item) => item.mode == ModeEnum.FixedServers)
 
-      _setProxy({ mode: ModeEnum.FixedServers, rules: makeFixedConfig(proxy) }, async () => {
-        mode = ModeEnum.PacScript
-        pacScript = { data: await makePacConfig(rule, [direct, ...(fixeds ?? [])]) }
-        _setProxy({ mode, pacScript })
-      })
+      mode = ModeEnum.PacScript
+      pacScript = { data: await makePacConfig(rule, [direct, ...(fixeds ?? [])]) }
     }
   }
+
+  return { mode, rules, pacScript }
 }
 
 export const fetchPacData = (url: string, format: string) => {
@@ -104,6 +100,28 @@ export const fetchPacData = (url: string, format: string) => {
     .then((data) => (format == 'base64' ? atob(data) : data))
 }
 
+export const downPac = async (id: string) => {
+  const config = await getProxyConfig(id)
+  toPacDown(
+    `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script>
+      ${config.pacScript?.data}
+      const res = FindProxyForURL('https://www.google.com/search?q=demo', 'www.google.com')
+      console.log('res', res)
+    </script>
+  </head>
+  <body></body>
+</html>
+`
+  )
+}
+
 export default {
   direct,
   system,
@@ -111,8 +129,9 @@ export default {
   set,
   getFixedModes,
   getAllModes,
-  _setProxy,
-  setProxy
+  setProxy,
+  getProxyConfig,
+  downPac
 }
 
 const makeFixedConfig = (rule: any): chrome.proxy.ProxyRules => {
@@ -131,7 +150,7 @@ const makeFixedConfig = (rule: any): chrome.proxy.ProxyRules => {
 
 const makePacConfig = async (config: any, fixeds: any[]) => {
   const rules = config.rules
-    .filter((item: any) => item.stauts)
+    .filter((item: any) => item.status)
     .map((item: any) => {
       const proxy = fixedProxy(fixeds, item.proxy)
       return { rule: item.value, proxy }
@@ -143,7 +162,6 @@ const makePacConfig = async (config: any, fixeds: any[]) => {
   }
   if (config.pac.status) {
     gfwlist.data = await fetchPacData(config.pac.url, config.pac.format)
-    console.log('fetchPacData', gfwlist.data)
   }
 
   return gfwlistToPAC(gfwlist)

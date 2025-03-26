@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Button, Flex, List, Space, Typography } from 'antd'
-import proxy, { ModeEnum } from '@/services/proxy'
+import proxy, { getProxyConfig, ModeEnum, setProxy } from '@/services/proxy'
 import { hash } from '@rainte/js'
 import { popup } from '@/utils/show'
 import Fixed from './components/Fixed'
@@ -55,6 +55,9 @@ export default function App() {
 
       await onSave(res)
       setUse(values)
+      if (res.use == values.id) {
+        setProxy(await getProxyConfig(values.id))
+      }
     })
   }
 

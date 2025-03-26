@@ -49,7 +49,7 @@ class Gist {
 
   async set(files: Partial<{ [x in StorageEnum]: any }>, raw: boolean = false) {
     files = Object.entries(files).reduce((acc: any, [key, value]) => {
-      acc[key + this.extension] = raw ? value : json.stringify(value)
+      acc[key + this.extension] = { content: raw ? value : json.stringify(value) }
       return acc
     }, {})
 

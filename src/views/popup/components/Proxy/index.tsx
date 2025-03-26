@@ -1,17 +1,21 @@
 import { useState, useEffect } from 'react'
 import { Flex, Radio, Dropdown, Button, Input } from 'antd'
-import proxy, { setProxy } from '@/services/proxy'
+import proxy, { ModeEnum } from '@/services/proxy'
 import storage, { StorageEnum } from '@/services/storage'
 import fast from '@/utils/fast'
 import { AiOutlineDown, AiOutlineSetting } from 'react-icons/ai'
 
 export default function App() {
-  const [domain, setDomain] = useState(location.hostname)
+  const [domain, setDomain] = useState('')
   const [fixeds, setFixeds] = useState<any[]>([])
   const [pacs, setPacs] = useState<any[]>([])
   const [selected, setSelected] = useState<string>(proxy.direct.id)
   const [loading, setLoading] = useState(false)
   const [isPac, setIsPac] = useState(false)
+
+  useEffect(() => {
+    fast.tabDo((tabs: any[]) => setDomain(new URL(tabs[0].url).hostname))
+  }, [])
 
   useEffect(() => {
     proxy.getAllModes().then((res) => {
@@ -35,7 +39,20 @@ export default function App() {
     storage.get(StorageEnum.Proxy).then((res) => {
       storage.set(StorageEnum.Proxy, { ...res, use: id })
     })
-    setProxy(id)
+
+    const rule = [proxy.direct, proxy.system, ...fixeds, ...pacs].find((item) => item.id == id)
+    if (rule.mode == ModeEnum.PacScript) {
+      const config = await proxy.getProxyConfig(rule.default)
+      await proxy.setProxy(config, async () => {
+        const config = await proxy.getProxyConfig(id)
+        proxy.setProxy(config)
+      })
+    } else {
+      const config = await proxy.getProxyConfig(id)
+      await proxy.setProxy(config)
+    }
+
+    fast.tabDo((tabs: any[]) => chrome.tabs.reload(tabs[0].id))
   }
 
   const onAdd = (value: string) => {
@@ -49,6 +66,7 @@ export default function App() {
         }
       })
       proxy.set(res).finally(() => setLoading(false))
+      onChange(selected)
     })
   }
 

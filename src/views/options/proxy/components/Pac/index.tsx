@@ -5,6 +5,9 @@ import { ModeEnum, getFixedModes, direct, fetchPacData } from '@/services/proxy'
 import { popup } from '@/utils/show'
 import { ProxyProps } from '../../index'
 
+// import { downPac } from '@/services/proxy'
+// downPac('1gbmgtr2jh380')
+
 const modeMap = new Map([
   ['domain', { text: '域名' }],
   ['regex', { text: '正则' }],
@@ -56,7 +59,8 @@ export default function App(props: ProxyProps) {
     },
     request: () =>
       onGet!(id).then(async (res: any) => {
-        res.pac.status && (res.pac.value = await fetchPacData(res.pac.url, res.pac.format))
+        res.pac.status &&
+          fetchPacData(res.pac.url, res.pac.format).then((res) => (res.pac.value = res))
         return res
       }),
     onFinish: (values: any) => onFinish!({ ...values, id, mode: ModeEnum.PacScript }),

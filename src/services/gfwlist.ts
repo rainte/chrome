@@ -8,6 +8,26 @@ export type gfwlistToPACProps = {
   }[] // 自定义规则.
 }
 
+export const toPacDown = (input: string) => {
+  let cleaned = input
+    .replace(/^"|"$/g, '')
+    .replace(/\\"/g, '"')
+    .replace(/\\n/g, '\n')
+    .replace(/\\t/g, '\t')
+
+  const blob = new Blob([cleaned], { type: 'application/x-ns-proxy-autoconfig' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'proxy.pac'
+  document.body.appendChild(a)
+  a.click()
+  setTimeout(() => {
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }, 100)
+}
+
 export const gfwlistToPAC = async (props: gfwlistToPACProps) => {
   const { url, data, proxy, rules: customRules = [] } = props
 
@@ -27,6 +47,7 @@ export const gfwlistToPAC = async (props: gfwlistToPACProps) => {
   if (customRules) {
     rules.unshift(...customRules.map((item) => textToRule(item.rule, item.proxy)))
   }
+
   // 4. 生成 PAC 文件.
   return toPac(rules, proxy)
 }
@@ -43,7 +64,10 @@ const fetchAndDecodeGFWList = async (url: string) => {
 }
 
 const textToRule = (rule: string, proxy: string) => {
-  rule.startsWith('@@') && (proxy = 'DIRECT')
+  if (rule.startsWith('@@')) {
+    proxy = 'DIRECT'
+    rule = rule.substring(2)
+  }
 
   if (rule.startsWith('||')) {
     return { mode: 'domain', rule: rule.substring(2), proxy }
@@ -71,7 +95,6 @@ const toPac = (rules: any[], proxy: string) => {
   const urls = [...new Set(rules.filter((item) => item.mode == 'url'))]
   const regexs = [...new Set(rules.filter((item) => item.mode == 'regex'))]
   const cidrs = [...new Set(rules.filter((item) => item.mode == 'cidr'))]
-  console.log('toPac', domains, urls, regexs, cidrs)
 
   // 生成 PAC 模板.
   return `
@@ -97,6 +120,9 @@ const toPac = (rules: any[], proxy: string) => {
 const matchDomain = () => {
   return `
     for (const item of domains) {
+      if (item.rule.includes(host)) {
+        console.log('domain', item)
+      }
       if (item.rule.startsWith('.')) {
         item.rule = '*' + item.rule
       }
@@ -105,7 +131,7 @@ const matchDomain = () => {
                                 .replace(/\\?/g, '.')
       const regex = new RegExp(\`^\${pattern}$\`, 'i')
       if (regex.test(host)) {
-        return \`"\${item.proxy}"\`;
+        return \`\${item.proxy}\`;
       }
     }
   `
@@ -114,8 +140,11 @@ const matchDomain = () => {
 const matchUrls = () => {
   return `
     for (const item of urls) {
+      if (item.rule.includes(host)) {
+        console.log('url', item)
+      }
       if (url.startsWith(item.rule)) {
-        return \`"\${item.proxy}"\`;
+        return \`\${item.proxy}\`;
       }
     }
   `
@@ -124,9 +153,12 @@ const matchUrls = () => {
 const matchRegexes = () => {
   return `
     for (const item of regexes) {
+      if (item.rule.includes(host)) {
+        console.log('regexe', item)
+      }
       const regex = new RegExp(item.rule);
       if (regex.test(url)) {
-        return \`"\${item.proxy}"\`;
+        return \`\${item.proxy}\`;
       }
     }
   `
@@ -173,8 +205,11 @@ const matchCIDR = () => {
     }
 
     for (const item of cidrs) {
+      if (item.rule.includes(host)) {
+        console.log('cidr', item)
+      }
       if (matchCIDR(item.rule)) {
-        return \`"\${item.proxy}"\`;
+        return \`\${item.proxy}\`;
       }
     }
   `

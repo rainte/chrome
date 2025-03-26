@@ -4,7 +4,9 @@ export enum StorageEnum {
   CRX = 'crx',
   Bookmark = 'bookmark',
   Proxy = 'proxy',
-  Tab = 'tab'
+  Tab = 'tab',
+  Storage = 'storage',
+  Db = 'db'
 }
 
 const localWeb = {
@@ -27,6 +29,7 @@ const localWeb = {
 }
 
 const isDev = import.meta.env.MODE == 'development'
+
 export const cache = isDev ? localWeb : chrome.storage.local
 export const cloud = isDev ? localWeb : chrome.storage.sync
 

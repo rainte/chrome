@@ -20,7 +20,13 @@ const toCrxTab = (url?: string) => {
   chrome.tabs.create({ url: chrome.runtime.getURL(url) })
 }
 
+const tabDo = (callback: (tabs: chrome.tabs.Tab[]) => any) =>
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs: chrome.tabs.Tab[]) => {
+    tabs && tabs[0] && callback(tabs)
+  })
+
 export default {
   onUpload,
-  toCrxTab
+  toCrxTab,
+  tabDo
 }
