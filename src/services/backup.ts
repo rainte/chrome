@@ -1,78 +1,89 @@
-import { db, json } from '@rainte/js'
-import gist from '@/services/gist'
-import bookmark from '@/services/bookmark'
-import storage, { StorageEnum } from '@/services/storage'
+import { database } from '@rainte/js'
+import gist, { GistEnum } from '@/utils/gist'
+import crx from '@/utils/crx'
+import { popup } from '@/utils/show'
 
-const getBookmark = () => bookmark.local.get()
+const map: {
+  [key in GistEnum]?: { get: FunctionProps; set: FunctionProps }
+} = {
+  [GistEnum.Bookmark]: { get: () => getBookmark(), set: (value: any) => setBookmark(value) },
+  [GistEnum.Storage]: { get: () => getStorage(), set: (value: any) => setStorage(value) },
+  [GistEnum.Db]: { get: () => getDatabase(), set: (value: any) => setDatabase(value) }
+}
+
+const all = Object.values(GistEnum).filter((item) => item != GistEnum.CRX)
+
+const getBookmark = () => crx.bookmark.all()
 
 const setBookmark = async (tree: any[]) => {
-  await bookmark.local.clear()
-  return Promise.all(tree.map(bookmark.local.add))
+  await crx.bookmark.clear()
+  for (const item of tree ?? []) {
+    await Promise.all(item.map(crx.bookmark.add))
+  }
 }
 
-const getStorage = async () => {
-  const keys = await chrome.storage.sync.getKeys()
-  return chrome.storage.sync.get(keys)
+const getStorage = () => crx.sync.get()
+
+const setStorage = async (items: any) => {
+  await crx.sync.clear()
+  return crx.sync.set(items)
 }
 
-const setStorage = async (value: any) => {
-  await chrome.storage.sync.clear()
-  return chrome.storage.sync.set(value)
-}
-
-const getDatabase = () => db.db.rows.toArray()
+const getDatabase = () => database.db.rows.toArray()
 
 const setDatabase = async (value: any[]) => {
-  await db.db.rows.clear()
-
-  return Promise.all(
-    value.map(async (item) => {
-      console.log('item', item)
-      await db.db.rows.add(item)
-    })
-  )
+  await database.db.rows.clear()
+  return Promise.all(value.map(database.db.rows.add))
 }
 
-const upload = () => {
-  return Promise.all([getBookmark(), getStorage(), getDatabase()]).then((res) => {
-    console.log('upload', res)
-    return gist.set({
-      [StorageEnum.Bookmark]: res[0],
-      [StorageEnum.Storage]: res[1],
-      [StorageEnum.Db]: res[2]
-    })
+const upload = async (checkeds?: GistEnum[]) => {
+  checkeds ??= all
+  const tasks: { name: GistEnum; task: () => Promise<any> }[] = []
+
+  for (const name of checkeds) {
+    tasks.push({ name, task: map[name]!.get })
+  }
+
+  const res = await Promise.allSettled(
+    tasks.map(({ task }) => task().catch((e) => ({ error: e.message })))
+  )
+
+  const items: { [key in GistEnum]?: any } = {}
+  res.forEach((item, index) => {
+    if (item.status === 'fulfilled') {
+      items[tasks[index].name] = item.value
+    } else {
+      popup.error(`${tasks[index].name}: ${item.reason}`)
+    }
+  })
+
+  return gist.set(items)
+}
+
+const down = async (checkeds?: GistEnum[]) => {
+  checkeds ??= all
+  const tasks: { name: GistEnum; task: (value: any) => Promise<any> }[] = []
+
+  const files = await gist.files()
+
+  for (const name of checkeds) {
+    tasks.push({ name, task: map[name]!.set })
+  }
+
+  const res = await Promise.allSettled(
+    tasks.map(({ name, task }) =>
+      task(files[name + gist.extension]).catch((e) => ({ error: e.message }))
+    )
+  )
+
+  res.forEach((item, index) => {
+    if (item.status === 'rejected') {
+      popup.error(`${tasks[index].name}: ${item.reason}`)
+    }
   })
 }
 
-const down = async () => {
-  const config = await storage.get(StorageEnum.CRX)
-  const url = `GET /gists/${config?.gistId}`
-  const options = { gist_id: config?.gistId }
-
-  return gist
-    .request(url, options)
-    .then((res) => res.files)
-    .then(async (files) => {
-      let temp = files[StorageEnum.Bookmark + gist.extension]
-      const res1 = temp ? setBookmark(json.parse(temp?.content)) : null
-
-      temp = files[StorageEnum.Storage + gist.extension]
-      const res2 = temp ? setStorage(json.parse(temp?.content)) : null
-
-      temp = files[StorageEnum.Db + gist.extension]
-      const res3 = temp ? setDatabase(json.parse(temp?.content)) : null
-
-      return Promise.all([res1, res2, res3])
-    })
-}
-
-const info = async () => {
-  const config = await storage.get(StorageEnum.CRX)
-  const url = `GET /gists/${config?.gistId}`
-  const options = { gist_id: config?.gistId }
-
-  return gist.request(url, options)
-}
+const info = () => gist.get()
 
 export default {
   upload,

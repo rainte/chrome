@@ -1,14 +1,14 @@
-export type gfwlistToPACProps = {
-  url?: string // GFWList 地址.
+export type GfwlistToPACProps = {
   data?: string // GFWList 数据.
-  proxy: string // 代理, 如 'SOCKS5 127.0.0.1:1080'.
+  proxy?: string // 代理, 如 'PROXY 127.0.0.1:1080'.
+  defaultProxy?: string // 默认代理, 如 'DIRECT'.
   rules?: {
     rule: string
     proxy: string
   }[] // 自定义规则.
 }
 
-export const toPacDown = (input: string) => {
+const toPacFile = (input: string) => {
   let cleaned = input
     .replace(/^"|"$/g, '')
     .replace(/\\"/g, '"')
@@ -17,50 +17,36 @@ export const toPacDown = (input: string) => {
 
   const blob = new Blob([cleaned], { type: 'application/x-ns-proxy-autoconfig' })
   const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = 'proxy.pac'
-  document.body.appendChild(a)
-  a.click()
-  setTimeout(() => {
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-  }, 100)
+
+  const link = document.createElement('a')
+  link.href = url
+  link.download = 'proxy.pac'
+  link.click()
+  URL.revokeObjectURL(link.href)
 }
 
-export const gfwlistToPAC = async (props: gfwlistToPACProps) => {
-  const { url, data, proxy, rules: customRules = [] } = props
+export const toPacRule = async (props: GfwlistToPACProps) => {
+  const {
+    data,
+    proxy = 'PROXY 127.0.0.1:1080',
+    defaultProxy = 'DIRECT',
+    rules: customRules = []
+  } = props
 
   const rules = []
-  if (url || data) {
-    // 1. 获取规则.
-    const gfwlist = data ? data : await fetchAndDecodeGFWList(url!)
-    // 2. 解析规则.
-    const gfwlistRules = gfwlist
+  if (data) {
+    const gfwlistRules = data
       .split('\n')
       .filter((line) => line && !line.startsWith('!') && !line.startsWith('['))
       .map((line) => textToRule(line, proxy))
     rules.push(...gfwlistRules)
   }
 
-  // 3. 添加自定义规则.
   if (customRules) {
     rules.unshift(...customRules.map((item) => textToRule(item.rule, item.proxy)))
   }
 
-  // 4. 生成 PAC 文件.
-  return toPac(rules, proxy)
-}
-
-const fetchAndDecodeGFWList = async (url: string) => {
-  try {
-    return fetch(url)
-      .then((res) => res.text())
-      .then((res) => atob(res))
-  } catch (error) {
-    console.error('获取 GFWList 失败.', error)
-    throw new Error('获取 GFWList 失败.')
-  }
+  return toPacText(rules, defaultProxy)
 }
 
 const textToRule = (rule: string, proxy: string) => {
@@ -89,7 +75,7 @@ const isCIDR = (rule: string) => {
   )
 }
 
-const toPac = (rules: any[], proxy: string) => {
+const toPacText = (rules: any[], proxy: string) => {
   // 去重.
   const domains = [...new Set(rules.filter((item) => item.mode == 'domain'))]
   const urls = [...new Set(rules.filter((item) => item.mode == 'url'))]
@@ -100,6 +86,7 @@ const toPac = (rules: any[], proxy: string) => {
   return `
     function FindProxyForURL(url, host) {
       console.log('FindProxyForURL', url, host)
+
       const domains = ${JSON.stringify(domains)};
       ${matchDomain()}
 
@@ -108,7 +95,7 @@ const toPac = (rules: any[], proxy: string) => {
 
       const regexes = ${JSON.stringify(regexs)};
       ${matchRegexes()}
-      
+
       const cidrs = ${JSON.stringify(cidrs)};
       ${matchCIDR()}
 
@@ -123,9 +110,11 @@ const matchDomain = () => {
       if (item.rule.includes(host)) {
         console.log('domain', item)
       }
+
       if (item.rule.startsWith('.')) {
         item.rule = '*' + item.rule
       }
+
       const pattern = item.rule.replace(/\\./g, '\\\.')
                                 .replace(/\\*/g, '.*')
                                 .replace(/\\?/g, '.')
@@ -143,6 +132,7 @@ const matchUrls = () => {
       if (item.rule.includes(host)) {
         console.log('url', item)
       }
+
       if (url.startsWith(item.rule)) {
         return \`\${item.proxy}\`;
       }
@@ -156,6 +146,7 @@ const matchRegexes = () => {
       if (item.rule.includes(host)) {
         console.log('regexe', item)
       }
+
       const regex = new RegExp(item.rule);
       if (regex.test(url)) {
         return \`\${item.proxy}\`;
@@ -208,9 +199,15 @@ const matchCIDR = () => {
       if (item.rule.includes(host)) {
         console.log('cidr', item)
       }
+
       if (matchCIDR(item.rule)) {
         return \`\${item.proxy}\`;
       }
     }
   `
+}
+
+export default {
+  toPacFile,
+  toPacRule
 }

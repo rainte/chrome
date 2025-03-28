@@ -1,7 +1,7 @@
 import { Form, FormProps } from '@rainte/ant'
+import { Typography } from 'antd'
 import { ModeEnum } from '@/services/proxy'
 import { ProxyProps } from '../../index'
-import { Typography } from 'antd'
 
 export default function App(props: ProxyProps) {
   const { id, onGet, onFinish } = props
@@ -68,7 +68,6 @@ export default function App(props: ProxyProps) {
           </Typography.Link>
         ),
         fieldProps: { rows: 9 }
-        // https://developer.chrome.com/docs/extensions/reference/api/proxy#bypass_list
       }
     ]
   }

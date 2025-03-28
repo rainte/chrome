@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Button, Flex, List, Space, Typography } from 'antd'
-import proxy, { getProxyConfig, ModeEnum, setProxy } from '@/services/proxy'
+import crx from '@/utils/crx'
 import { hash } from '@rainte/js'
+import proxy, { ModeEnum } from '@/services/proxy'
 import { popup } from '@/utils/show'
 import Fixed from './components/Fixed'
 import Pac from './components/Pac'
@@ -23,50 +24,52 @@ export default function App() {
     refresh()
   }, [])
 
-  const refresh = () =>
-    proxy.getAllModes().then((res) => {
+  const refresh = () => {
+    return proxy.groupRules().then((res: any) => {
       setFixeds(res.fixed)
       setPacs(res.pac)
     })
+  }
 
-  const onSave = (data: any) =>
-    proxy.set(data).then(() => {
+  const onSave = (data: any) => {
+    return proxy.set(data).then(() => {
       refresh()
       popup.success()
     })
+  }
 
   const onGet = (id: string) => {
-    return proxy
-      .get()
-      .then((res) => res.rules ?? [])
-      .then((rules) => rules.find((item) => id && item.id == id) ?? {})
+    return proxy.allRules().then((rules: any[]) => rules.find((item) => item.id == id) ?? {})
   }
 
   const onFinish = (values: any) => {
+    values.pac?.value && (values.pac.value = undefined)
+
     proxy.get().then(async (res) => {
-      values.pac?.value && (values.pac.value = undefined)
+      res.rules ??= []
 
       if (values.id) {
-        res?.rules?.forEach((item, index, array) => item.id == values.id && (array[index] = values))
+        res.rules.forEach((item, index) => {
+          item.id == values.id && (res.rules![index] = values)
+        })
       } else {
         values.id = hash.id()
-        res.rules ? res.rules.push(values) : (res.rules = [values])
+        res.rules.push(values)
       }
 
       await onSave(res)
       setUse(values)
-      if (res.use == values.id) {
-        setProxy(await getProxyConfig(values.id))
-      }
+      res.use == values.id && crx.proxy.set(await proxy.makeConfig(values.id))
     })
   }
 
   const onDel = (id: string) => {
     popup.ask(() => {
-      proxy.get().then((res) => {
+      proxy.get().then(async (res) => {
         res.rules = res?.rules?.filter((item) => item.id != id) ?? []
         onSave(res)
         use?.id == id && setUse(undefined)
+        res.use == id && crx.proxy.set(await proxy.makeConfig(ModeEnum.Direct))
       })
     })
   }

@@ -13,18 +13,21 @@ const routes = menus.map((item) => {
   return { path: item.url, Component: lazy(() => item.component) }
 })
 
+const popup = <Navigate to="/popup" />
+const options = <Navigate to={'/options/' + menus[0]?.url} />
+
 const router = createHashRouter([
   { path: 'demo', Component: lazy(() => import('@/views/demo')) },
   {
     path: '/',
     Component: lazy(() => import('@/views/layout/blank')),
     children: [
-      { index: true, element: <Navigate to="/popup" /> },
+      { index: true, element: popup },
       { path: 'newtab', Component: lazy(() => import('@/views/newtab')) },
       {
         path: 'options',
         Component: lazy(() => import('@/views/layout/menu')),
-        children: routes
+        children: [{ index: true, element: options }, ...routes]
       },
       { path: 'popup', Component: lazy(() => import('@/views/popup')) }
     ]

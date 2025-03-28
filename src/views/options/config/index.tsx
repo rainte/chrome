@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Form, FormProps } from '@rainte/ant'
 import { Space, Input, Button, Typography } from 'antd'
-import storage, { StorageEnum } from '@/services/storage'
-import gist from '@/services/gist'
-import backup from '@/services/backup'
 import { date } from '@rainte/js'
+import gist from '@/utils/gist'
+import crx, { SyncEnum } from '@/utils/crx'
+import backup from '@/services/backup'
 import { popup } from '@/utils/show'
 
 const linkButton = (label: string, url: string) => (
@@ -21,11 +21,15 @@ enum LoadingEnum {
 
 export default function App() {
   const [info, setInfo] = useState<any>()
-  const [loading, setLoading] = useState({
+  const [loading, setLoading] = useState<{ [key in LoadingEnum]: boolean }>({
     [LoadingEnum.Save]: false,
     [LoadingEnum.Upload]: false,
     [LoadingEnum.Down]: false
   })
+
+  const setLoadingStates = (type: LoadingEnum, isLoading: boolean) => {
+    setLoading((prev) => ({ ...prev, [type]: isLoading }))
+  }
 
   useEffect(() => {
     refresh()
@@ -33,30 +37,25 @@ export default function App() {
 
   const refresh = () => backup.info().then(setInfo)
 
-  const setLoadingStates = (type: LoadingEnum, isLoading: boolean) => {
-    setLoading((prev) => ({ ...prev, [type]: isLoading }))
-  }
-
   const addGist = () => {
     const githubToken = props.form?.getFieldValue?.('githubToken')
-    githubToken || popup.error('先填写 Github Token')
+    githubToken || popup.error(crx.i18n.get('githubTokenError'))
 
     popup.ask(() => {
       setLoadingStates(LoadingEnum.Save, true)
       gist
         .add(githubToken)
         .then((res) => {
-          props.form?.setFieldValue?.('githubToken', res.id)
           props.form?.setFieldValue?.('gistId', res.id)
         })
         .finally(() => setLoadingStates(LoadingEnum.Save, false))
     })
   }
 
-  const onRequest = () => storage.get(StorageEnum.CRX).then((res) => res ?? {})
+  const onRequest = () => crx.sync.getItem(SyncEnum.CRX).then((res) => res ?? {})
 
   const onFinish = (data: any) => {
-    storage.set(StorageEnum.CRX, data).then(() => popup.success())
+    crx.sync.setItem(SyncEnum.CRX, data).then(() => popup.success())
   }
 
   const onUpload = () => {
@@ -94,10 +93,10 @@ export default function App() {
           return (
             <Space style={{ width: '100%' }}>
               <Space.Compact style={{ width: '100%' }}>
-                <Button onClick={onUpload} loading={loading[LoadingEnum.Upload]}>
+                <Button onClick={onUpload} loading={loading.upload}>
                   上传备份
                 </Button>
-                <Button onClick={onDown} loading={loading[LoadingEnum.Down]}>
+                <Button onClick={onDown} loading={loading.down}>
                   覆盖本地
                 </Button>
               </Space.Compact>
@@ -129,7 +128,7 @@ export default function App() {
           return (
             <Space.Compact style={{ width: '100%' }}>
               <Input value={value} onChange={onChange} />
-              <Button onClick={addGist} loading={loading[LoadingEnum.Save]}>
+              <Button onClick={addGist} loading={loading.save}>
                 自动生成
               </Button>
               {linkButton('手动生成', 'https://gist.github.com')}

@@ -1,4 +1,4 @@
-import notice from '@/services/notice'
+import crx from '@/utils/crx'
 import proxy from '@/services/proxy'
 
 console.log('background')
@@ -9,7 +9,7 @@ chrome.runtime.onStartup.addListener(() => {
   proxy.get().then(async (res) => {
     if (res.use) {
       const rule = res.rules?.find((item) => item.id == res.use)
-      rule.day && proxy.setProxy(await proxy.getProxyConfig(res.use))
+      rule.day && crx.proxy.set(await proxy.makeConfig(res.use))
     }
   })
 })
@@ -35,7 +35,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   })
 })
 
-chrome.bookmarks.onCreated.addListener(notice.send())
-chrome.bookmarks.onChanged.addListener(notice.send())
-chrome.bookmarks.onRemoved.addListener(notice.send())
-chrome.bookmarks.onMoved.addListener(notice.send())
+chrome.bookmarks.onCreated.addListener(crx.action.send())
+chrome.bookmarks.onChanged.addListener(crx.action.send())
+chrome.bookmarks.onRemoved.addListener(crx.action.send())
+chrome.bookmarks.onMoved.addListener(crx.action.send())

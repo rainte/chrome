@@ -1,7 +1,6 @@
-import { Form, FormProps } from '@rainte/ant'
-import { db, file as fileUtil } from '@rainte/js'
-import fast from '@/utils/fast'
-import { StorageEnum } from '@/services/storage'
+import { Form, FormProps, ant } from '@rainte/ant'
+import { database, blob } from '@rainte/js'
+import { DbEnum } from '@/utils/crx'
 import { popup } from '@/utils/show'
 
 export const NEWTAB_BGIMG_KEY = 'NewTabBgImg'
@@ -13,12 +12,12 @@ export type NewTabBgImgProps = {
 
 export default function App() {
   const onRequest = () => {
-    return db
-      .get(StorageEnum.Tab)
+    return database
+      .get(DbEnum.Tab)
       .then((res) => res[NEWTAB_BGIMG_KEY])
       .then((res: NewTabBgImgProps) => {
         const files = res?.files?.map((file) => {
-          file.url = URL.createObjectURL(fileUtil.toBlob(file.base64))
+          file.url = URL.createObjectURL(blob.toBlob(file.base64))
           return file
         })
         return { ...res, files }
@@ -28,11 +27,11 @@ export default function App() {
   const onFinish = async (data: any) => {
     const files = await Promise.all(
       data.files.map(async (file: any) => {
-        return { base64: file.base64 ? file.base64 : await fileUtil.toBase64(file.originFileObj) }
+        return { base64: file.base64 ? file.base64 : await blob.toBase64(file.originFileObj) }
       })
     )
-    return db
-      .set(StorageEnum.Tab, { [NEWTAB_BGIMG_KEY]: { status: data.status, files } })
+    return database
+      .set(DbEnum.Tab, { [NEWTAB_BGIMG_KEY]: { status: data.status, files } })
       .then(() => popup.success())
   }
 
@@ -61,7 +60,7 @@ export default function App() {
             },
             fieldProps: {
               listType: 'picture-card',
-              customRequest: fast.onUpload
+              customRequest: ant.onUpload
             }
           }
         ]

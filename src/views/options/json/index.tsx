@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Flex, Space, Input, Button, Alert } from 'antd'
-import { AiOutlineSortAscending } from 'react-icons/ai'
 import ReactJson from 'react-json-view'
-import { fast } from '@rainte/js'
+import { system } from '@rainte/js'
+import { AiOutlineSortAscending } from 'react-icons/ai'
 
 export default function App() {
   const [value, setValue] = useState('{}')
@@ -15,7 +15,7 @@ export default function App() {
     try {
       const value = event.target.value
       setValue(value)
-      isNaN(value) || fast.fail(`"${value}" is not valid JSON`)
+      isNaN(value) || system.fail(`"${value}" is not valid JSON`)
       setJson(JSON.parse(value))
       setMessage('')
     } catch (error: any) {
@@ -71,7 +71,7 @@ export default function App() {
             </Space.Compact>
           </Flex>
           <Flex flex={2}>
-            <Input.TextArea value={value} onChange={onChange} placeholder="输入 Json 字符串..." />
+            <Input.TextArea value={value} onChange={onChange} />
           </Flex>
         </Flex>
       </Flex>

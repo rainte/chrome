@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Form, FormProps } from '@rainte/ant'
 import { Button, Typography } from 'antd'
-import { ModeEnum, getFixedModes, direct, fetchPacData } from '@/services/proxy'
+import proxy, { ModeEnum } from '@/services/proxy'
 import { popup } from '@/utils/show'
 import { ProxyProps } from '../../index'
 
-// import { downPac } from '@/services/proxy'
-// downPac('1gbmgtr2jh380')
+// proxy.downPac('1gc7hjdcmhfo0')
 
 const modeMap = new Map([
   ['domain', { text: '域名' }],
@@ -25,8 +24,8 @@ export default function App(props: ProxyProps) {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    getFixedModes().then((modes) => {
-      setProxyMap(new Map(modes.map((item) => [item.id, { text: item.name }])))
+    proxy.fixedRules().then((rules) => {
+      setProxyMap(new Map(rules.map((item) => [item.id, { text: item.name }])))
     })
   }, [])
 
@@ -37,7 +36,7 @@ export default function App(props: ProxyProps) {
 
     let data = null
     try {
-      data = await fetchPacData(url, format)
+      data = await proxy.fetchPac(url, format)
     } catch (e) {
       popup.error(String(e))
     } finally {
@@ -49,18 +48,20 @@ export default function App(props: ProxyProps) {
   const options: FormProps = {
     form: Form.useForm(),
     initialValues: {
-      default: direct.id,
+      default: ModeEnum.Direct,
       pac: {
         status: true,
         format: 'base64',
         url: 'https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt',
-        proxy: direct.id
+        proxy: ModeEnum.Direct
       }
     },
     request: () =>
       onGet!(id).then(async (res: any) => {
         res.pac.status &&
-          fetchPacData(res.pac.url, res.pac.format).then((res) => (res.pac.value = res))
+          proxy.fetchPac(res.pac.url, res.pac.format).then((value) => {
+            options.form?.setFieldValue(['pac', 'value'], value)
+          })
         return res
       }),
     onFinish: (values: any) => onFinish!({ ...values, id, mode: ModeEnum.PacScript }),
@@ -86,7 +87,7 @@ export default function App(props: ProxyProps) {
           creatorRecord: {
             status: true,
             mode: 'domain',
-            proxy: direct.id
+            proxy: ModeEnum.Direct
           }
         },
         formItemProps: {
@@ -191,7 +192,7 @@ export default function App(props: ProxyProps) {
             ]
           },
           {
-            renderFormItem: (_, __) => (
+            renderFormItem: () => (
               <Button loading={loading} onClick={fetchExternalData}>
                 获取
               </Button>

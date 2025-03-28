@@ -2,5 +2,7 @@
   "modalConfirmTitle": { "message": "提示" },
   "modalConfirmContent": { "message": "确认操作？" },
   "messageSuccess": { "message": "操作成功" },
-  "messageError": { "message": "操作失败" }
+  "messageError": { "message": "操作失败" },
+  "githubTokenError": { "message": "先填写 Github Token" },
+  "gistIdError": { "message": "请先配置 Gist" }
 }

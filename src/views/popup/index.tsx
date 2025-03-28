@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { ConfigProvider, Segmented, Flex } from 'antd'
-import { AiOutlineGlobal, AiOutlineAppstore } from 'react-icons/ai'
 import Proxy from './components/Proxy'
 import Setting from './components/Setting'
+import { AiOutlineGlobal, AiOutlineAppstore } from 'react-icons/ai'
 
 const options = [
   { label: '代理', icon: <AiOutlineGlobal />, dom: <Proxy /> },
