@@ -1,4 +1,4 @@
-import { Form, FormProps, ant } from '@rainte/ant'
+import { Form, FormProps, misc } from '@rainte/ant'
 import './index.scss'
 
 const StatusMap = new Map([
@@ -15,7 +15,7 @@ export default function App() {
         title: '图片',
         dataIndex: 'image',
         valueType: 'upload',
-        fieldProps: { customRequest: ant.onUpload }
+        fieldProps: { customRequest: misc.onUpload }
       }
     ]
   }

@@ -1,7 +1,7 @@
 import { database } from '@rainte/js'
+import { dialog } from '@rainte/ant'
 import gist, { GistEnum } from '@/utils/gist'
-import crx from '@/utils/crx'
-import { popup } from '@/utils/show'
+import crx, { SyncEnum } from '@/utils/crx'
 
 const map: {
   [key in GistEnum]?: { get: FunctionProps; set: FunctionProps }
@@ -17,23 +17,28 @@ const getBookmark = () => crx.bookmark.all()
 
 const setBookmark = async (tree: any[]) => {
   await crx.bookmark.clear()
-  for (const item of tree ?? []) {
-    await Promise.all(item.map(crx.bookmark.add))
+  for (const item of tree.shift().children) {
+    await crx.bookmark.add(item)
   }
 }
 
-const getStorage = () => crx.sync.get()
+const getStorage = () =>
+  crx.sync.get().then((res) => {
+    const { [SyncEnum.CRX]: _, ...attrs } = res
+    return attrs
+  })
 
 const setStorage = async (items: any) => {
+  const last = await crx.sync.getItem(SyncEnum.CRX)
   await crx.sync.clear()
-  return crx.sync.set(items)
+  return crx.sync.set({ ...items, [SyncEnum.CRX]: last })
 }
 
 const getDatabase = () => database.db.rows.toArray()
 
 const setDatabase = async (value: any[]) => {
   await database.db.rows.clear()
-  return Promise.all(value.map(database.db.rows.add))
+  return Promise.all(value.map((item) => database.set(item.key, item.value)))
 }
 
 const upload = async (checkeds?: GistEnum[]) => {
@@ -53,7 +58,7 @@ const upload = async (checkeds?: GistEnum[]) => {
     if (item.status === 'fulfilled') {
       items[tasks[index].name] = item.value
     } else {
-      popup.error(`${tasks[index].name}: ${item.reason}`)
+      dialog.popup.error(`${tasks[index].name}: ${item.reason}`)
     }
   })
 
@@ -72,13 +77,13 @@ const down = async (checkeds?: GistEnum[]) => {
 
   const res = await Promise.allSettled(
     tasks.map(({ name, task }) =>
-      task(files[name + gist.extension]).catch((e) => ({ error: e.message }))
+      task(files[name + gist.extension].content).catch((e) => ({ error: e.message }))
     )
   )
 
   res.forEach((item, index) => {
     if (item.status === 'rejected') {
-      popup.error(`${tasks[index].name}: ${item.reason}`)
+      dialog.popup.error(`${tasks[index].name}: ${item.reason}`)
     }
   })
 }

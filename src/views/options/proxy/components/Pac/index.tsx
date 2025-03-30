@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Form, FormProps } from '@rainte/ant'
 import { Button, Typography } from 'antd'
+import { Form, FormProps, dialog } from '@rainte/ant'
 import proxy, { ModeEnum } from '@/services/proxy'
-import { popup } from '@/utils/show'
 import { ProxyProps } from '../../index'
 
 // proxy.downPac('1gc7hjdcmhfo0')
@@ -38,7 +37,7 @@ export default function App(props: ProxyProps) {
     try {
       data = await proxy.fetchPac(url, format)
     } catch (e) {
-      popup.error(String(e))
+      dialog.popup.error(String(e))
     } finally {
       options.form?.setFieldValue(['pac', 'value'], data)
       setLoading(false)

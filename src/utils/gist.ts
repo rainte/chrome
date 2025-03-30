@@ -1,7 +1,7 @@
 import { Octokit } from '@octokit/core'
-import crx, { SyncEnum } from '@/utils/crx'
 import { json } from '@rainte/js'
-import { popup } from '@/utils/show'
+import { dialog } from '@rainte/ant'
+import crx, { SyncEnum } from '@/utils/crx'
 
 export enum GistEnum {
   CRX = '-rainte',
@@ -22,7 +22,7 @@ class Gist {
 
   async init() {
     this.config = await crx.sync.getItem<CRXProps>(SyncEnum.CRX)
-    this.config ?? popup.error(crx.i18n.get('gistIdError'))
+    this.config ?? dialog.popup.error(crx.i18n.get('gistIdError'))
   }
 
   request(url: string, options: ObjectProps) {
@@ -32,7 +32,7 @@ class Gist {
         console.log('octokit response', res.data)
         return res.data
       })
-      .catch((error) => popup.error(error.message))
+      .catch((error) => dialog.popup.error(error.message))
   }
 
   add(githubToken: string) {

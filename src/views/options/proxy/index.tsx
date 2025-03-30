@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Button, Flex, List, Space, Typography } from 'antd'
-import crx from '@/utils/crx'
 import { hash } from '@rainte/js'
+import { dialog } from '@rainte/ant'
+import crx from '@/utils/crx'
 import proxy, { ModeEnum } from '@/services/proxy'
-import { popup } from '@/utils/show'
 import Fixed from './components/Fixed'
 import Pac from './components/Pac'
 
@@ -34,7 +34,7 @@ export default function App() {
   const onSave = (data: any) => {
     return proxy.set(data).then(() => {
       refresh()
-      popup.success()
+      dialog.popup.success()
     })
   }
 
@@ -64,12 +64,21 @@ export default function App() {
   }
 
   const onDel = (id: string) => {
-    popup.ask(() => {
+    dialog.popup.ask(() => {
       proxy.get().then(async (res) => {
         res.rules = res?.rules?.filter((item) => item.id != id) ?? []
+        res.rules.forEach((item) => {
+          item.default == id && dialog.popup.error(`${item.name} 使用中`)
+          item.pac?.proxy == id && dialog.popup.error(`${item.name} 使用中`)
+          item.rules?.forEach((rule: any) => {
+            rule?.proxy == id && dialog.popup.error(`${item.name} 使用中`)
+          })
+        })
+        res.use == id && (res.use = ModeEnum.Direct)
+        console.log('res', res)
         onSave(res)
         use?.id == id && setUse(undefined)
-        res.use == id && crx.proxy.set(await proxy.makeConfig(ModeEnum.Direct))
+        crx.proxy.set(await proxy.makeConfig(res.use ?? ModeEnum.Direct))
       })
     })
   }

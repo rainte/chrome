@@ -1,5 +1,4 @@
-const response = await fetch('/_locales/zh_CN/messages.json')
-const messages = await response.json()
+import messages from '@/../public/_locales/zh_CN/messages.json'
 
 class I18n {
   get(messageName: string, _?: string | string[]) {

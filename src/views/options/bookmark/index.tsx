@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Flex, Space, Button, Statistic, Divider, Tag } from 'antd'
 import { array, hash } from '@rainte/js'
-import crx from '@/utils/crx'
+import { dialog } from '@rainte/ant'
 import gist, { GistEnum } from '@/utils/gist'
+import crx from '@/utils/crx'
 import backup from '@/services/backup'
-import { popup } from '@/utils/show'
 import CountUp from 'react-countup'
 
 const formatter = (value: number | string) => {
@@ -43,11 +43,11 @@ export default function App() {
   }
 
   const onOk = (method: () => Promise<any>) => {
-    return popup.ask(() =>
+    return dialog.popup.ask(() =>
       method().then(() => {
         crx.action.clear()
         refresh()
-        popup.success()
+        dialog.popup.success()
       })
     )
   }

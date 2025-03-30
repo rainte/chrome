@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Form, FormProps } from '@rainte/ant'
 import { Space, Input, Button, Typography } from 'antd'
+import { Form, FormProps, dialog } from '@rainte/ant'
 import { date } from '@rainte/js'
 import gist from '@/utils/gist'
 import crx, { SyncEnum } from '@/utils/crx'
 import backup from '@/services/backup'
-import { popup } from '@/utils/show'
 
 const linkButton = (label: string, url: string) => (
   <Typography.Link href={url} target="_blank">
@@ -39,9 +38,9 @@ export default function App() {
 
   const addGist = () => {
     const githubToken = props.form?.getFieldValue?.('githubToken')
-    githubToken || popup.error(crx.i18n.get('githubTokenError'))
+    githubToken || dialog.popup.error(crx.i18n.get('githubTokenError'))
 
-    popup.ask(() => {
+    dialog.popup.ask(() => {
       setLoadingStates(LoadingEnum.Save, true)
       gist
         .add(githubToken)
@@ -55,28 +54,28 @@ export default function App() {
   const onRequest = () => crx.sync.getItem(SyncEnum.CRX).then((res) => res ?? {})
 
   const onFinish = (data: any) => {
-    crx.sync.setItem(SyncEnum.CRX, data).then(() => popup.success())
+    crx.sync.setItem(SyncEnum.CRX, data).then(() => dialog.popup.success())
   }
 
   const onUpload = () => {
-    popup.ask(() => {
+    dialog.popup.ask(() => {
       setLoadingStates(LoadingEnum.Upload, true)
       backup
         .upload()
         .then(() => {
           refresh()
-          popup.success()
+          dialog.popup.success()
         })
         .finally(() => setLoadingStates(LoadingEnum.Upload, false))
     })
   }
 
   const onDown = () => {
-    popup.ask(() => {
+    dialog.popup.ask(() => {
       setLoadingStates(LoadingEnum.Down, true)
       backup
         .down()
-        .then(() => popup.success())
+        .then(() => dialog.popup.success())
         .finally(() => setLoadingStates(LoadingEnum.Down, false))
     })
   }

@@ -59,6 +59,7 @@ const addRule = (id: string, domain: string, proxy: string) => {
     rules.forEach((item) => {
       if (item.id == id) {
         const rule = { status: true, mode: 'domain', value: domain, proxy }
+        item.rules ??= []
         item.rules.push(rule)
       }
     })
@@ -134,7 +135,7 @@ const makeFixedConfig = (rule: any) => {
 }
 
 const makePacConfig = async (config: any, fixeds: any[]) => {
-  const rules = (config.rules as any[])
+  const rules = ((config.rules as any[]) ?? [])
     .filter((item) => item.status)
     .map((item) => {
       const proxy = makeProxy(fixeds, item.proxy)

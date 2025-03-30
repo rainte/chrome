@@ -1,0 +1,7 @@
+export { default as action } from './chrome/action'
+export { default as bookmark } from './chrome/bookmark'
+export { default as i18n } from './chrome/i18n'
+export { default as proxy } from './chrome/proxy'
+export { default as sync } from './chrome/sync'
+export { default as system } from './chrome/system'
+export { default as tab } from './chrome/tab'

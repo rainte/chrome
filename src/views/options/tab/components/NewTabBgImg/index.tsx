@@ -1,7 +1,6 @@
-import { Form, FormProps, ant } from '@rainte/ant'
+import { Form, FormProps, misc, dialog } from '@rainte/ant'
 import { database, blob } from '@rainte/js'
 import { DbEnum } from '@/utils/crx'
-import { popup } from '@/utils/show'
 
 export const NEWTAB_BGIMG_KEY = 'NewTabBgImg'
 
@@ -32,7 +31,7 @@ export default function App() {
     )
     return database
       .set(DbEnum.Tab, { [NEWTAB_BGIMG_KEY]: { status: data.status, files } })
-      .then(() => popup.success())
+      .then(() => dialog.popup.success())
   }
 
   const props: FormProps = {
@@ -60,7 +59,7 @@ export default function App() {
             },
             fieldProps: {
               listType: 'picture-card',
-              customRequest: ant.onUpload
+              customRequest: misc.onUpload
             }
           }
         ]
