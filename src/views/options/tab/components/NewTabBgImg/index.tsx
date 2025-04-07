@@ -16,7 +16,7 @@ export default function App() {
       .then((res) => res[NEWTAB_BGIMG_KEY])
       .then((res: NewTabBgImgProps) => {
         const files = res?.files?.map((file) => {
-          file.url = URL.createObjectURL(blob.toBlob(file.base64, { type: 'image/png' }))
+          file.url = URL.createObjectURL(blob.toBlob(file.base64))
           return file
         })
         return { ...res, files }
