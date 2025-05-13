@@ -23,6 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
-pnpm-lock.yaml
+/.vscode
+/.idea
 /rainte
 /stats.html
+pnpm-lock.yaml
