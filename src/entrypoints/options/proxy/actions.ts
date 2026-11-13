@@ -1,0 +1,23 @@
+import { proxyState } from '@/utils/storage'
+import type { ProxySettings, PacProxy } from '@/utils/proxy'
+import { downloadGfwList } from '@/utils/gfwlist'
+
+export enum ProxyKind {
+  Fixed = 'fixed',
+  Pac = 'pac'
+}
+
+export type ProxyEditorProps = {
+  item?: PacProxy
+  settings?: ProxySettings
+  onSave: (kind: ProxyKind, item: PacProxy) => void
+}
+
+export const loadProxySettings = () => proxyState.getValue()
+
+export const saveProxySettings = (state: ProxySettings) => proxyState.setValue(state)
+
+export const fetchGfwList = async (url: string): Promise<PacProxy['gfwlist']> => {
+  const text = await downloadGfwList(url)
+  return { text, updatedAt: new Date().toISOString() }
+}

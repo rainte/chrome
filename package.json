@@ -1,0 +1,42 @@
+{
+  "name": "@rainte/chrome",
+  "description": "Rainte Chrome CRX",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "compile": "tsc --noEmit",
+    "postinstall": "wxt prepare",
+    "upgrade": "pnpm up -L --registry=https://registry.npmjs.org",
+    "lint": "oxlint"
+  },
+  "dependencies": {
+    "@ant-design/pro-components": "3.1.15-9",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@rainte/ant": "^0.0.82",
+    "@wxt-dev/storage": "^1.3.0",
+    "antd": "^6.7.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-icons": "^5.7.0",
+    "react-json-view-lite": "^2.5.0",
+    "react-router": "^8.5.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@wxt-dev/module-react": "^1.2.2",
+    "oxlint": "^1.92.0",
+    "typescript": "^7.0.2",
+    "web-ext": "^10.8.0",
+    "wxt": "^0.21.5"
+  }
+}
