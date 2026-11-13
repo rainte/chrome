@@ -1,6 +1,6 @@
 import { proxyState } from '@/utils/storage'
+import { downloadGfwList } from '@/lib/gfwlist'
 import type { ProxySettings, PacProxy } from '@/utils/proxy'
-import { downloadGfwList } from '@/utils/gfwlist'
 
 export enum ProxyKind {
   Fixed = 'fixed',

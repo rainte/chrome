@@ -1,5 +1,5 @@
 import { browser, type Browser } from '#imports'
-import { ProxyActionEnum as ProxyAction, parseCompressedGfwList } from './gfwlist'
+import { ProxyActionEnum as ProxyAction, parseCompressedGfwList } from '@/lib/gfwlist'
 
 export { ProxyAction }
 

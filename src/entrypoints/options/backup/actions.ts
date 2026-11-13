@@ -1,4 +1,4 @@
-import { fetchGist } from '@/utils/gist'
+import { fetchGist } from '@/lib/gist'
 import { backupState } from '@/utils/storage'
 
 export interface BackupSettings {

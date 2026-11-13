@@ -19,6 +19,16 @@ export const menus = [
     component: () => import('../tab')
   },
   {
+    url: 'epub',
+    label: 'EPUB',
+    component: () => import('../epub')
+  },
+  {
+    url: 'reader',
+    label: '阅读器',
+    component: () => import('../reader')
+  },
+  {
     url: 'backup',
     label: '备份',
     component: () => import('../backup')

@@ -1,5 +1,5 @@
 import { browser, type Browser } from '#imports'
-import { assertWithinLimit, fetchGist, patchGist, readGistFile, type GistFiles } from './gist'
+import { assertWithinLimit, fetchGist, patchGist, readGistFile, type GistFiles } from '@/lib/gist'
 
 const BOOKMARKS = 'bookmarks.json'
 const STORAGE_PREFIX = 'local-'
