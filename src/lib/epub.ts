@@ -31,6 +31,11 @@ export enum EpubKind {
 /** [标题, 正文] */
 export type Chapter = [title: string, content: string]
 
+export interface ChapterItem {
+  title: string
+  content: string
+}
+
 export interface BatchItemResult {
   file: File
   ok: boolean
@@ -42,13 +47,15 @@ export interface FilePreview {
   title: string
   text: string
   author: string
-  kind: 'txt' | 'epub'
+  kind: `${EpubKind.Epub | EpubKind.Txt}`
   size: number
+  chapters?: ChapterItem[]
 }
 
 // ============================ 默认配置 ============================
+export const CHAPTER_RE = String.raw`^[ \t]*第[ \t]*[一二三四五六七八九十百千万零〇\d]+[ \t]*(?:章|卷|回|节|集|部|篇|折)[^\n]*`
 export const DEFAULT_CONFIG: EpubConfig = {
-  chapterPattern: String.raw`^[ \t]*第[ \t]*[一二三四五六七八九十百千万零〇\d]+[ \t]*(?:章|卷|回|节|集|部|篇|折)`,
+  chapterPattern: CHAPTER_RE,
   author: '',
   startMarker: '',
   blockWords: ''
@@ -231,29 +238,39 @@ async function readEpub(arrayBuffer: ArrayBuffer): Promise<{ text: string; autho
 function splitChapters(text: string, chapterRe: RegExp): Chapter[] {
   const matches = [...text.matchAll(chapterRe)]
   if (!matches.length) return [['全文', text]]
+
   const chapters: Chapter[] = []
 
+  // ---------- 前言 ----------
   let firstStart = matches[0]!.index
   while (firstStart < text.length && '\r\n'.includes(text[firstStart]!)) firstStart++
   const preface = text.slice(0, firstStart)
-  if (preface) {
-    const nl = preface.indexOf('\n')
-    const title = (nl === -1 ? preface : preface.slice(0, nl)) || '前言'
-    const content = nl === -1 ? '' : preface.slice(nl + 1)
-    if (content.trim()) chapters.push([title, content])
+
+  if (preface.trim()) {
+    chapters.push(['前言', preface.trim()])
   }
 
+  // ---------- 正文各章 ----------
   for (let i = 0; i < matches.length; i++) {
     const m = matches[i]!
     const end = i + 1 < matches.length ? matches[i + 1]!.index : text.length
+
     let anchor = m.index
     while (anchor < text.length && '\r\n'.includes(text[anchor]!)) anchor++
+
     const lineStart = text.lastIndexOf('\n', anchor - 1) + 1
     let lineEnd = text.indexOf('\n', anchor)
     if (lineEnd === -1) lineEnd = text.length
-    chapters.push([text.slice(lineStart, lineEnd), text.slice(lineEnd, end)])
+
+    const title = text.slice(lineStart, lineEnd).trim()
+    const content = text.slice(lineEnd, end).trim()
+
+    if (content) {
+      chapters.push([title || `第 ${i + 1} 章`, content])
+    }
   }
-  return chapters
+
+  return chapters.length ? chapters : [['全文', text]]
 }
 
 // ============================ XHTML 文档 ============================
@@ -357,9 +374,7 @@ function buildTxtBlob(chapters: Chapter[], title: string, author: string): Blob 
   const header: string[] = []
   if (title.trim()) header.push(`《${title.trim()}》`)
   if (author.trim()) header.push(`作者：${author.trim()}`)
-  if (header.length) parts.push(header.join())
-  console.log('header', header)
-  console.log('parts', parts)
+  if (header.length) parts.push(header.join('\n'))
 
   for (const [t, content] of chapters) {
     const ct = t.replace(/<[^>]+>/g, '')

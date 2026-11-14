@@ -51,7 +51,7 @@ export default function ProxySidebar({
       rowKey="id"
       styles={{ item: { padding: 3 } }}
       itemRender={(item) => (
-        <Flex justify="space-between">
+        <Flex justify="space-between" align="center">
           <Typography.Link onClick={() => onSelect({ kind, id: item.id })}>
             {item.name}
           </Typography.Link>

@@ -19,7 +19,6 @@ export default function Epub() {
 
   const onFinish = async (values: any) => {
     try {
-      console.log('values', values)
       setResults([])
 
       const files = values.files
@@ -69,35 +68,33 @@ export default function Epub() {
               }
             },
             formItemProps: {
-              extra: '文件名即书名，支持 UTF-8 / GBK 编码，可一次添加多个文件',
+              wrapperCol: { span: 9 },
+              extra: '书名取自文件名；支持 UTF-8/GBK；支持批量添加',
               rules: [{ required: true }]
             }
           },
           {
             title: '作者',
             dataIndex: 'author',
-            fieldProps: { placeholder: '留空自动读取' },
-            formItemProps: { extra: '留空则使用 EPUB 文件内置的作者信息' }
+            fieldProps: { placeholder: '留空则用 EPUB 内置作者' }
           },
           {
             title: '起始标记',
             dataIndex: 'startMarker',
-            fieldProps: { placeholder: '例如：正文开始' },
-            formItemProps: { extra: '标记之前的所有内容会被丢弃；留空则不启用' }
+            fieldProps: { placeholder: '标记前丢弃；留空不启用；例：正文开始' }
           },
           {
             title: '屏蔽词',
             dataIndex: 'blockWords',
-            fieldProps: { placeholder: '例如：广告,推广' },
-            formItemProps: { extra: '用英文逗号分隔，命中的文字会被删除；留空则不启用' }
+            fieldProps: { placeholder: '逗号分隔，命中即删；留空不启用；例：广告,推广' }
           },
           {
             title: '章节正则',
             dataIndex: 'chapterPattern',
             valueType: 'textarea',
+            fieldProps: { placeholder: 'JS 正则，免写 /…/g' },
             formItemProps: {
               initialValue: DEFAULT_CONFIG.chapterPattern,
-              extra: '使用 JS 正则语法，无需写 /…/g 包裹',
               rules: [
                 {
                   validator: async (_, value: string) => {
