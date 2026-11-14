@@ -1,7 +1,7 @@
 import { Form, antd, file } from '@rainte/ant'
 import { loadTabSettings, saveTabSettings } from './actions'
 
-export default () => {
+export default function Tab() {
   return (
     <Form
       labelCol={{ span: 2 }}

@@ -23,7 +23,7 @@ const pacInit: PacProxy = {
   gfwUrl: ''
 }
 
-export default () => {
+export default function Proxy() {
   const [settings, setSettings] = useState<ProxySettings>()
   const [selection, setSelection] = useState<Selection>(null)
 

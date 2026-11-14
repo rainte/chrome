@@ -8,11 +8,11 @@ import {
   type BatchItemResult,
   type EpubConfig
 } from '@/lib/epub'
-import { handleDownloadAll, handleDownloadOne } from './actions'
 import type { RcFile } from 'antd/es/upload'
 import { AiOutlineDownload } from 'react-icons/ai'
+import { handleDownloadAll, handleDownloadOne } from './actions'
 
-export default function App() {
+export default function Epub() {
   const [progress, setProgress] = useState({ done: 0, total: 0 })
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [results, setResults] = useState<BatchItemResult[]>([])

@@ -30,7 +30,7 @@ const GithubTokenInput = createLinkInput(
 )
 const GistIdInput = createLinkInput('手动生成', 'https://gist.github.com')
 
-export default () => {
+export default function Backup() {
   const [time, setTime] = useState<BackupTime>({})
 
   const refresh = (state: BackupSettings) => loadBackupTime(state).then(setTime)

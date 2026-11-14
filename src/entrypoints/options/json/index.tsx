@@ -41,7 +41,7 @@ function sortJson(value: JsonValue): JsonValue {
   return result
 }
 
-export default () => {
+export default function Json() {
   const [text, setText] = useState('')
   const [sortOn, setSortOn] = useState(false)
   const [expandAll, setExpandAll] = useState(false)

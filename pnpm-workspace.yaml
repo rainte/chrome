@@ -1,0 +1,2 @@
+minimumReleaseAgeExclude:
+  - '@rainte/ant@0.0.86'

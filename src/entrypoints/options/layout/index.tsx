@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router'
-import { Layout } from '@rainte/ant'
+import { Layout as AntLayout } from '@rainte/ant'
 import { PageContainer, ProCard } from '@ant-design/pro-components'
 
 export const menus = [
@@ -40,14 +40,14 @@ const routes = menus.map((item) => ({
   name: item.label
 }))
 
-export default function LayoutDemo() {
+export default function Layout() {
   return (
-    <Layout routes={routes}>
+    <AntLayout routes={routes}>
       <PageContainer title={false}>
         <ProCard>
           <Outlet />
         </ProCard>
       </PageContainer>
-    </Layout>
+    </AntLayout>
   )
 }

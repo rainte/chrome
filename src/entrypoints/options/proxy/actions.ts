@@ -1,6 +1,6 @@
 import { proxyState } from '@/utils/storage'
 import { downloadGfwList } from '@/lib/gfwlist'
-import type { ProxySettings, PacProxy } from '@/utils/proxy'
+import type { FixedProxy, PacProxy, ProxySettings } from '@/utils/proxy'
 
 export enum ProxyKind {
   Fixed = 'fixed',
@@ -8,7 +8,7 @@ export enum ProxyKind {
 }
 
 export type ProxyEditorProps = {
-  item?: PacProxy
+  item?: FixedProxy | PacProxy
   settings?: ProxySettings
   onSave: (kind: ProxyKind, item: PacProxy) => void
 }

@@ -1,3 +1,5 @@
+import { defineContentScript } from '#imports'
+
 export default defineContentScript({
   matches: ['<all_urls>'],
   main() {

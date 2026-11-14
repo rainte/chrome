@@ -1,3 +1,4 @@
+/* eslint-disable no-control-regex */
 import JSZip from 'jszip'
 import { XMLParser } from 'fast-xml-parser'
 import { uuidV5 } from './uuid'

@@ -1,6 +1,5 @@
-import { useMemo, useState, useRef, useCallback, useEffect } from 'react';
-import type { UploadFile } from 'antd';
-import type { RcFile } from 'antd/es/upload/interface';
+import { readFilePreview, type FilePreview } from '@/lib/epub'
+import type { UploadFile } from 'antd'
 import {
   Alert,
   App as AntApp,
@@ -16,115 +15,113 @@ import {
   Tag,
   Tooltip,
   Typography,
-  Upload,
-} from 'antd';
+  Upload
+} from 'antd'
+import type { RcFile } from 'antd/es/upload/interface'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   FiBook,
+  FiEye,
   FiFileText,
+  FiMaximize,
+  FiMenu,
+  FiMinimize,
+  FiMoon,
   FiSearch,
+  FiSun,
   FiUploadCloud,
   FiUser,
   FiX,
-  FiMenu,
-  FiMaximize,
-  FiMinimize,
   FiZoomIn,
-  FiZoomOut,
-  FiSun,
-  FiMoon,
-  FiEye,
-} from 'react-icons/fi';
-import { readFilePreview, type FilePreview } from '@/lib/epub';
+  FiZoomOut
+} from 'react-icons/fi'
 
-const { Title, Text, Paragraph } = Typography;
-const { Dragger } = Upload;
+const { Title, Text, Paragraph } = Typography
+const { Dragger } = Upload
 
-type ViewMode = 'paragraph' | 'plain';
-type Theme = 'light' | 'sepia' | 'dark';
+type ViewMode = 'paragraph' | 'plain'
+type Theme = 'light' | 'sepia' | 'dark'
 
 interface ChapterItem {
-  title: string;
-  content: string;
+  title: string
+  content: string
 }
 
 const CHAPTER_RE =
-  /^[ \t]*第[ \t]*[一二三四五六七八九十百千万零〇\d]+[ \t]*(?:章|卷|回|节|集|部|篇|折)[^\n]*/gm;
+  /^[ \t]*第[ \t]*[一二三四五六七八九十百千万零〇\d]+[ \t]*(?:章|卷|回|节|集|部|篇|折)[^\n]*/gm
 
-const THEMES: Record<
-  Theme,
-  { bg: string; text: string; name: string; icon: React.ReactNode }
-> = {
+const THEMES: Record<Theme, { bg: string; text: string; name: string; icon: React.ReactNode }> = {
   light: { bg: '#ffffff', text: '#222', name: '浅色', icon: <FiSun /> },
   sepia: { bg: '#f5efe0', text: '#5b4636', name: '护眼', icon: <FiEye /> },
-  dark: { bg: '#1e1e1e', text: '#d4d4d4', name: '深色', icon: <FiMoon /> },
-};
+  dark: { bg: '#1e1e1e', text: '#d4d4d4', name: '深色', icon: <FiMoon /> }
+}
 
 /** 按章节正则拆分，没匹配到就整本作为一章 */
 function splitPreviewChapters(text: string): ChapterItem[] {
-  const matches = [...text.matchAll(CHAPTER_RE)];
-  if (!matches.length) return [{ title: '全文', content: text }];
+  const matches = [...text.matchAll(CHAPTER_RE)]
+  if (!matches.length) return [{ title: '全文', content: text }]
 
-  const chapters: ChapterItem[] = [];
+  const chapters: ChapterItem[] = []
 
-  const firstStart = matches[0]!.index;
-  const preface = text.slice(0, firstStart).trim();
-  if (preface) chapters.push({ title: '前言', content: preface });
+  const firstStart = matches[0]!.index
+  const preface = text.slice(0, firstStart).trim()
+  if (preface) chapters.push({ title: '前言', content: preface })
 
   for (let i = 0; i < matches.length; i++) {
-    const m = matches[i]!;
-    const start = m.index;
-    const end = i + 1 < matches.length ? matches[i + 1]!.index : text.length;
-    const block = text.slice(start, end);
-    const nl = block.indexOf('\n');
-    const title = (nl === -1 ? block : block.slice(0, nl)).trim();
-    const content = nl === -1 ? '' : block.slice(nl + 1).trim();
-    if (content) chapters.push({ title: title || `第 ${i + 1} 章`, content });
+    const m = matches[i]!
+    const start = m.index
+    const end = i + 1 < matches.length ? matches[i + 1]!.index : text.length
+    const block = text.slice(start, end)
+    const nl = block.indexOf('\n')
+    const title = (nl === -1 ? block : block.slice(0, nl)).trim()
+    const content = nl === -1 ? '' : block.slice(nl + 1).trim()
+    if (content) chapters.push({ title: title || `第 ${i + 1} 章`, content })
   }
-  return chapters.length ? chapters : [{ title: '全文', content: text }];
+  return chapters.length ? chapters : [{ title: '全文', content: text }]
 }
 
-export default function PreviewPage() {
-  const { message } = AntApp.useApp();
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [preview, setPreview] = useState<FilePreview | null>(null);
-  const [error, setError] = useState('');
-  const [keyword, setKeyword] = useState('');
-  const [viewMode, setViewMode] = useState<ViewMode>('paragraph');
-  const [theme, setTheme] = useState<Theme>('light');
-  const [fontSize, setFontSize] = useState(16);
-  const [navOpen, setNavOpen] = useState(false);
-  const [currentChapter, setCurrentChapter] = useState(0);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+export default function Reader() {
+  const { message } = AntApp.useApp()
+  const [fileList, setFileList] = useState<UploadFile[]>([])
+  const [loading, setLoading] = useState(false)
+  const [preview, setPreview] = useState<FilePreview | null>(null)
+  const [error, setError] = useState('')
+  const [keyword, setKeyword] = useState('')
+  const [viewMode, setViewMode] = useState<ViewMode>('paragraph')
+  const [theme, setTheme] = useState<Theme>('light')
+  const [fontSize, setFontSize] = useState(16)
+  const [navOpen, setNavOpen] = useState(false)
+  const [currentChapter, setCurrentChapter] = useState(0)
+  const [isFullscreen, setIsFullscreen] = useState(false)
 
-  const contentRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null)
 
   // 拆章
   const chapters = useMemo<ChapterItem[]>(() => {
-    if (!preview) return [];
-    return splitPreviewChapters(preview.text);
-  }, [preview]);
+    if (!preview) return []
+    return splitPreviewChapters(preview.text)
+  }, [preview])
 
   // 当前章节
-  const currentChapterItem = chapters[currentChapter];
-  const currentTitle = currentChapterItem?.title ?? '';
-  const currentContent = currentChapterItem?.content ?? '';
+  const currentChapterItem = chapters[currentChapter]
+  const currentTitle = currentChapterItem?.title ?? ''
+  const currentContent = currentChapterItem?.content ?? ''
 
   const paragraphs = useMemo<string[]>(() => {
-    if (!currentContent) return [];
+    if (!currentContent) return []
     return currentContent
       .split(/\n{2,}/)
       .map((p) => p.trim())
-      .filter(Boolean);
-  }, [currentContent]);
+      .filter(Boolean)
+  }, [currentContent])
 
   const filteredParagraphs = useMemo<string[]>(() => {
-    const kw = keyword.trim().toLowerCase();
-    if (!kw) return paragraphs;
-    return paragraphs.filter((p) => p.toLowerCase().includes(kw));
-  }, [paragraphs, keyword]);
+    const kw = keyword.trim().toLowerCase()
+    if (!kw) return paragraphs
+    return paragraphs.filter((p) => p.toLowerCase().includes(kw))
+  }, [paragraphs, keyword])
 
-  const matchCount = keyword.trim() ? filteredParagraphs.length : 0;
+  const matchCount = keyword.trim() ? filteredParagraphs.length : 0
 
   // 上传
   const draggerProps = {
@@ -133,62 +130,62 @@ export default function PreviewPage() {
     maxCount: 1,
     fileList,
     beforeUpload: async (f: RcFile) => {
-      const lower = f.name.toLowerCase();
+      const lower = f.name.toLowerCase()
       if (!lower.endsWith('.txt') && !lower.endsWith('.epub')) {
-        message.error('只支持 .txt 或 .epub 文件');
-        return Upload.LIST_IGNORE;
+        message.error('只支持 .txt 或 .epub 文件')
+        return Upload.LIST_IGNORE
       }
-      setFileList([{ uid: f.uid, name: f.name, originFileObj: f, status: 'done' }]);
-      setError('');
-      setPreview(null);
-      setKeyword('');
-      setCurrentChapter(0);
-      setLoading(true);
+      setFileList([{ uid: f.uid, name: f.name, originFileObj: f, status: 'done' }])
+      setError('')
+      setPreview(null)
+      setKeyword('')
+      setCurrentChapter(0)
+      setLoading(true)
       try {
-        const data = await readFilePreview(f);
-        setPreview(data);
+        const data = await readFilePreview(f)
+        setPreview(data)
       } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err);
-        setError(msg);
-        message.error(`读取失败：${msg}`);
+        const msg = err instanceof Error ? err.message : String(err)
+        setError(msg)
+        message.error(`读取失败：${msg}`)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-      return false;
+      return false
     },
     onRemove: () => {
-      setFileList([]);
-      setPreview(null);
-      setError('');
-      setKeyword('');
-      setCurrentChapter(0);
+      setFileList([])
+      setPreview(null)
+      setError('')
+      setKeyword('')
+      setCurrentChapter(0)
     },
-    onDrop: () => {},
-  };
+    onDrop: () => {}
+  }
 
   // 全屏
   const toggleFullscreen = useCallback(async () => {
-    if (!contentRef.current) return;
+    if (!contentRef.current) return
     try {
       if (!document.fullscreenElement) {
-        await contentRef.current.requestFullscreen();
-        setIsFullscreen(true);
+        await contentRef.current.requestFullscreen()
+        setIsFullscreen(true)
       } else {
-        await document.exitFullscreen();
-        setIsFullscreen(false);
+        await document.exitFullscreen()
+        setIsFullscreen(false)
       }
     } catch {
-      message.error('当前浏览器不支持全屏');
+      message.error('当前浏览器不支持全屏')
     }
-  }, [message]);
+  }, [message])
 
   useEffect(() => {
-    const onChange = () => setIsFullscreen(Boolean(document.fullscreenElement));
-    document.addEventListener('fullscreenchange', onChange);
-    return () => document.removeEventListener('fullscreenchange', onChange);
-  }, []);
+    const onChange = () => setIsFullscreen(Boolean(document.fullscreenElement))
+    document.addEventListener('fullscreenchange', onChange)
+    return () => document.removeEventListener('fullscreenchange', onChange)
+  }, [])
 
-  const themeConf = THEMES[theme];
+  const themeConf = THEMES[theme]
 
   const renderChapterContent = () => {
     if (loading) {
@@ -196,10 +193,10 @@ export default function PreviewPage() {
         <div style={{ textAlign: 'center', padding: '80px 0' }}>
           <Spin size="large" tip="正在读取文件…" />
         </div>
-      );
+      )
     }
     if (error) {
-      return <Alert type="error" showIcon message="读取失败" description={error} />;
+      return <Alert type="error" showIcon message="读取失败" description={error} />
     }
     if (!preview) {
       return (
@@ -208,10 +205,10 @@ export default function PreviewPage() {
           description="请选择一个 .txt 或 .epub 文件"
           style={{ padding: '60px 0' }}
         />
-      );
+      )
     }
     if (!chapters.length) {
-      return <Empty description="没有可阅读的章节" />;
+      return <Empty description="没有可阅读的章节" />
     }
 
     const titleNode = currentTitle ? (
@@ -220,12 +217,12 @@ export default function PreviewPage() {
           fontSize: fontSize + 4,
           margin: '0 0 20px',
           fontWeight: 600,
-          color: 'inherit',
+          color: 'inherit'
         }}
       >
         {currentTitle}
       </h2>
-    ) : null;
+    ) : null
 
     if (viewMode === 'plain') {
       return (
@@ -239,13 +236,13 @@ export default function PreviewPage() {
               fontSize,
               lineHeight: 1.7,
               margin: 0,
-              color: 'inherit',
+              color: 'inherit'
             }}
           >
             {currentContent}
           </pre>
         </>
-      );
+      )
     }
 
     if (!filteredParagraphs.length) {
@@ -254,7 +251,7 @@ export default function PreviewPage() {
           {titleNode}
           <Empty description="没有匹配的段落" />
         </>
-      );
+      )
     }
 
     return (
@@ -262,13 +259,13 @@ export default function PreviewPage() {
         {titleNode}
         <div style={{ lineHeight: 1.9, fontSize }}>
           {filteredParagraphs.map((para, i) => {
-            const lines = para.split('\n');
+            const lines = para.split('\n')
             return (
               <p
                 key={i}
                 style={{
                   margin: '0 0 16px',
-                  textIndent: '2em',
+                  textIndent: '2em'
                 }}
               >
                 {lines.map((line, j) => (
@@ -278,12 +275,12 @@ export default function PreviewPage() {
                   </span>
                 ))}
               </p>
-            );
+            )
           })}
         </div>
       </>
-    );
-  };
+    )
+  }
 
   const chapterNav = (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -297,20 +294,20 @@ export default function PreviewPage() {
             textAlign: 'left',
             height: 'auto',
             padding: '6px 10px',
-            whiteSpace: 'normal',
+            whiteSpace: 'normal'
           }}
           onClick={() => {
-            setCurrentChapter(i);
-            setNavOpen(false);
-            setKeyword('');
-            contentRef.current?.scrollTo({ top: 0 });
+            setCurrentChapter(i)
+            setNavOpen(false)
+            setKeyword('')
+            contentRef.current?.scrollTo({ top: 0 })
           }}
         >
           <span style={{ fontSize: 13 }}>{ch.title}</span>
         </Button>
       ))}
     </div>
-  );
+  )
 
   return (
     <div style={{ maxWidth: 1080, margin: '32px auto', padding: '0 20px 60px' }}>
@@ -329,9 +326,7 @@ export default function PreviewPage() {
             <FiUploadCloud size={44} color="#4a90e2" />
           </p>
           <p className="ant-upload-text">点击或拖拽 .txt / .epub 文件到这里</p>
-          <p className="ant-upload-hint">
-            TXT 自动识别 UTF-8 / GBK；EPUB 按 spine 顺序提取正文
-          </p>
+          <p className="ant-upload-hint">TXT 自动识别 UTF-8 / GBK；EPUB 按 spine 顺序提取正文</p>
         </Dragger>
       </Card>
 
@@ -391,7 +386,7 @@ export default function PreviewPage() {
                       {cfg.icon}
                       {cfg.name}
                     </Space>
-                  ),
+                  )
                 }))}
               />
 
@@ -401,7 +396,7 @@ export default function PreviewPage() {
                 onChange={(v) => setViewMode(v as ViewMode)}
                 options={[
                   { label: '段落', value: 'paragraph', icon: <FiFileText /> },
-                  { label: '原文', value: 'plain' },
+                  { label: '原文', value: 'plain' }
                 ]}
               />
 
@@ -425,9 +420,7 @@ export default function PreviewPage() {
                 <Tag color={preview.kind === 'epub' ? 'blue' : 'green'}>
                   {preview.kind.toUpperCase()}
                 </Tag>
-                {preview.author && (
-                  <Tag icon={<FiUser size={12} />}>{preview.author}</Tag>
-                )}
+                {preview.author && <Tag icon={<FiUser size={12} />}>{preview.author}</Tag>}
                 <Text type="secondary" style={{ fontSize: 12, fontWeight: 'normal' }}>
                   {(preview.size / 1024).toFixed(1)} KB · {preview.text.length} 字符
                 </Text>
@@ -454,10 +447,7 @@ export default function PreviewPage() {
               />
             </Space.Compact>
             {keyword.trim() && (
-              <Text
-                type="secondary"
-                style={{ fontSize: 12, display: 'block', marginBottom: 8 }}
-              >
+              <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 8 }}>
                 当前章节匹配到 {matchCount} 个段落
               </Text>
             )}
@@ -472,7 +462,7 @@ export default function PreviewPage() {
                 color: themeConf.text,
                 borderRadius: isFullscreen ? 0 : 8,
                 border: isFullscreen ? 'none' : '1px solid #f0f0f0',
-                transition: 'background 0.2s, color 0.2s',
+                transition: 'background 0.2s, color 0.2s'
               }}
             >
               {renderChapterContent()}
@@ -484,15 +474,15 @@ export default function PreviewPage() {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                marginTop: 12,
+                marginTop: 12
               }}
             >
               <Button
                 disabled={currentChapter <= 0}
                 onClick={() => {
-                  setCurrentChapter((i) => Math.max(0, i - 1));
-                  setKeyword('');
-                  contentRef.current?.scrollTo({ top: 0 });
+                  setCurrentChapter((i) => Math.max(0, i - 1))
+                  setKeyword('')
+                  contentRef.current?.scrollTo({ top: 0 })
                 }}
               >
                 上一章
@@ -503,9 +493,9 @@ export default function PreviewPage() {
               <Button
                 disabled={currentChapter >= chapters.length - 1}
                 onClick={() => {
-                  setCurrentChapter((i) => Math.min(chapters.length - 1, i + 1));
-                  setKeyword('');
-                  contentRef.current?.scrollTo({ top: 0 });
+                  setCurrentChapter((i) => Math.min(chapters.length - 1, i + 1))
+                  setKeyword('')
+                  contentRef.current?.scrollTo({ top: 0 })
                 }}
               >
                 下一章
@@ -533,5 +523,5 @@ export default function PreviewPage() {
         </>
       )}
     </div>
-  );
+  )
 }
