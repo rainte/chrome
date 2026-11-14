@@ -14,7 +14,8 @@
     "compile": "tsc --noEmit",
     "postinstall": "wxt prepare",
     "upgrade": "pnpm up -L --registry=https://registry.npmjs.org",
-    "lint": "oxlint"
+    "lint": "oxlint",
+    "copy": "wxt build && powershell -NoProfile -Command \"$dest = Join-Path $env:USERPROFILE 'scoop/persist/chrome/rainte'; if (Test-Path $dest) { Remove-Item -Recurse -Force $dest }; Copy-Item -Recurse .output/rainte $dest\""
   },
   "dependencies": {
     "@ant-design/pro-components": "3.1.15-9",

@@ -22,6 +22,7 @@ export default function Tab() {
           fieldProps: {
             listType: 'picture-card',
             accept: 'image/*',
+            maxCount: 1,
             customRequest: ({ file, onSuccess }: any) => {
               onSuccess?.({ url: URL.createObjectURL(file) })
             }
