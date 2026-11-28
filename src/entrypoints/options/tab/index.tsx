@@ -1,0 +1,37 @@
+import { Form, antd, file } from '@rainte/ant'
+import { Card } from 'antd'
+import { loadTabSettings, saveTabSettings } from './actions'
+
+export default function Tab() {
+  return (
+    <Card>
+      <Form
+        labelCol={{ span: 2 }}
+        request={() => loadTabSettings()}
+        onFinish={async (values) => {
+          await antd.safeRun(async () => {
+            const blob = values.cover?.[0]?.originFileObj
+            const cover = blob ? await file.toBase64(blob) : ''
+            await saveTabSettings({ ...values, cover })
+          })
+        }}
+        columns={[
+          {
+            title: '图片',
+            dataIndex: 'cover',
+            valueType: 'upload',
+            convertValue: (value) => (value ? [file.base64ToUploadFile(value)] : []),
+            fieldProps: {
+              listType: 'picture-card',
+              accept: 'image/*',
+              maxCount: 1,
+              customRequest: ({ file, onSuccess }: any) => {
+                onSuccess?.({ url: URL.createObjectURL(file) })
+              }
+            }
+          }
+        ]}
+      />
+    </Card>
+  )
+}

@@ -1,0 +1,7 @@
+{
+  "loading": { "message": "Loading..." },
+  "confirmTitle": { "message": "提示" },
+  "confirmContent": { "message": "确认操作？" },
+  "success": { "message": "操作成功" },
+  "error": { "message": "操作失败" }
+}

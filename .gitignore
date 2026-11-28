@@ -1,0 +1,14 @@
+node_modules
+dist
+*.local
+*-lock.yaml
+*-workspace.yaml
+*.log
+.output
+.wxt
+
+!**/.gitkeep
+
+crx/*
+!crx/rainte.crx
+!crx/rainte.pem
